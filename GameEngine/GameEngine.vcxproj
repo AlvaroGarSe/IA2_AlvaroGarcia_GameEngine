@@ -19,25 +19,25 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Engine\Include\GraphicManager.h" />
-    <ClInclude Include="..\Engine\Include\InputManager.h" />
-    <ClInclude Include="..\Engine\Include\LTexture.h" />
-    <ClInclude Include="..\Engine\Include\Object.h" />
-    <ClInclude Include="..\Engine\Include\ObjectManager.h" />
-    <ClInclude Include="..\Engine\Include\PhysicsManager.h" />
-    <ClInclude Include="..\Engine\Include\Singleton.h" />
-    <ClInclude Include="..\Engine\Include\TextManager.h" />
-    <ClInclude Include="..\Engine\Include\TimeManager.h" />
+    <ClInclude Include="Include\GraphicManager.h" />
+    <ClInclude Include="Include\InputManager.h" />
+    <ClInclude Include="Include\LTexture.h" />
+    <ClInclude Include="Include\Object.h" />
+    <ClInclude Include="Include\ObjectManager.h" />
+    <ClInclude Include="Include\PhysicsManager.h" />
+    <ClInclude Include="Include\Singleton.h" />
+    <ClInclude Include="Include\TextManager.h" />
+    <ClInclude Include="Include\TimeManager.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Engine\Source\GraphicManager.cpp" />
-    <ClCompile Include="..\Engine\Source\InputManager.cpp" />
-    <ClCompile Include="..\Engine\Source\LTexture.cpp" />
-    <ClCompile Include="..\Engine\Source\Object.cpp" />
-    <ClCompile Include="..\Engine\Source\ObjectManager.cpp" />
-    <ClCompile Include="..\Engine\Source\PhysicsManager.cpp" />
-    <ClCompile Include="..\Engine\Source\TextManager.cpp" />
-    <ClCompile Include="..\Engine\Source\TimeManager.cpp" />
+    <ClCompile Include="Source\GraphicManager.cpp" />
+    <ClCompile Include="Source\InputManager.cpp" />
+    <ClCompile Include="Source\LTexture.cpp" />
+    <ClCompile Include="Source\Object.cpp" />
+    <ClCompile Include="Source\ObjectManager.cpp" />
+    <ClCompile Include="Source\PhysicsManager.cpp" />
+    <ClCompile Include="Source\TextManager.cpp" />
+    <ClCompile Include="Source\TimeManager.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -130,7 +130,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\01-External\SDL2_ttf-devel-2.24.0-VC\include;..\Engine\Include;..\Engine\Source;..\01-External\SDL2-devel-2.30.7-VC\include;..\01-External\SDL2_image-devel-2.8.2-VC\include;..\01-External\SDL2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>External\SDL2_ttf-devel-2.24.0-VC\include;Include;Source;External\SDL2-devel-2.30.7-VC\include;External\SDL2_image-devel-2.8.2-VC\include;External\SDL2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

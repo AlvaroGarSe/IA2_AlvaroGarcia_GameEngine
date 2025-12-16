@@ -55,7 +55,7 @@ bool Projectile::loadMedia()
     bool success = true;
 
     //Load projectile texture
-    if (!gProjectileTexture->loadFromFile("../03-Media/projectile.png"))
+    if (!gProjectileTexture->loadFromFile("Media/projectile.png"))
     {
         printf("Failed to load proyectile texture!\n");
         success = false;

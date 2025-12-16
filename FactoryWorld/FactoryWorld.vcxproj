@@ -105,11 +105,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>Source;Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Include;..\GameEngine\Include;..\GameEngine\External\SDL2-devel-2.30.7-VC\include;..\GameEngine\External\SDL2_image-devel-2.8.2-VC\include;..\GameEngine\External\SDL2_ttf-devel-2.24.0-VC\include;..\GameEngine\External\SDL2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>Engine.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)$(Platform)\$(Configuration)\;..\GameEngine\External\SDL2_ttf-devel-2.24.0-VC\lib\x64;..\GameEngine\External\SDL2\lib\x64;..\GameEngine\External\SDL2_image-devel-2.8.2-VC\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

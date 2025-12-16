@@ -15,57 +15,57 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Engine\Include\LTexture.h">
+    <ClInclude Include="Include\ObjectManager.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="..\Engine\Include\Object.h">
+    <ClInclude Include="Include\PhysicsManager.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="..\Engine\Include\ObjectManager.h">
+    <ClInclude Include="Include\Singleton.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="..\Engine\Include\PhysicsManager.h">
+    <ClInclude Include="Include\TextManager.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="..\Engine\Include\Singleton.h">
+    <ClInclude Include="Include\TimeManager.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="..\Engine\Include\TextManager.h">
+    <ClInclude Include="Include\GraphicManager.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="..\Engine\Include\TimeManager.h">
+    <ClInclude Include="Include\InputManager.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="..\Engine\Include\GraphicManager.h">
+    <ClInclude Include="Include\LTexture.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="..\Engine\Include\InputManager.h">
+    <ClInclude Include="Include\Object.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Engine\Source\LTexture.cpp">
+    <ClCompile Include="Source\LTexture.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="..\Engine\Source\Object.cpp">
+    <ClCompile Include="Source\Object.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="..\Engine\Source\ObjectManager.cpp">
+    <ClCompile Include="Source\ObjectManager.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="..\Engine\Source\PhysicsManager.cpp">
+    <ClCompile Include="Source\PhysicsManager.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="..\Engine\Source\TextManager.cpp">
+    <ClCompile Include="Source\TextManager.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="..\Engine\Source\TimeManager.cpp">
+    <ClCompile Include="Source\TimeManager.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="..\Engine\Source\GraphicManager.cpp">
+    <ClCompile Include="Source\GraphicManager.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="..\Engine\Source\InputManager.cpp">
+    <ClCompile Include="Source\InputManager.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
   </ItemGroup>

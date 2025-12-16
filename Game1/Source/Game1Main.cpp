@@ -36,7 +36,7 @@ int main( int argc, char* args[] )
 	int SCREEN_HEIGHT = GraphicManager::GetInstance().getScreenHeight();
 	
 	// Create the background adn the ship
-	Background background = Background(SCREEN_WIDTH, SCREEN_HEIGHT, "../03-Media/bgSpace.jpg");
+	Background background = Background(SCREEN_WIDTH, SCREEN_HEIGHT, "Media/bgSpace.jpg");
 	Ship ship = Ship(GraphicManager::GetInstance().getScreenWidth(), GraphicManager::GetInstance().getScreenHeight());
 
 	// Pool of the projectiles of the ship
@@ -63,7 +63,7 @@ int main( int argc, char* args[] )
 	// I tried to add all the objects in the objects manager but i couldnt do it properly
 
 	TextManager::GetInstance().init();
-	string fontPath = "../03-Media/Font.ttf";
+	string fontPath = "Media/Font.ttf";
 	TTF_Font* font = TextManager::GetInstance().selectFont(fontPath, 24);
 
 	//Start up SDL and create window
