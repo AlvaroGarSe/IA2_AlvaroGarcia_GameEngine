@@ -1,0 +1,44 @@
+#pragma once
+#include "SDL.h"
+#include <SDL.h>
+#include <SDL_image.h>
+#include <stdio.h>
+#include "Singleton.h"
+#include <SDL_ttf.h>
+#include "iostream"
+#include <string>
+using namespace std;
+
+
+
+class TextManager:public Singleton<TextManager>
+{
+	/*****************************************************************************/
+	friend class Singleton<TextManager>;
+	/*****************************************************************************/
+
+private:
+	// Private constructor to avoid more than one instance
+	TextManager() {};
+
+  /*****************************************************************************/
+
+public:
+
+	//The window we'll be rendering to
+	SDL_Window* gWindow = NULL;
+
+	//The window renderer
+	SDL_Renderer* gRenderer = NULL;
+
+	//Starts up SDL and creates window
+	bool init();
+
+	TTF_Font* selectFont(string fontPath, int size);
+
+	bool renderFont(SDL_Color textColor, TTF_Font* font, int quadX, int quadY, int value, SDL_Renderer* gRenderer);
+
+	//Frees media and shuts down SDL
+	void closeFont(TTF_Font* font);
+
+};
