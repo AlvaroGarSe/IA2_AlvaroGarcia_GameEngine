@@ -109,7 +109,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\02-Internal\Source;..\02-Internal\Include;..\01-External\SDL2-devel-2.30.7-VC\include;..\01-External\SDL2_image-devel-2.8.2-VC\include;..\01-External\SDL2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\01-External\SDL2_ttf-devel-2.24.0-VC\include;..\02-Internal\Source;..\02-Internal\Include;..\01-External\SDL2-devel-2.30.7-VC\include;..\01-External\SDL2_image-devel-2.8.2-VC\include;..\01-External\SDL2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
