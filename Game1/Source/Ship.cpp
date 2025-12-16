@@ -46,7 +46,7 @@ bool Ship::loadMedia()
     bool success = true;
 
     //Load ship texture
-    if (!gShipTexture->loadFromFile("../../03-Media/ship.png"))
+    if (!gShipTexture->loadFromFile("../03-Media/ship.png"))
     {
         printf("Failed to load ship texture!\n");
         success = false;

@@ -60,7 +60,7 @@ bool Asteroid::loadMedia()
     bool success = true;
 
     //Load Asteroid texture
-    if (!gAsteroidTexture->loadFromFile("../../03-Media/asteroid.png"))
+    if (!gAsteroidTexture->loadFromFile("../03-Media/asteroid.png"))
     {
         printf("Failed to load proyectile texture!\n");
         success = false;

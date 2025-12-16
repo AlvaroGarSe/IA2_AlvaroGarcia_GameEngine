@@ -18,6 +18,19 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Include\Asteroid.h" />
+    <ClInclude Include="Include\Background.h" />
+    <ClInclude Include="Include\Projectile.h" />
+    <ClInclude Include="Include\Ship.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Asteroid.cpp" />
+    <ClCompile Include="Source\Background.cpp" />
+    <ClCompile Include="Source\Game1Main.cpp" />
+    <ClCompile Include="Source\Projectile.cpp" />
+    <ClCompile Include="Source\Ship.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -108,7 +121,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\..\02-Internal\Include;..\..\01-External\SDL2-devel-2.30.7-VC\include;..\..\01-External\SDL2_image-devel-2.8.2-VC\include;..\..\01-External\SDL2_ttf-devel-2.24.0-VC\include;..\..\01-External\SDL2\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Engine\Source;..\Engine\Include;Source;Include;..\01-External\SDL2-devel-2.30.7-VC\include;..\01-External\SDL2_image-devel-2.8.2-VC\include;..\01-External\SDL2_ttf-devel-2.24.0-VC\include;..\01-External\SDL2\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -133,19 +146,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\02-Internal\Source\Asteroid.cpp" />
-    <ClCompile Include="..\..\02-Internal\Source\Background.cpp" />
-    <ClCompile Include="..\..\02-Internal\Source\Game1Main.cpp" />
-    <ClCompile Include="..\..\02-Internal\Source\Projectile.cpp" />
-    <ClCompile Include="..\..\02-Internal\Source\Ship.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\02-Internal\Include\Asteroid.h" />
-    <ClInclude Include="..\..\02-Internal\Include\Background.h" />
-    <ClInclude Include="..\..\02-Internal\Include\Projectile.h" />
-    <ClInclude Include="..\..\02-Internal\Include\Ship.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
