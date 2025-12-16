@@ -1,0 +1,9 @@
+﻿  Background.cpp
+  Bird.cpp
+C:\Users\algar\Documents\EngineProyects\GameEngine_Alvaro_Garcia\02-Internal\Source\Bird.cpp(4,25): warning C4244: '=': conversión de 'double' a 'int'; posible pérdida de datos
+C:\Users\algar\Documents\EngineProyects\GameEngine_Alvaro_Garcia\02-Internal\Source\Bird.cpp(21,14): warning C4244: '+=': conversión de 'float' a 'int'; posible pérdida de datos
+  Game2Main.cpp
+  Pipe.cpp
+C:\Users\algar\Documents\EngineProyects\GameEngine_Alvaro_Garcia\02-Internal\Source\Pipe.cpp(26,14): warning C4244: '-=': conversión de 'float' a 'int'; posible pérdida de datos
+  Generando código...
+  Game2.vcxproj -> C:\Users\algar\Documents\EngineProyects\GameEngine_Alvaro_Garcia\x64\Debug\Game2.exe

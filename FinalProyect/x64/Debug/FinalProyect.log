@@ -1,0 +1,11 @@
+﻿  GraphicManager.cpp
+  InputManager.cpp
+  LTexture.cpp
+  Object.cpp
+  ObjectManager.cpp
+  PhysicsManager.cpp
+  TextManager.cpp
+C:\Users\algar\Documents\EngineProyects\GameEngine_Alvaro_Garcia\02-Internal\Source\TextManager.cpp(8,10): warning C4305: 'return': truncamiento de 'int' a 'bool'
+  TimeManager.cpp
+  Generando código...
+  FinalProyect.vcxproj -> C:\Users\algar\Documents\EngineProyects\GameEngine_Alvaro_Garcia\x64\Debug\FinalProyect.lib

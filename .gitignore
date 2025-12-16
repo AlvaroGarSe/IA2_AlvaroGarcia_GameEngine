@@ -39,3 +39,5 @@
 
 # debug information files
 *.dwo
+.vs/GameEngine/FileContentIndex/374bcb1d-378e-4e0b-a98b-f2da1db925b8.vsidx
+.vs/GameEngine/v17/Browse.VC.opendb
