@@ -16,11 +16,9 @@ class GraphicManager:public Singleton<GraphicManager>
 
 private:
   
-	//Screen dimension constants
-	//const int SCREEN_WIDTH = 640;
-	//const int SCREEN_HEIGHT = 480;
-	const int SCREEN_WIDTH = 1280;
-	const int SCREEN_HEIGHT = 960;
+	//Screen basic dimension (not constants)
+	int SCREEN_WIDTH = 1280;
+	int SCREEN_HEIGHT = 960;
 
 	// Private constructor to avoid more than one instance
 	GraphicManager() {};
@@ -40,6 +38,8 @@ public:
 
 	//Frees media and shuts down SDL
 	void close();
+
+	void setScreenSize(int screenWidht, int screenHeight) { SCREEN_WIDTH = screenWidht;  SCREEN_HEIGHT = screenHeight; };
 
 	//Gives SCREEN_WIDTH
 	int getScreenWidth() { return SCREEN_WIDTH; };

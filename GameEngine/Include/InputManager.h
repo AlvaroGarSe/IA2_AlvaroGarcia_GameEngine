@@ -14,7 +14,7 @@ private:
   const Uint8*  mCurrentKeyStates;
 
   // Private constructor to avoid more than one instance
-  InputManager() { mCurrentKeyStates = new Uint8; };
+  InputManager() { mCurrentKeyStates = new Uint8;};
 
   //Event handler
   SDL_Event e;

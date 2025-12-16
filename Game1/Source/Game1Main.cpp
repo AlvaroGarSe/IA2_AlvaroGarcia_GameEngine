@@ -32,6 +32,8 @@ int main( int argc, char* args[] )
 	PhysicsManager::CreateSingleton();
 	TextManager::CreateSingleton();
 
+	GraphicManager::GetInstance().setScreenSize(1280, 960);
+
 	int SCREEN_WIDTH = GraphicManager::GetInstance().getScreenWidth();
 	int SCREEN_HEIGHT = GraphicManager::GetInstance().getScreenHeight();
 	
@@ -108,6 +110,8 @@ int main( int argc, char* args[] )
 				//Handle events on queue
 				while( SDL_PollEvent(InputManager::GetInstance().GetSDLEvent()) != 0)
 				{
+					// **************** BETER TO DO SDL_Event& e = InputManager::GetInstance().GetSDLEvent(); ******************
+
 					//User requests quit
 					if(InputManager::GetInstance().GetSDLEvent()->type == SDL_QUIT )
 					{
