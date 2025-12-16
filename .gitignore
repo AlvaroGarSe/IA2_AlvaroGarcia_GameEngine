@@ -12,7 +12,7 @@
 
 # =========================
 
-# Build folders
+# Build folders (project)
 
 # =========================
 
@@ -61,15 +61,20 @@ ARM64/
 
 # =========================
 
-# Libraries & binaries
+# Executables (project)
 
 # =========================
 
 *.exe
-*.dll
-*.lib
-*.a
-*.so
-*.dylib
 *.out
 *.app
+
+# =========================
+
+# Allow SDL binaries
+
+# =========================
+
+!external/SDL2/bin/SDL2.dll
+!external/SDL2/lib/*.lib
+!external/SDL2/include/**
