@@ -1,43 +1,75 @@
-# Prerequisites
-*.d
+# =========================
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+# Visual Studio 2022
 
-# Precompiled Headers
-*.gch
-*.pch
+# =========================
 
-# Linker files
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# =========================
+
+# Build folders
+
+# =========================
+
+Debug/
+Release/
+x64/
+x86/
+ARM/
+ARM64/
+
+# =========================
+
+# MSVC intermediate files
+
+# =========================
+
+*.idb
+*.ipdb
+*.iobj
+*.ipch
+*.tlog
+*.log
+*.lastbuildstate
 *.ilk
 
-# Debugger Files
-*.pdb
+# =========================
 
-# Compiled Dynamic libraries
+# C/C++ compiled files
+
+# =========================
+
+*.obj
+*.o
+*.lo
+*.slo
+
+# Precompiled headers
+
+*.pch
+*.gch
+
+# Debug symbols
+
+*.pdb
+*.dwo
+
+# =========================
+
+# Libraries & binaries
+
+# =========================
+
+*.exe
+*.dll
+*.lib
+*.a
 *.so
 *.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
 *.out
 *.app
-
-# debug information files
-*.dwo
-.vs/GameEngine/FileContentIndex/374bcb1d-378e-4e0b-a98b-f2da1db925b8.vsidx
-.vs/GameEngine/v17/Browse.VC.opendb
