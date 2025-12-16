@@ -22,6 +22,7 @@ void TimeManager::start()
 }
 Uint32 TimeManager::getTicks()
 {
+
     //The actual timer time
     Uint32 time = 0;
 
