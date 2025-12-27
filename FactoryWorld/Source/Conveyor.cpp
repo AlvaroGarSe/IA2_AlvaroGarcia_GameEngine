@@ -1,20 +1,15 @@
 #include "Conveyor.h"
 Conveyor::Conveyor(int posX, int posY, Orientation orientation)
 {
-    setPosition(posX, posY);
+    SetPosition(posX, posY);
 
     isActive = false;
 
     texture = new LTexture;
+    transform.scaleX = 0.5;
+    transform.scaleY = 0.5;
 
-    orientation = orientation;
-}
-
-
-void Conveyor::setPosition(int posX, int posY)
-{
-    transform.x = posX;
-    transform.y = posY;
+    this->orientation = orientation;
 }
 
 bool Conveyor::loadMedia()

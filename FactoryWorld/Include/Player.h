@@ -1,16 +1,14 @@
 #pragma once
 #include "SDL.h"
-#include "Object.h"
+#include "GameObject.h"
 
-class Player :public Object
+class Player :public GameObject
 {
 public:
 
 	//Initializes the variables
 	Player(int posX = 0, int posY = 0);
 
-	//Set position of the conveyor
-	void setPosition(int posX, int posY);
 
 	//Loads media
 	bool loadMedia();

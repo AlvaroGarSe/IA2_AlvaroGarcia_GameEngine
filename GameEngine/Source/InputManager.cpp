@@ -8,9 +8,9 @@ void InputManager::Update(void)
 }
 /*****************************************************************************/
 
-bool InputManager::GetKey(int scanCode)
+bool InputManager::GetKey(int scanCode) const
 {
   return mCurrentKeyStates[scanCode] != 0;
 }
 
-/*****************************************************************************/
+/*****************************************************************************/	

@@ -25,7 +25,7 @@ public:
   
   void Update( void );
 
-  bool GetKey( int scanCode );
+  bool GetKey( int scanCode ) const;
 
   SDL_Event* GetSDLEvent() { return &e; };
 

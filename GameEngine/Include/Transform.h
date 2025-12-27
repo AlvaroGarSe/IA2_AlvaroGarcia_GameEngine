@@ -2,8 +2,8 @@
 
 struct Transform
 {
-	int x = 0;
-	int y = 0;
+	float x = 0;
+	float y = 0;
 
 	float scaleX = 1;
 	float scaleY = 1;

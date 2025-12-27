@@ -2,7 +2,7 @@
 #include "iostream"
 using namespace std;
 
-bool PhysicsManager::checkCollision(Object a, Object b)
+bool PhysicsManager::checkCollision(GameObject a, GameObject b)
 {
     if (!a.isActive || !b.isActive)
     {

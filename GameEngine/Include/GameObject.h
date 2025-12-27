@@ -2,17 +2,19 @@
 #include "LTexture.h"
 #include "Transform.h"
 
-class Object
+class GameObject
 {
 public:
 	Transform transform;
 	LTexture* texture;
 
-	Object();
+	GameObject();
 
 	virtual void Update();
 
 	virtual void render();
+
+	void SetPosition(float x, float y);
 
 	void free();
 

@@ -1,6 +1,6 @@
 #include "ObjectManager.h"
 
-Object* ObjectManager::GetObject(int idex)
+GameObject* ObjectManager::GetObject(int idex) const
 {
 	return objects[idex];
 }
@@ -11,7 +11,7 @@ LTexture* ObjectManager::GetTexture(int idex)
 	return textures[idex];
 }*/
 
-void ObjectManager::AddObject(Object* newItem)
+void ObjectManager::AddObject(GameObject* newItem)
 {
 	objects.push_back(newItem);
 }
@@ -46,7 +46,7 @@ void ObjectManager::FreeObjects()
 	//FreeTextures();
 }
 
-void ObjectManager::RemoveObject(Object *removeObject)
+void ObjectManager::RemoveObject(GameObject*removeObject)
 {
 	for (int i = 0; i < objects.size(); i++)
 	{

@@ -9,6 +9,7 @@
 #include "InputManager.h"
 #include "ObjectManager.h"
 #include "TimeManager.h"
+#include "GridManager.h"
 #include "Miner.h"
 #include "Player.h"
 
@@ -22,6 +23,7 @@ int main(int argc, char* args[])
 	GraphicManager::CreateSingleton();
 	ObjectManager::CreateSingleton();
 	TimeManager::CreateSingleton();
+	GridManager::CreateSingleton();
 
 
 	GraphicManager::GetInstance().setScreenSize(1280, 960);
@@ -29,9 +31,15 @@ int main(int argc, char* args[])
 	int SCREEN_WIDTH = GraphicManager::GetInstance().getScreenWidth();
 	int SCREEN_HEIGHT = GraphicManager::GetInstance().getScreenHeight();
 
+	GridManager::GetInstance().CreateGrid(SCREEN_HEIGHT, SCREEN_WIDTH, 64);
+
 	Miner miner1 = Miner(50, 50);
 
 	Conveyor conveyor1 = Conveyor(30, 30);
+
+	GridManager::GetInstance().PlaceObject(&miner1, 1, 1);
+	GridManager::GetInstance().PlaceObject(&conveyor1, 2, 1);
+
 	
 	int i = 0;
 
@@ -57,6 +65,7 @@ int main(int argc, char* args[])
 
 		bool quit = false;
 
+		GridManager::GetInstance().RenderDebugGrid();
 
 		while (!quit)
 		{

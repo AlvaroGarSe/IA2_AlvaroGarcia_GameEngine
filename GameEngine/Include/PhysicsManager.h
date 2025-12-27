@@ -6,7 +6,7 @@
 #include <string>
 #include <cmath>
 #include "Singleton.h"
-#include "Object.h"
+#include "GameObject.h"
 
 
 
@@ -36,8 +36,9 @@ public:
 	//The window renderer
 	SDL_Renderer* gRenderer = NULL;
 
-	//Check the collision between two objects
-	bool checkCollision(Object a, Object b);
+	//Check the collision between two
+	// s
+	bool checkCollision(GameObject a, GameObject b);
 
 	//Gives SCREEN_WIDTH
 	int getScreenWidth() { return SCREEN_WIDTH; };

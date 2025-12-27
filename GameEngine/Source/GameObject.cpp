@@ -1,7 +1,7 @@
-#include "Object.h"
+#include "GameObject.h"
 #include "GraphicManager.h"
 
-Object::Object()
+GameObject::GameObject()
 {
 	//Initialize the offsets
 	transform.x = 0;
@@ -11,12 +11,12 @@ Object::Object()
 	transform.rotation = 0;
 }
 
-void Object::Update()
+void GameObject::Update()
 {
 	
 }
 
-void Object::render()
+void GameObject::render()
 {
 	if (!isActive || texture == nullptr)
 	{
@@ -27,7 +27,13 @@ void Object::render()
 	GraphicManager::GetInstance().DrawTexture(texture, transform);
 }
 
-void Object::free()
+void GameObject::SetPosition(float x, float y)
+{
+	transform.x = x;
+	transform.y = y;
+}
+
+void GameObject::free()
 {
 
 }

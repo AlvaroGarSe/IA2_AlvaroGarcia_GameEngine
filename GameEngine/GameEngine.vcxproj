@@ -19,10 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\GameObject.h" />
     <ClInclude Include="Include\GraphicManager.h" />
     <ClInclude Include="Include\InputManager.h" />
     <ClInclude Include="Include\LTexture.h" />
-    <ClInclude Include="Include\Object.h" />
     <ClInclude Include="Include\ObjectManager.h" />
     <ClInclude Include="Include\PhysicsManager.h" />
     <ClInclude Include="Include\Singleton.h" />
@@ -31,10 +31,10 @@
     <ClInclude Include="Include\Transform.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\GameObject.cpp" />
     <ClCompile Include="Source\GraphicManager.cpp" />
     <ClCompile Include="Source\InputManager.cpp" />
     <ClCompile Include="Source\LTexture.cpp" />
-    <ClCompile Include="Source\Object.cpp" />
     <ClCompile Include="Source\ObjectManager.cpp" />
     <ClCompile Include="Source\PhysicsManager.cpp" />
     <ClCompile Include="Source\TextManager.cpp" />

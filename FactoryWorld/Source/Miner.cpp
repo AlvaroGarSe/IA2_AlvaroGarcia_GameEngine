@@ -3,7 +3,7 @@
 
 Miner::Miner(int posX, int posY)
 {
-    setPosition(posX, posY);
+    SetPosition(posX, posY);
 
     maxCapacity = 10;
     amountResources = 0;
@@ -11,18 +11,14 @@ Miner::Miner(int posX, int posY)
     minningMaxTime = 2;
     minningCurrentTime = 0;
 
+	transform.scaleX = 0.5;
+	transform.scaleY = 0.5;
+
     isActive = false;
 
     isOn = false;
 
     texture = new LTexture;
-}
-
-
-void Miner::setPosition(int posX, int posY)
-{
-    transform.x = posX;
-    transform.y = posY;
 }
 
 void Miner::startMiner()

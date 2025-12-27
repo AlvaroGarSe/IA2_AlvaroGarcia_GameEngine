@@ -1,16 +1,13 @@
 #pragma once
 #include "SDL.h"
-#include "Object.h"
+#include "GameObject.h"
 
-class Miner :public Object
+class Miner :public GameObject
 {
 public:
 
 	//Initializes the variables
 	Miner(int posX = 0, int posY = 0);
-
-	//Set position of the conveyor
-	void setPosition(int posX, int posY);
 
 	void startMiner();
 
