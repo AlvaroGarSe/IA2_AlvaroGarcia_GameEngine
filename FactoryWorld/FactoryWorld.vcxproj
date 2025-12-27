@@ -19,7 +19,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\FactorioMain.cpp" />
+    <ClCompile Include="Source\Conveyor.cpp" />
+    <ClCompile Include="Source\FactoryWorldMain.cpp" />
+    <ClCompile Include="Source\Miner.cpp" />
+    <ClCompile Include="Source\Player.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Include\Conveyor.h" />
+    <ClInclude Include="Include\Miner.h" />
+    <ClInclude Include="Include\Player.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

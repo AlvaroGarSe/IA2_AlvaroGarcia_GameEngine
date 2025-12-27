@@ -4,17 +4,22 @@
 #include <SDL.h>
 
 
-void LTexture::render(int x, int y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip)
+void LTexture::render(int x, int y, float scaleX, float scaleY,  SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip)
 {
 	//Set rendering space and render to screen
-	SDL_Rect renderQuad = { x, y, mWidth, mHeight };
+	SDL_Rect renderQuad = { x, y, mWidth, mHeight};
+
+	int w = mWidth;
+	int h = mHeight;	
 
 	//Set clip rendering dimensions
 	if (clip != NULL)
 	{
-		renderQuad.w = clip->w;
-		renderQuad.h = clip->h;
+		w = clip->w;
+		h = clip->h;
 	}
+	renderQuad.w = (w * scaleX);
+	renderQuad.h = (h * scaleY);
 
 	//Render to screen
 	SDL_RenderCopyEx(GraphicManager::GetInstance().gRenderer, mTexture, clip, &renderQuad, angle, center, flip);

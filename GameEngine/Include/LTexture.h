@@ -29,7 +29,7 @@ public:
 	void setAlpha(Uint8 alpha);
 
 	//Renders texture at given point
-	void render(int x, int y, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
+	void render(int x, int y, float scaleX = 1, float scaleY = 1, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
 
 	int getWidth() { return mWidth; }
 	int getHeight() { return mHeight; }

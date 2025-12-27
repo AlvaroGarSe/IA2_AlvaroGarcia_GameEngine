@@ -7,7 +7,7 @@ private:
 public:
 	Object();
 
-	void Update();
+	virtual void Update();
 
 	void free();
 

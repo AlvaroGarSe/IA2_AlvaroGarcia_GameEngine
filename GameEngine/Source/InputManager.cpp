@@ -14,8 +14,3 @@ bool InputManager::GetKey(int scanCode)
 }
 
 /*****************************************************************************/
-
-//SDL_SCANCODE_UP
-//SDL_SCANCODE_DOWN
-//SDL_SCANCODE_LEFT
-//SDL_SCANCODE_RIGHT
