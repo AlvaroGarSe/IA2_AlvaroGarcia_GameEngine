@@ -15,22 +15,14 @@ Miner::Miner(int posX, int posY)
 
     isOn = false;
 
-    gMinerTexture = new LTexture;
+    texture = new LTexture;
 }
 
 
 void Miner::setPosition(int posX, int posY)
 {
-    mPosX = posX;
-    mPosY = posY;
-}
-
-void Miner::render()
-{
-    if (isActive)
-    {
-        gMinerTexture->render(mPosX, mPosY);
-    }
+    transform.x = posX;
+    transform.y = posY;
 }
 
 void Miner::startMiner()
@@ -84,15 +76,15 @@ bool Miner::loadMedia()
     bool success = true;
 
     //Load Conveyor texture
-    if (!gMinerTexture->loadFromFile("Media/Miner.png"))
+    if (!texture->loadFromFile("Media/Miner.png"))
     {
         printf("Failed to load proyectile texture!\n");
         success = false;
     }
     else
     {
-        mWidth = gMinerTexture->getWidth();
-        mHeigth = gMinerTexture->getHeight();
+        mWidth = texture->getWidth();
+        mHeigth = texture->getHeight();
     }
 
     return success;

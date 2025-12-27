@@ -4,8 +4,8 @@ using namespace std;
 
 Background::Background(int ScreenWidht, int ScreenHeight, string path)
 {
-    mPosX = 0;
-    mPosY = 0;
+    transform.x = 0;
+    transform.y = 0;
 
     // Receive the path of the backgound that we want to use, this is to use the same class for each game
     PATH = path;
@@ -16,7 +16,7 @@ Background::Background(int ScreenWidht, int ScreenHeight, string path)
 void Background::render()
 {
     //Show the background
-    gBackgroundTexture->render(mPosX, mPosY);
+    gBackgroundTexture->render(transform.x, transform.y);
 }
 
 bool Background::loadMedia()

@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <string>
 #include "Singleton.h"
+#include "LTexture.h"
+#include "Transform.h"
 
 
 
@@ -39,7 +41,15 @@ public:
 	//Frees media and shuts down SDL
 	void close();
 
+	// Prepare rendering
+	void BeginFrame();
+
+	// Present frame
+	void EndFrame();
+
 	void setScreenSize(int screenWidht, int screenHeight) { SCREEN_WIDTH = screenWidht;  SCREEN_HEIGHT = screenHeight; };
+
+	void DrawTexture(LTexture* texture, const Transform& transform, SDL_Rect* clip = nullptr, SDL_RendererFlip flip = SDL_FLIP_NONE);
 
 	//Gives SCREEN_WIDTH
 	int getScreenWidth() { return SCREEN_WIDTH; };

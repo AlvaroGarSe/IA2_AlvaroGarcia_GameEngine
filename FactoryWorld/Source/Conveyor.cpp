@@ -1,26 +1,20 @@
 #include "Conveyor.h"
-Conveyor::Conveyor(int posX, int posY)
+Conveyor::Conveyor(int posX, int posY, Orientation orientation)
 {
     setPosition(posX, posY);
 
     isActive = false;
 
-    gConveyorTexture = new LTexture;
+    texture = new LTexture;
+
+    orientation = orientation;
 }
 
 
 void Conveyor::setPosition(int posX, int posY)
 {
-    mPosX = posX;
-    mPosY = posY;
-}
-
-void Conveyor::render()
-{
-    if (isActive)
-    {
-        gConveyorTexture->render(mPosX, mPosY, 0.3, 0.2);
-    }
+    transform.x = posX;
+    transform.y = posY;
 }
 
 bool Conveyor::loadMedia()
@@ -29,15 +23,15 @@ bool Conveyor::loadMedia()
     bool success = true;
 
     //Load Conveyor texture
-    if (!gConveyorTexture->loadFromFile("Media/Conveyor.png"))
+    if (!texture->loadFromFile("Media/Conveyor.png"))
     {
         printf("Failed to load proyectile texture!\n");
         success = false;
     }
     else
     {
-        mWidth = gConveyorTexture->getWidth();
-        mHeigth = gConveyorTexture->getHeight();
+        mWidth = texture->getWidth();
+        mHeigth = texture->getHeight();    
     }
 
     return success;

@@ -1,18 +1,24 @@
 #pragma once
+#include "LTexture.h"
+#include "Transform.h"
 
 class Object
 {
-private:
-	
 public:
+	Transform transform;
+	LTexture* texture;
+
 	Object();
 
 	virtual void Update();
 
+	virtual void render();
+
 	void free();
 
-	int mPosX, mPosY;
 	int mWidth, mHeigth;
 
 	bool isActive;
+
+	//LTexture* getTexture() { return texture; };
 };

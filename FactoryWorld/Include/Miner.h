@@ -1,6 +1,5 @@
 #pragma once
 #include "SDL.h"
-#include "LTexture.h"
 #include "Object.h"
 
 class Miner :public Object
@@ -12,8 +11,6 @@ public:
 
 	//Set position of the conveyor
 	void setPosition(int posX, int posY);
-
-	void render();
 
 	void startMiner();
 
@@ -28,8 +25,6 @@ public:
 	//Loads media
 	bool loadMedia();
 
-	LTexture* getMinerTexture() { return gMinerTexture; };
-
 	int maxCapacity;
 	int amountResources;
 
@@ -37,10 +32,4 @@ public:
 	float minningCurrentTime;
 
 	bool isOn;
-
-
-private:
-
-	//Scene textures
-	LTexture* gMinerTexture = new LTexture;
 };

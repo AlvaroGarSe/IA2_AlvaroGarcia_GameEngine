@@ -1,8 +1,8 @@
 #include "Ship.h"
 Ship::Ship(int screenWidth, int screenHeight)
 {
-    mPosX = screenWidth /2;
-    mPosY = screenHeight *0.85;
+    transform.x = screenWidth /2;
+    transform.y = screenHeight *0.85;
     mWidth = 0;
     mHeigth = 0;
 
@@ -19,7 +19,7 @@ Ship::Ship(int screenWidth, int screenHeight)
 void Ship::move()
 {
     //Move the ship left or right
-    mPosX += mVelX;
+    transform.x += mVelX;
 
     //If the ship went too far to the left or right
     if ((mPosX < 0))
@@ -37,7 +37,7 @@ void Ship::move()
 void Ship::render()
 {
     //Show the ship
-    gShipTexture->render(mPosX, mPosY);
+    gShipTexture->render(transform.x, transform.y);
 }
 
 bool Ship::loadMedia()

@@ -66,3 +66,28 @@ void GraphicManager::close()
 	IMG_Quit();
 	SDL_Quit();
 }
+
+void GraphicManager::BeginFrame()
+{
+	SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 255);
+	SDL_RenderClear(gRenderer);
+}
+
+void GraphicManager::EndFrame()
+{
+	SDL_RenderPresent(gRenderer);
+}
+
+void GraphicManager::DrawTexture(LTexture* texture, const Transform& transform, SDL_Rect* clip, SDL_RendererFlip flip)
+{	
+	//Set rendering space and render to screen
+	SDL_Rect renderQuad = {transform.x, transform.y, texture->getWidth() * transform.scaleX, texture->getHeight() * transform.scaleY };
+
+	SDL_Point center;
+	center.x = renderQuad.w / 2;
+	center.y = renderQuad.h / 2;
+
+	//Render to screen
+	SDL_RenderCopyEx(gRenderer, texture->getSDLTexture(), clip, &renderQuad, transform.rotation, &center, flip);
+
+}

@@ -16,16 +16,16 @@ bool PhysicsManager::checkCollision(Object a, Object b)
     
 
     //Calculate the sides of rect A
-    leftA = a.mPosX;
-    rightA = a.mPosX + a.mWidth;
-    topA = a.mPosY;
-    bottomA = a.mPosY + a.mHeigth;
+    leftA = a.transform.x;
+    rightA = a.transform.x + a.mWidth;
+    topA = a.transform.y;
+    bottomA = a.transform.y + a.mHeigth;
 
     //Calculate the sides of rect B
-    leftB = b.mPosX;
-    rightB = b.mPosX + b.mWidth;
-    topB = b.mPosY;
-    bottomB = b.mPosY + b.mHeigth;
+    leftB = b.transform.x;
+    rightB = b.transform.x + b.mWidth;
+    topB = b.transform.y;
+    bottomB = b.transform.y + b.mHeigth;
 	
     //If any of the sides from A are outside of B
     if (bottomA <= topB)

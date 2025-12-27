@@ -1,5 +1,6 @@
 #include "LTexture.h"
 #include "GraphicManager.h"
+#include "Transform.h"
 #include <string>
 #include <SDL.h>
 

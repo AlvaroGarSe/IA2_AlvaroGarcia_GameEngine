@@ -5,22 +5,14 @@ Player::Player(int posX, int posY)
 
     isActive = false;
 
-    gPlayerTexture = new LTexture;
+    texture = new LTexture;
 }
 
 
 void Player::setPosition(int posX, int posY)
 {
-    mPosX = posX;
-    mPosY = posY;
-}
-
-void Player::render()
-{
-    if (isActive)
-    {
-        gPlayerTexture->render(mPosX, mPosY);
-    }
+    transform.x = posX;
+    transform.y = posY;
 }
 
 bool Player::loadMedia()
@@ -29,15 +21,15 @@ bool Player::loadMedia()
     bool success = true;
 
     //Load Conveyor texture
-    if (!gPlayerTexture->loadFromFile("Media/Player.png"))
+    if (!texture->loadFromFile("Media/Player.png"))
     {
         printf("Failed to load proyectile texture!\n");
         success = false;
     }
     else
     {
-        mWidth = gPlayerTexture->getWidth();
-        mHeigth = gPlayerTexture->getHeight();
+        mWidth = texture->getWidth();
+        mHeigth = texture->getHeight();
     }
 
     return success;

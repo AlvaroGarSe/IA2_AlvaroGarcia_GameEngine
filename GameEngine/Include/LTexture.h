@@ -34,6 +34,8 @@ public:
 	int getWidth() { return mWidth; }
 	int getHeight() { return mHeight; }
 
+	SDL_Texture* getSDLTexture() { return mTexture; }
+
 private:
 	//The actual hardware texture
 	SDL_Texture* mTexture;

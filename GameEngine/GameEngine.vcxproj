@@ -28,6 +28,7 @@
     <ClInclude Include="Include\Singleton.h" />
     <ClInclude Include="Include\TextManager.h" />
     <ClInclude Include="Include\TimeManager.h" />
+    <ClInclude Include="Include\Transform.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\GraphicManager.cpp" />

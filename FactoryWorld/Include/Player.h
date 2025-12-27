@@ -1,6 +1,5 @@
 #pragma once
 #include "SDL.h"
-#include "LTexture.h"
 #include "Object.h"
 
 class Player :public Object
@@ -13,15 +12,6 @@ public:
 	//Set position of the conveyor
 	void setPosition(int posX, int posY);
 
-	void render();
-
 	//Loads media
 	bool loadMedia();
-
-	LTexture* getPlayerTexture() { return gPlayerTexture; };
-
-private:
-
-	//Scene textures
-	LTexture* gPlayerTexture = new LTexture;
 };

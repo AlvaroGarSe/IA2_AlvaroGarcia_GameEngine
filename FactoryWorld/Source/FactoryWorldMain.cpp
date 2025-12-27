@@ -4,13 +4,13 @@
 #include <string>
 #include <SDL_ttf.h>
 #include "LTexture.h"
+#include "Conveyor.h"
 #include "GraphicManager.h"
 #include "InputManager.h"
 #include "ObjectManager.h"
 #include "TimeManager.h"
 #include "Miner.h"
 #include "Player.h"
-#include "Conveyor.h"
 
 #include "iostream"
 using namespace std;
@@ -79,19 +79,16 @@ int main(int argc, char* args[])
 			}
 
 			miner1.render();
-			conveyor1.render();
+			conveyor1.render();	
 
 
 			SDL_RenderPresent(GraphicManager::GetInstance().gRenderer);
-			i++;
-			printf("%d",i);
-			printf("====%d", quit);
 		}
 
 	}
 	GraphicManager::GetInstance().close();
-	miner1.getMinerTexture()->free();
-	conveyor1.getConveyorTexture()->free();
+	miner1.texture->free();
+	conveyor1.texture->free();
 
 	return 0;
 

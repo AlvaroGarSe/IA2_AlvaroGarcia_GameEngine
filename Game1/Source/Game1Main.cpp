@@ -110,7 +110,7 @@ int main( int argc, char* args[] )
 				//Handle events on queue
 				while( SDL_PollEvent(InputManager::GetInstance().GetSDLEvent()) != 0)
 				{
-					// **************** BETER TO DO SDL_Event& e = InputManager::GetInstance().GetSDLEvent(); ******************
+					// **************** BETER TO DO SDL_Event& e = InputManager::GetInstance().GetSDLEvent();	******************
 
 					//User requests quit
 					if(InputManager::GetInstance().GetSDLEvent()->type == SDL_QUIT )
