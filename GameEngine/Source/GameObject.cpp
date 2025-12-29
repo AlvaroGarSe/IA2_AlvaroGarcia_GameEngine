@@ -9,6 +9,9 @@ GameObject::GameObject()
 	transform.scaleX = 1;
 	transform.scaleY = 1;
 	transform.rotation = 0;
+
+	orientation = Orientation::NONE;
+	type = ObjectType::NONE;
 }
 
 void GameObject::Update()
@@ -16,7 +19,7 @@ void GameObject::Update()
 	
 }
 
-void GameObject::render()
+void GameObject::Render()
 {
 	if (!isActive || texture == nullptr)
 	{
@@ -36,4 +39,24 @@ void GameObject::SetPosition(float x, float y)
 void GameObject::free()
 {
 
+}
+
+bool GameObject::LoadMedia()
+{
+	//Loading success flag
+	bool success = true;
+
+	//Load Conveyor texture
+	if (!texture->loadFromFile(texture->mTexturePath))
+	{
+		printf("Failed to load {} texture!\n", texture->mTexturePath);
+		success = false;
+	}
+	else
+	{
+		mWidth = texture->getWidth();
+		mHeigth = texture->getHeight();
+	}
+
+	return success;
 }

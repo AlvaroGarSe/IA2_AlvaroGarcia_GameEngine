@@ -6,7 +6,7 @@ TimeManager::TimeManager()
     mPausedTicks = 0;
 
     mPaused = false;
-    mStarted = true;
+    mStarted = false;
 }
 void TimeManager::start()
 {

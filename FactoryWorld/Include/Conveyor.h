@@ -1,24 +1,33 @@
 #pragma once
-#include "SDL.h"
 #include "GameObject.h"
+#include "item.h"
+#include <array>
 
 class Conveyor :public GameObject
 {
 public:
 
-	enum Orientation
-	{
-		NORTH,
-		SOUTH,
-		EAST,
-		WEST
-	};
+	static constexpr int SLOT_COUNT = 4;
 
 	//Initializes the variables
-	Conveyor(int posX = 0, int posY = 0, Orientation orientation = NORTH);
+	Conveyor(Orientation orientation = Orientation::NORTH);
+	~Conveyor();
 
-	//Loads media
-	bool loadMedia();
+	void Update() override;
+	void Render() override;
 
-	Orientation orientation;
+	bool CanAcceptItem() const;
+	bool InsertItem(const Item& item); // Inserts an item into slot 0
+
+private:
+
+	bool TryExtractItem(Item& outItem); // Extracts an item from the last slot
+	void MoveItemThroughSlots();
+	void PassItemNextCell();
+
+	std::array<Item*, SLOT_COUNT> mSlots{};
+
+	uint32_t mMoveIntervalMs = 300; // e.g. 0.3s per step
+	uint32_t mNextMoveTime = 0;
+
 };

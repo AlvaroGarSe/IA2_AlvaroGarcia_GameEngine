@@ -1,87 +1,128 @@
 #include "Miner.h"
 #include "TimeManager.h"
+#include "GridManager.h"
+#include "Conveyor.h"
+#include "item.h"
 
-Miner::Miner(int posX, int posY)
+Miner::Miner(Orientation orientation)
 {
-    SetPosition(posX, posY);
+    SetPosition(0, 0);
 
     maxCapacity = 10;
-    amountResources = 0;
+    currentCapacity = 0;
 
-    minningMaxTime = 2;
+    minningMaxTime = 2000;
     minningCurrentTime = 0;
 
 	transform.scaleX = 0.5;
 	transform.scaleY = 0.5;
+
+	this->orientation = orientation;
+
+    switch (orientation)
+    {
+    case GameObject::Orientation::NONE:
+        transform.rotation = 0;
+        break;
+    case GameObject::Orientation::NORTH:
+        transform.rotation = 0;
+        break;
+    case GameObject::Orientation::SOUTH:
+        transform.rotation = 180;
+        break;
+    case GameObject::Orientation::EAST:
+        transform.rotation = 90;
+        break;
+    case GameObject::Orientation::WEST:
+        transform.rotation = 270;
+        break;
+    default:
+        break;
+    }
+
 
     isActive = false;
 
     isOn = false;
 
     texture = new LTexture;
+
+	type = ObjectType::MINER;
+
+	texture->mTexturePath = "Media/Miner.png";
 }
 
-void Miner::startMiner()
+void Miner::Start()
 {
+	GameObject::Start();
+
     isOn = true;
-    minningCurrentTime = TimeManager::GetInstance().getTicks() + minningMaxTime;
+	Uint32 currentTime = TimeManager::GetInstance().getTicks();
+
+    minningCurrentTime = currentTime + minningMaxTime;
+	nextOutputTime = currentTime;
 }
 
-void Miner::stopMiner()
+void Miner::StopMiner()
 {
     isOn = false;
 }
 
-void Miner::mine()
+void Miner::Mine()
 {
-    if (amountResources >= maxCapacity)
+    Uint32 currentTime = TimeManager::GetInstance().getTicks();
+    if (currentCapacity >= maxCapacity)
     {
-        printf("MaxCapac");
+        printf("Miner: MaxCapac\n");
+        // Don’t spam Mine() every frame when full
+        minningCurrentTime = currentTime + 200;
+        return;
     }
-    else
-    {
-        printf("Mined 1");
-        amountResources++;
-        minningCurrentTime = TimeManager::GetInstance().getTicks() + minningMaxTime;
-    }
+
+    currentCapacity++;
+    minningCurrentTime = currentTime + minningMaxTime;
 }
 
-void Miner::transferMaterial()
+bool Miner::TransferMaterial()
 {
-    printf("Transf 1");
-    amountResources--;
+    GridManager& gridManager = GridManager::GetInstance();
+
+    SDL_Point posGrid = gridManager.WorldToGrid((int)transform.x, (int)transform.y);
+
+    GridCell* nextCell = gridManager.GetAdjacentCell(posGrid.x, posGrid.y, orientation);
+
+    // Checks if the cell is valid and has an item object in it
+    if (!nextCell || !nextCell->gameObject) return false;
+
+    if (nextCell->gameObject->type == ObjectType::CONVEYOR)
+    {
+        Conveyor* nextConv = static_cast<Conveyor*>(nextCell->gameObject);
+        Item ore{ ItemType::IronOre};
+        if (nextConv->InsertItem(ore))
+        {
+            currentCapacity--;
+            return true;
+        }
+    }
+	return false;
 }
 
 void Miner::Update()
 {
-    if (!isActive || !isOn) { return; }
-    if (TimeManager::GetInstance().getTicks() >= minningCurrentTime)
-    {
-        mine();
-    }
-    if (amountResources > 0)
-    {
-        transferMaterial();
-    }
+    if (!isActive || !isOn) return;
 
-}
+	Uint32 currentTime = TimeManager::GetInstance().getTicks();
 
-bool Miner::loadMedia()
-{
-    //Loading success flag
-    bool success = true;
-
-    //Load Conveyor texture
-    if (!texture->loadFromFile("Media/Miner.png"))
+    if (currentTime >= minningCurrentTime)
     {
-        printf("Failed to load proyectile texture!\n");
-        success = false;
+        Mine();
     }
-    else
+    if (currentCapacity > 0 && currentTime >= nextOutputTime)
     {
-        mWidth = texture->getWidth();
-        mHeigth = texture->getHeight();
+        if (TransferMaterial())
+        {
+			nextOutputTime = currentTime + outputIntervalMs;
+        }
     }
 
-    return success;
 }

@@ -36,6 +36,9 @@ public:
 
 	SDL_Texture* getSDLTexture() { return mTexture; }
 
+	// File path to the image of the texture
+	std::string mTexturePath;
+
 private:
 	//The actual hardware texture
 	SDL_Texture* mTexture;
@@ -43,5 +46,6 @@ private:
 	//Image dimensions
 	int mWidth;
 	int mHeight;
+
 };
 

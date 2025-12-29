@@ -7,26 +7,28 @@ class Miner :public GameObject
 public:
 
 	//Initializes the variables
-	Miner(int posX = 0, int posY = 0);
+	Miner(Orientation orientation = Orientation::NORTH);
 
-	void startMiner();
+	void Start() override;
 
-	void stopMiner();
+	void StopMiner();
 
 	void Update() override;
 
-	void mine();
+	void Mine();
 
-	void transferMaterial();
+	bool TransferMaterial();
 
-	//Loads media
-	bool loadMedia();
+private:
 
 	int maxCapacity;
-	int amountResources;
+	int currentCapacity;
 
-	float minningMaxTime;
-	float minningCurrentTime;
+	Uint32 minningMaxTime;
+	Uint32 minningCurrentTime;
+
+	Uint32 outputIntervalMs = 300;
+	Uint32 nextOutputTime = 0;
 
 	bool isOn;
 };

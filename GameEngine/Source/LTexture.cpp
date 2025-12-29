@@ -32,6 +32,8 @@ LTexture::LTexture(int Widht, int Height)
 	mTexture = NULL;
 	mWidth = Widht;
 	mHeight = Height;
+
+	mTexturePath = "";
 }
 
 LTexture::~LTexture()

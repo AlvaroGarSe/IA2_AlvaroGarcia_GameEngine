@@ -9,7 +9,4 @@ public:
 	//Initializes the variables
 	Player(int posX = 0, int posY = 0);
 
-
-	//Loads media
-	bool loadMedia();
 };

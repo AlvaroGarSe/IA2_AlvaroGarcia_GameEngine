@@ -1,14 +1,8 @@
 #pragma once
 #include "GameObject.h"
-//#include "LTexture.h"
+#include <memory>
 #include <vector>
 #include "Singleton.h"
-
-/*****************************************************************************/
-//I tried to create an Obejct manager that would contain all the textures and
-// s and at the end close all of them with this manager
-/*****************************************************************************/
-
 
 class ObjectManager:public Singleton<ObjectManager>
 {
@@ -16,10 +10,20 @@ class ObjectManager:public Singleton<ObjectManager>
 	friend class Singleton<ObjectManager>;
 	/*****************************************************************************/
 
+	template <typename T, typename... Args>
+	T* Spawn(Args&&... args)
+	{
+		auto obj = std::make_unique<T>(std::forward<Args>(args)...);
+		T* raw = obj.get();
+		objects.push_back(std::move(obj));
+		return raw;
+	}
 private:
 
 	//Contains the objects
 	std::vector<GameObject*> objects;
+
+	std::vector<std::unique_ptr<GameObject>> objectss;
 
 	//Contains all the textures
 	//std::vector<LTexture*> textures;
@@ -28,15 +32,21 @@ private:
 	
 public:
 
-		GameObject* GetObject(int idex) const;
-		GameObject& GetObject2(int idex) { return *objects[idex]; };
+		GameObject* GetObject(int index) const;
+		GameObject& GetObject2(int index) { return *objects[index]; };
 
 		//LTexture* GetTexture(int idex);
 	
 		void AddObject(GameObject* newObject);
 
+		void LoadAllMedia();
+
+		void RenderAllObjects();
+
 		//void AddTexture(LTexture* newTexture);
 		
+		void Start();
+
 		void Update();
 
 		//Close all the Textures
