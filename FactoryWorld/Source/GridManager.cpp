@@ -1,5 +1,7 @@
 #include "GridManager.h"
 #include "GraphicManager.h"
+#include "Camera2D.h"
+#include "AssetManager.h"
 
 void GridManager::CreateGrid(int gridWidth, int gridHeight, int cellSize)
 {
@@ -42,34 +44,16 @@ GridCell* GridManager::GetAdjacentCell(int x, int y, GameObject::Orientation ori
 	}
 }
 
-bool GridManager::IsInside(int x, int y)
+bool GridManager::IsInside(int x, int y) const
 {
 	return x >= 0 && y >=0 && x < mGridWidth && y < mGridHeight;
 }
 
 bool GridManager::CheckAdjacentCellEmpty(int x, int y, GameObject::Orientation orientation)
 {
-	switch (orientation)
-	{
-	case GameObject::Orientation::NONE:
-		return true;
-		break;
-	case GameObject::Orientation::NORTH:
-		return GetCell(x, y - 1)->gameObject == nullptr;
-		break;
-	case GameObject::Orientation::SOUTH:
-		return GetCell(x, y + 1)->gameObject == nullptr;
-		break;
-	case GameObject::Orientation::EAST:
-		return GetCell(x + 1, y)->gameObject == nullptr;
-		break;
-	case GameObject::Orientation::WEST:
-		return GetCell(x - 1, y)->gameObject == nullptr;
-		break;
-	default:
-		return true;
-		break;
-	}
+	GridCell* adj = GetAdjacentCell(x, y, orientation);
+	if (!adj) return false;
+	return adj->gameObject == nullptr;
 }
 
 SDL_Point GridManager::WorldToGrid(int worldX, int worldY) const
@@ -107,26 +91,239 @@ void GridManager::RemoveObject(int gridX, int gridY)
 	GetCell(gridX, gridY)->gameObject = nullptr;	
 }
 
-void GridManager::RenderDebugGrid()
+
+
+void GridManager::RenderDebugGrid(int mouseX, int mouseY)
 {
 	SDL_Renderer* renderer = GraphicManager::GetInstance().gRenderer;
 
+	// Draw grid
 	SDL_SetRenderDrawColor(renderer, 50, 50, 50, 255);
+
+	float z = GraphicManager::GetInstance().camera.GetZoom();
 
 	for (int y = 0; y < mGridHeight; y++)
 	{
 		for (int x = 0; x < mGridWidth; x++)
 		{
+			SDL_Point screen = GraphicManager::GetInstance().camera.WorldToScreen((float)(x * mCellSize), (float)(y * mCellSize));
+
 			SDL_Rect rect;
-			rect.x = x * mCellSize;
-			rect.y = y * mCellSize;
-			rect.w = mCellSize;
-			rect.h = mCellSize;
+			rect.x = screen.x;
+			rect.y = screen.y;
+			rect.w = (int)(mCellSize * z);
+			rect.h = (int)(mCellSize * z);
 
 			SDL_RenderDrawRect(renderer, &rect);
 		}
-
 	}
+
+	// Highlight cell under mouse
+	RenderSelectedCell(mouseX, mouseY, renderer);
+}
+
+void GridManager::RenderSelectedCell(int mouseX, int mouseY, SDL_Renderer* gRenderer)
+{
+	SDL_Point world = GraphicManager::GetInstance().camera.ScreenToWorld(mouseX, mouseY);
+	SDL_Point absGrid = WorldToGrid(world.x, world.y);
+
+	// Checks if mouse is inside grid
+	if (!IsInside(absGrid.x, absGrid.y)) return;
+
+	SDL_Point gRel = GridManager::GetInstance().WorldToGridCameraRelative(world.x, world.y);
+
+	SDL_Point cellWorld = GridManager::GetInstance().GridCameraRelativeToWorld(gRel.x, gRel.y);
+
+	SDL_Point screen = GraphicManager::GetInstance().camera.WorldToScreen((float)(cellWorld.x), (float)(cellWorld.y));
+
+	float z = GraphicManager::GetInstance().camera.GetZoom();
+
+	SDL_Rect r{ screen.x, screen.y, (int)(mCellSize * z), (int)(mCellSize * z) };
+	SDL_SetRenderDrawColor(gRenderer, 255, 255, 0, 255);
+	SDL_RenderDrawRect(gRenderer, &r);
+}
+
+static const char* TilePath(TileType t)
+{
+	switch (t)
+	{
+	case TileType::Ground:
+		return "Media/Tiles/Ground.png";
+	case TileType::IronVein:
+		return "Media/Tiles/IronVein.png";
+	case TileType::CopperVein:
+		return "Media/Tiles/CooperVein.png";
+	case TileType::Water:
+		return "Media/Tiles/Water.png";
+	default:
+		return "Media/Tiles/Ground.png";
+	}
+}
+
+void GridManager::RenderTiles()
+{
+	auto& gfx = GraphicManager::GetInstance();
+	auto& cam = gfx.camera;
+
+	// Get visible world rectangle (top-left and bottom-right in world coords)
+	SDL_Point worldTL = cam.ScreenToWorld(0, 0);
+	SDL_Point worldBR = cam.ScreenToWorld(gfx.getScreenWidth(), gfx.getScreenHeight());
+
+	// Convert to grid coords
+	SDL_Point gridTL = WorldToGrid(worldTL.x, worldTL.y);
+	SDL_Point gridBR = WorldToGrid(worldBR.x, worldBR.y);
+
+	// Expand a bit so edges don’t pop
+	gridTL.x -= 1; gridTL.y -= 1;
+	gridBR.x += 1; gridBR.y += 1;
+
+	// Clamp to grid
+	if (gridTL.x < 0) gridTL.x = 0;
+	if (gridTL.y < 0) gridTL.y = 0;
+	if (gridBR.x >= mGridWidth)  gridBR.x = mGridWidth - 1;
+	if (gridBR.y >= mGridHeight) gridBR.y = mGridHeight - 1;
+
+	LTexture* ground = AssetManager::GetInstance().GetTexture(TilePath(TileType::Ground));
+	LTexture* iron = AssetManager::GetInstance().GetTexture(TilePath(TileType::IronVein));
+	LTexture* copper = AssetManager::GetInstance().GetTexture(TilePath(TileType::CopperVein));
+	LTexture* water = AssetManager::GetInstance().GetTexture(TilePath(TileType::Water));
+
+	// Draw visible tiles
+	for (int y = gridTL.y; y <= gridBR.y; ++y)
+	{
+		for (int x = gridTL.x; x <= gridBR.x; ++x)
+		{
+			GridCell* cell = GetCell(x, y);
+			if (!cell) continue;
+			
+			LTexture* tex = nullptr;
+
+			switch (cell->tileType)
+			{
+			case TileType::Ground:
+				tex = ground;
+				break;
+			case TileType::IronVein:
+				tex = iron;
+				break;
+			case TileType::CopperVein:
+				tex = copper;
+				break;
+			case TileType::Water:
+				tex = water;
+				break;
+			default:
+				tex = ground;
+				break;
+			}
+
+			if (!tex) continue;
+
+			SDL_Point worldPos = GridToWorld(x, y);
+
+			// Draw tile scaled to cell size (world)
+			Transform t;
+			t.x = (float)worldPos.x;
+			t.y = (float)worldPos.y;
+			t.rotation = 0.0f;
+
+			// scale so that texture fills one cell in world space
+			t.scaleX = (float)mCellSize / (float)tex->getWidth();
+			t.scaleY = (float)mCellSize / (float)tex->getHeight();
+
+			gfx.DrawTexture(tex, t);
+		}
+	}
+}
+
+SDL_Point GridManager::WorldToGridCameraRelative(int worldX, int worldY) const
+{
+	// 1) celda bajo el mouse
+	SDL_Point grid = WorldToGrid(worldX, worldY);
+
+	// 2) centro de la pantalla en world
+	const Camera2D& cam = GraphicManager::GetInstance().camera;
+	int screenW = GraphicManager::GetInstance().getScreenWidth();
+	int screenH = GraphicManager::GetInstance().getScreenHeight();
+
+	int centerWorldX = (int)(cam.GetX() + screenW * 0.5f);
+	int centerWorldY = (int)(cam.GetY() + screenH * 0.5f);
+
+	// 3) celda central
+	SDL_Point centerGrid = WorldToGrid(centerWorldX, centerWorldY);
+
+	// 4) coordenadas relativas
+	return { grid.x - centerGrid.x, grid.y - centerGrid.y };
+}
+
+SDL_Point GridManager::GridCameraRelativeToWorld(int gx, int gy) const
+{
+	const Camera2D& cam = GraphicManager::GetInstance().camera;
+	int screenW = GraphicManager::GetInstance().getScreenWidth();
+	int screenH = GraphicManager::GetInstance().getScreenHeight();
+
+	int centerWorldX = (int)(cam.GetX() + screenW * 0.5f);
+	int centerWorldY = (int)(cam.GetY() + screenH * 0.5f);
+
+	SDL_Point centerGrid = WorldToGrid(centerWorldX, centerWorldY);
+
+	// grid absoluto
+	int absX = centerGrid.x + gx;
+	int absY = centerGrid.y + gy;
+
+	return GridToWorld(absX, absY);
+}
+
+SDL_Point GridManager::CenteredToIndex(int cx, int cy) const
+{
+	return { cx + mGridWidth / 2, cy + mGridHeight / 2 };
+}
+
+SDL_Point GridManager::IndexToCentered(int ix, int iy) const
+{
+	return { ix - mGridWidth / 2, iy - mGridHeight / 2 };
+}
+
+bool GridManager::CanPlaceCentered(int cx, int cy)
+{
+	SDL_Point idx = CenteredToIndex(cx, cy);
+	return CanPlace(idx.x, idx.y);
+}
+
+bool GridManager::PlaceObjectCentered(GameObject* obj, int cx, int cy)
+{
+	SDL_Point idx = CenteredToIndex(cx, cy);
+	return PlaceObject(obj, idx.x, idx.y);
+}
+
+void GridManager::RemoveObjectCentered(int cx, int cy)
+{
+	SDL_Point idx = CenteredToIndex(cx, cy);
+	RemoveObject(idx.x, idx.y);
+}
+
+GridCell* GridManager::GetCellCentered(int cx, int cy)
+{
+	SDL_Point idx = CenteredToIndex(cx, cy);
+	return GetCell(idx.x, idx.y);
+}
+
+bool GridManager::IsInsideCentered(int cx, int cy) const
+{
+	SDL_Point idx = CenteredToIndex(cx, cy);
+	return IsInside(idx.x, idx.y);
+}
+
+void GridManager::SetTile(int x, int y, TileType t)
+{
+	if (!IsInside(x, y)) return;
+	GetCell(x, y)->tileType = t;
+}
+
+TileType GridManager::GetTile(int x, int y) const
+{
+	if (!IsInside(x, y)) return TileType::Ground;
+	return mCells[y * mGridWidth + x].tileType;
 }
 
 

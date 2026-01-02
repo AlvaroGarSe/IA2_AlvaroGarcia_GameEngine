@@ -1,0 +1,33 @@
+{
+  "width": 50,
+  "height": 50,
+  "cellSize": 64,
+
+  "defaultTile": "Ground",
+
+  "cells": [
+    {
+      "x": 10,
+      "y": 10,
+      "tile": "IronVein"
+    },
+    {
+      "x": 11,
+      "y": 10,
+      "tile": "IronVein"
+    }
+  ],
+
+  "areas": [
+    {
+      "from": [ 2, 4 ],
+      "to": [ 4, 8 ],
+      "tile": "Water"
+    },
+    {
+      "from": [ 20, 20 ],
+      "to": [ 25, 22 ],
+      "tile": "CopperVein"
+    }
+  ]
+}

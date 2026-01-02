@@ -10,7 +10,6 @@ Conveyor::Conveyor(Orientation orientation)
 
     isActive = true;
 
-    texture = new LTexture;
     transform.scaleX = 0.5;
     transform.scaleY = 0.5;
 
@@ -40,7 +39,7 @@ Conveyor::Conveyor(Orientation orientation)
 
 	type = ObjectType::CONVEYOR;
 
-    texture->mTexturePath = "Media/Conveyor.png";
+    texturePath = "Media/Conveyor.png";
 
     // slots start empty
     for (auto& s : mSlots) s = nullptr;
@@ -88,10 +87,7 @@ void Conveyor::Render()
 
     // These offsets just make the squares appear on top of the belt
 	const int cellSize = GridManager::GetInstance().GetCellSize();
-    const int slotSpacing = cellSize / SLOT_COUNT;
-
-    int baseX = (int)transform.x;
-    int baseY = (int)transform.y;
+    const int slotSpacing = cellSize / SLOT_COUNT;    
     
     int dirX = 0, dirY = 0;
     switch (orientation)
@@ -103,8 +99,16 @@ void Conveyor::Render()
         default: break;
     }
 
-	const int itemSize = 12;
-    const int centerOffset = (cellSize - itemSize) / 2;
+    float zoom = GraphicManager::GetInstance().camera.GetZoom();
+
+	const int itemSize = 12 * zoom;
+    const int centerOffset = (cellSize - itemSize) / 2 * zoom;
+
+	// Get belt position on screen
+    SDL_Point beltScreen = GraphicManager::GetInstance().camera.WorldToScreen(transform.x, transform.y);
+
+    int baseX = beltScreen.x;
+    int baseY = beltScreen.y;
 
     // start near center; move along direction per slot
     int startX = baseX + centerOffset;

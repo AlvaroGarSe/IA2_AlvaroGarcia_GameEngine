@@ -23,7 +23,7 @@ public:
 
 
 	// Output
-	bool CanOutput() const;
+	bool HasOutput() const;
 
 private:
 

@@ -1,90 +1,44 @@
 #include "ObjectManager.h"
 
-GameObject* ObjectManager::GetObject(int index) const
+void ObjectManager::StartAll()
 {
-	return objects[index];
-}
-
-/*
-LTexture* ObjectManager::GetTexture(int idex)
-{
-	return textures[idex];
-}*/
-
-void ObjectManager::AddObject(GameObject* newItem)
-{
-	objects.push_back(newItem);
-}
-void ObjectManager::LoadAllMedia()
-{
-	for (GameObject* obj : objects)
-	{
-		obj->LoadMedia();
-	}
-}
-void ObjectManager::RenderAllObjects()
-{
-	for (GameObject* obj : objects)
-	{
-		obj->Render();
-	}
-}
-/*
-void ObjectManager::AddTexture(LTexture* newItem)
-{
-	textures.push_back(newItem);
-}*/
-
-void ObjectManager::Start()
-{
-	for (GameObject* obj : objects)
+	for (auto& obj : objects)
 	{
 		obj->Start();
 	}
 }
 
-void ObjectManager::Update()
+void ObjectManager::UpdateAll()
 {
-	for (GameObject* obj : objects)
+	for (auto& obj : objects)
 	{
 		obj->Update();
 	}
 }
-/*
-void ObjectManager::FreeTextures()
-{
-	for (int i = 0; i < textures.size(); i++)
-	{
-		textures[i]->free();
-	}
-}*/
 
-void ObjectManager::FreeObjects()
+void ObjectManager::LoadAllMedia()
 {
-	for (GameObject* obj : objects)
+	for (auto& obj : objects)
 	{
-		obj->free();
-		delete obj;
+		obj->LoadMedia();
 	}
-	//FreeTextures();
+}
+void ObjectManager::RenderAll()
+{
+	for (auto& obj : objects)
+	{
+		obj->Render();
+	}
 }
 
-void ObjectManager::RemoveObject(GameObject* ptr)
+void ObjectManager::Destroy(GameObject* objPtr)
 {
-	/*for (int i = 0; i < objects.size(); i++)
-	{
-		if (objects[i] == removeObject)
-		{
-			objects.erase(objects.begin() + i);
-		}
-	}*/
-	/*for (GameObject* obj : objects)
-	{
-		if (obj == removeObject)
-		{
-			objects.erase(std::remove(objects.begin(), objects.end(), removeObject), objects.end());
-		}
-	}*/
+	objects.erase(std::remove_if(objects.begin(), objects.end(),
+		[&](const std::unique_ptr<GameObject>& o) { return o.get() == objPtr; }),
+		objects.end());
+}
 
-	objects.erase(std::remove_if(objects.begin(), objects.end(), [&](const std::unique_ptr<GameObject>& o) { return o.get() == ptr; }), objects.end());	
+void ObjectManager::Clear()
+{
+	objects.clear();
 }

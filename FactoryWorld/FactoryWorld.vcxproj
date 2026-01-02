@@ -23,6 +23,7 @@
     <ClCompile Include="Source\Crafter.cpp" />
     <ClCompile Include="Source\FactoryWorldMain.cpp" />
     <ClCompile Include="Source\GridManager.cpp" />
+    <ClCompile Include="Source\MapLoader.cpp" />
     <ClCompile Include="Source\Miner.cpp" />
     <ClCompile Include="Source\Player.cpp" />
   </ItemGroup>
@@ -32,6 +33,7 @@
     <ClInclude Include="Include\GridCell.h" />
     <ClInclude Include="Include\GridManager.h" />
     <ClInclude Include="Include\item.h" />
+    <ClInclude Include="Include\MapLoader.h" />
     <ClInclude Include="Include\Miner.h" />
     <ClInclude Include="Include\Player.h" />
   </ItemGroup>
@@ -119,7 +121,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>Include;..\GameEngine\Include;..\GameEngine\External\SDL2-devel-2.30.7-VC\include;..\GameEngine\External\SDL2_image-devel-2.8.2-VC\include;..\GameEngine\External\SDL2_ttf-devel-2.24.0-VC\include;..\GameEngine\External\SDL2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\GameEngine\External\nlohmann\;Include;..\GameEngine\Include;..\GameEngine\External\SDL2-devel-2.30.7-VC\include;..\GameEngine\External\SDL2_image-devel-2.8.2-VC\include;..\GameEngine\External\SDL2_ttf-devel-2.24.0-VC\include;..\GameEngine\External\SDL2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

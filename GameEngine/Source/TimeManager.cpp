@@ -7,6 +7,21 @@ TimeManager::TimeManager()
 
     mPaused = false;
     mStarted = false;
+
+    mLastTicks = NULL;
+	mDeltaMs = 0;
+}
+Uint32 TimeManager::TickFrame()
+{
+    Uint32 now = SDL_GetTicks();
+    Uint32 delta = now - mLastTicks;
+    mLastTicks = now;
+    mDeltaMs = delta;
+    return delta;
+}
+Uint32 TimeManager::DeltaMs() const
+{
+	return mDeltaMs;
 }
 void TimeManager::start()
 {
@@ -19,10 +34,12 @@ void TimeManager::start()
     //Get the current clock time
     mStartTicks = SDL_GetTicks();
     mPausedTicks = 0;
+
+	mLastTicks = mStartTicks;
+	mDeltaMs = 0;
 }
 Uint32 TimeManager::getTicks()
 {
-
     //The actual timer time
     Uint32 time = 0;
 

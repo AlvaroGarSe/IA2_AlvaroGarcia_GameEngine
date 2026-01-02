@@ -7,6 +7,7 @@
 #include "Singleton.h"
 #include "LTexture.h"
 #include "Transform.h"
+#include "Camera2D.h"
 
 
 
@@ -34,6 +35,8 @@ public:
 
 	//The window renderer
 	SDL_Renderer* gRenderer = NULL;
+
+	Camera2D camera;
 
 	//Starts up SDL and creates window
 	bool init();

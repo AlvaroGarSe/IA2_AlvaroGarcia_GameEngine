@@ -1,8 +1,10 @@
 #pragma once
-#include "GameObject.h"
 #include <memory>
 #include <vector>
+#include <algorithm>
+
 #include "Singleton.h"
+#include "GameObject.h"
 
 class ObjectManager:public Singleton<ObjectManager>
 {
@@ -10,6 +12,16 @@ class ObjectManager:public Singleton<ObjectManager>
 	friend class Singleton<ObjectManager>;
 	/*****************************************************************************/
 
+private:
+
+	ObjectManager() { /*objects = std::vector<GameObject*>(); textures = std::vector<LTexture*>(); */};
+
+	//Contains the objects
+	std::vector<std::unique_ptr<GameObject>> objects;
+	
+public:
+
+	// Generic spawn
 	template <typename T, typename... Args>
 	T* Spawn(Args&&... args)
 	{
@@ -17,43 +29,46 @@ class ObjectManager:public Singleton<ObjectManager>
 		T* raw = obj.get();
 		objects.push_back(std::move(obj));
 		return raw;
-	}
-private:
+	};
 
-	//Contains the objects
-	std::vector<GameObject*> objects;
+	GameObject* GetObject(int index) const { return objects[index].get(); }
 
-	std::vector<std::unique_ptr<GameObject>> objectss;
+	void StartAll();
 
-	//Contains all the textures
-	//std::vector<LTexture*> textures;
+	void UpdateAll();
 
-	ObjectManager() { objects = std::vector<GameObject*>(); /*textures = std::vector<LTexture*>(); */ };
+	void LoadAllMedia();
+
+	void RenderAll();
+
+	void Destroy(GameObject* objPtr);
+
+	void Clear();
+
+	size_t Count() const { return objects.size(); }
+
+
+
+
+
+	//GameObject* GetObject(int index) const;
+	//GameObject& GetObject2(int index) { return *objects[index]; };
+
+	////LTexture* GetTexture(int idex);
 	
-public:
+	//void AddObject(GameObject* newObject);
 
-		GameObject* GetObject(int index) const;
-		GameObject& GetObject2(int index) { return *objects[index]; };
 
-		//LTexture* GetTexture(int idex);
-	
-		void AddObject(GameObject* newObject);
 
-		void LoadAllMedia();
+	////void AddTexture(LTexture* newTexture);
+	//
+	//
 
-		void RenderAllObjects();
+	////Close all the Textures
+	////void FreeTextures();
 
-		//void AddTexture(LTexture* newTexture);
-		
-		void Start();
+	////Close all the Objects
+	//void FreeObjects();
 
-		void Update();
-
-		//Close all the Textures
-		//void FreeTextures();
-
-		//Close all the Objects
-		void FreeObjects();
-
-		void RemoveObject(GameObject* removeObject);
+	//void RemoveObject(GameObject* removeObject);
 };

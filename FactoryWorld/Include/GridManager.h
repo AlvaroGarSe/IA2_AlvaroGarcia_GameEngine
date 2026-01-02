@@ -29,7 +29,7 @@ public:
 
 	GridCell* GetCell(int x, int y);
 	GridCell* GetAdjacentCell(int x, int y, GameObject::Orientation orientation);
-	bool IsInside(int x, int y);
+	bool IsInside(int x, int y) const;
 
 	// Checks if the adjacent cell in the given orientation is empty (true = empty)
 	bool CheckAdjacentCellEmpty(int x, int y, GameObject::Orientation orientation);
@@ -44,9 +44,34 @@ public:
 	void RemoveObject(int gridX, int gridY);
 
 	// Debug
-	void RenderDebugGrid();
+	void RenderDebugGrid(int mouseX, int mouseY);
+	void RenderSelectedCell(int mouseX, int mouseY, SDL_Renderer* gRenderer);
+	void RenderTiles();
+
 
 	int GetCellSize() const { return mCellSize; }
+
+	SDL_Point WorldToGridCameraRelative(int worldX, int worldY) const;
+	SDL_Point GridCameraRelativeToWorld(int gx, int gy) const;
+
+	// Transforms the coordinate centered to the relative not centered (0,0) -> (25,25)
+	SDL_Point CenteredToIndex(int cx, int cy) const;
+
+	// Transforms the coordinate not centered to centered (25,25) -> (0,0)
+	SDL_Point IndexToCentered(int ix, int iy) const;
+
+	bool CanPlaceCentered(int cx, int cy);
+	bool PlaceObjectCentered(GameObject* obj, int cx, int cy);
+	void RemoveObjectCentered(int cx, int cy);
+
+	GridCell* GetCellCentered(int cx, int cy);
+	bool IsInsideCentered(int cx, int cy) const;
+
+	void SetTile(int x, int y, TileType t);
+	TileType GetTile(int x, int y) const;
+
+	int GetWidth() const { return mGridWidth; }
+	int GetHeight() const { return mGridHeight; }
 
 
 };

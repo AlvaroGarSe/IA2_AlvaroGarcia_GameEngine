@@ -43,11 +43,9 @@ Crafter::Crafter(Orientation orientation)
 
     isOn = false;
 
-    texture = new LTexture;
-
 	type = ObjectType::CRAFTER;
 
-	texture->mTexturePath = "Media/Crafter.png";
+	texturePath = "Media/Crafter.png";
 }
 
 Crafter::~Crafter()
@@ -67,8 +65,6 @@ void Crafter::StopCrafter()
     isOn = false;
 	isCrafting = false;
 }
-
-
 
 bool Crafter::CanAcceptInput() const
 {
@@ -96,7 +92,7 @@ bool Crafter::InsertInput(const Item& item)
     return false;
 }
 
-bool Crafter::CanOutput() const
+bool Crafter::HasOutput() const
 {
     return mOutputItem != nullptr;
 }
@@ -129,12 +125,14 @@ void Crafter::Update()
 {
     if (!isActive || !isOn) return;
 
-    if (isCrafting && TimeManager::GetInstance().getTicks() >= craftingCurrentTime)
+	Uint32 currentTime = TimeManager::GetInstance().getTicks();
+
+    if (isCrafting && currentTime >= craftingCurrentTime)
     {
 		FinishCraft();
     }
 
-    if (CanOutput())
+    if (HasOutput())
     {
         GridManager& gridManager = GridManager::GetInstance();
 

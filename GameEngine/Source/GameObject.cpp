@@ -1,5 +1,7 @@
 #include "GameObject.h"
 #include "GraphicManager.h"
+#include "AssetManager.h"
+#include <cstdio>
 
 GameObject::GameObject()
 {
@@ -10,20 +12,13 @@ GameObject::GameObject()
 	transform.scaleY = 1;
 	transform.rotation = 0;
 
-	orientation = Orientation::NONE;
-	type = ObjectType::NONE;
 }
 
-void GameObject::Update()
-{
-	
-}
 
 void GameObject::Render()
 {
 	if (!isActive || texture == nullptr)
 	{
-		printf("Failed to render object");
 		return;
 	}
 
@@ -36,27 +31,37 @@ void GameObject::SetPosition(float x, float y)
 	transform.y = y;
 }
 
-void GameObject::free()
-{
-
-}
 
 bool GameObject::LoadMedia()
 {
-	//Loading success flag
-	bool success = true;
-
-	//Load Conveyor texture
-	if (!texture->loadFromFile(texture->mTexturePath))
+	if (texturePath.empty())
 	{
-		printf("Failed to load {} texture!\n", texture->mTexturePath);
-		success = false;
-	}
-	else
-	{
-		mWidth = texture->getWidth();
-		mHeigth = texture->getHeight();
+		printf("GameObject::LoadMedia - texturePath empty\n");
+		return false;
 	}
 
-	return success;
+	texture = AssetManager::GetInstance().GetTexture(texturePath);
+	if (!texture) return false;
+
+	mWidth = texture->getWidth();
+	mHeigth = texture->getHeight();
+	return true;
+
+
+	////Loading success flag
+	//bool success = true;
+
+	////Load Conveyor texture
+	//if (!texture->loadFromFile(texture->mTexturePath))
+	//{
+	//	printf("Failed to load {} texture!\n", texture->mTexturePath);
+	//	success = false;
+	//}
+	//else
+	//{
+	//	mWidth = texture->getWidth();
+	//	mHeigth = texture->getHeight();
+	//}
+
+	//return success;
 }

@@ -45,11 +45,9 @@ Miner::Miner(Orientation orientation)
 
     isOn = false;
 
-    texture = new LTexture;
-
 	type = ObjectType::MINER;
 
-	texture->mTexturePath = "Media/Miner.png";
+	texturePath = "Media/Miner.png";
 }
 
 void Miner::Start()

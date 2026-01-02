@@ -1,4 +1,5 @@
 #include "GraphicManager.h"
+#include "Camera2D.h"
 
 bool GraphicManager::init()
 {
@@ -79,9 +80,13 @@ void GraphicManager::EndFrame()
 }
 
 void GraphicManager::DrawTexture(LTexture* texture, const Transform& transform, SDL_Rect* clip, SDL_RendererFlip flip)
-{	
+{
+	float zoom = camera.GetZoom();
+
+	SDL_Point screenPos = camera.WorldToScreen((int)transform.x, (int)transform.y);
+
 	//Set rendering space and render to screen
-	SDL_Rect renderQuad = {transform.x, transform.y, texture->getWidth() * transform.scaleX, texture->getHeight() * transform.scaleY };
+	SDL_Rect renderQuad = {screenPos.x, screenPos.y, texture->getWidth() * transform.scaleX * zoom, texture->getHeight() * transform.scaleY * zoom};
 
 	SDL_Point center;
 	center.x = renderQuad.w / 2;

@@ -20,6 +20,11 @@ public:
     bool isStarted();
     bool isPaused();
 
+    Uint32 TickFrame();
+    Uint32 DeltaMs() const;
+
+    
+
 private:
     //Initializes variables
     TimeManager();
@@ -29,6 +34,10 @@ private:
 
     //The ticks stored when the timer was paused
     Uint32 mPausedTicks;
+
+    Uint32 mLastTicks;
+    Uint32 mDeltaMs;
+
 
     //The timer status
     bool mPaused;
