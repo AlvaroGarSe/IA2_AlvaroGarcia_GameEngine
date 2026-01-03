@@ -87,7 +87,8 @@ void Conveyor::Render()
 
     // These offsets just make the squares appear on top of the belt
 	const int cellSize = GridManager::GetInstance().GetCellSize();
-    const int slotSpacing = cellSize / SLOT_COUNT;    
+    float zoom = GraphicManager::GetInstance().camera.GetZoom();
+
     
     int dirX = 0, dirY = 0;
     switch (orientation)
@@ -99,29 +100,35 @@ void Conveyor::Render()
         default: break;
     }
 
-    float zoom = GraphicManager::GetInstance().camera.GetZoom();
+    // World-space item size (in "world pixels")
+	const int itemSizeWorld = 12;
+    const int slotSpacingWorld = cellSize / SLOT_COUNT; 
 
-	const int itemSize = 12 * zoom;
-    const int centerOffset = (cellSize - itemSize) / 2 * zoom;
+    // Conveyor top-left in world space
+    float baseWorldX = transform.x;
+    float baseWorldY = transform.y;
 
-	// Get belt position on screen
-    SDL_Point beltScreen = GraphicManager::GetInstance().camera.WorldToScreen(transform.x, transform.y);
+    // Center item inside the cell (world space)
+    const float centerOffsetWorld = (cellSize - itemSizeWorld) / 2;
 
-    int baseX = beltScreen.x;
-    int baseY = beltScreen.y;
-
-    // start near center; move along direction per slot
-    int startX = baseX + centerOffset;
-    int startY = baseY + centerOffset;
+    // Start position (world space)
+    int startX = baseWorldX + centerOffsetWorld;
+    int startY = baseWorldY + centerOffsetWorld;
 
     for (int i = 0; i < SLOT_COUNT; ++i)
     {
         if (!mSlots[i]) continue;
 
-        int x = startX + dirX * (i * slotSpacing - (cellSize / 2 - slotSpacing / 2));
-        int y = startY + dirY * (i * slotSpacing - (cellSize / 2 - slotSpacing / 2));
+        float offset = (i * slotSpacingWorld) - (cellSize / 2 - slotSpacingWorld / 2);
 
-        SDL_Rect rect{ x, y, itemSize, itemSize };
+        int x = startX + dirX * offset;
+        int y = startY + dirY * offset;
+
+        SDL_Point screen = GraphicManager::GetInstance().camera.WorldToScreen(x, y);
+
+        int itemSizeScreen = (int)(itemSizeWorld * zoom);
+
+        SDL_Rect rect{ screen.x, screen.y, itemSizeScreen, itemSizeScreen };
         switch (mSlots[i]->type)
         {
 		case ItemType::IronOre:

@@ -11,6 +11,7 @@
 #include "ObjectManager.h"
 #include "TimeManager.h"
 #include "GridManager.h"
+#include "TextManager.h"
 #include "Miner.h"
 #include "Player.h"
 #include "Crafter.h"
@@ -28,6 +29,8 @@ int main(int argc, char* args[])
 	ObjectManager::CreateSingleton();
 	TimeManager::CreateSingleton();
 	GridManager::CreateSingleton();
+	TextManager::CreateSingleton();
+	
 
 	if (!GraphicManager::GetInstance().init())
 	{
@@ -39,6 +42,11 @@ int main(int argc, char* args[])
 
 	int SCREEN_WIDTH = GraphicManager::GetInstance().getScreenWidth();
 	int SCREEN_HEIGHT = GraphicManager::GetInstance().getScreenHeight();
+
+	TextManager::GetInstance().Init();
+
+	TTF_Font* uiFont = TextManager::GetInstance().LoadFont("Media/Fonts/Ethnocentric-Regular.otf", 20);
+	SDL_Color white{ 255,255,255,255 };
 
 	if (!MapLoader::Load("Media/Maps/map01.json"))
 	{
@@ -156,13 +164,34 @@ int main(int argc, char* args[])
 
 		int mouseX, mouseY;
 
+		// Used to display the FPS
+		int msDisplay = 16;
+		double fpsTimer = 0.0;
+		int fpsFrames = 0;
+		int fpsDisplay = 0;
+
 
 		while (!quit)
 		{
 			InputManager::GetInstance().Update();
-			
 
 			Uint32 dt = TimeManager::GetInstance().TickFrame();
+
+			if (dt == 0) dt = 1;
+
+			msDisplay = (int)dt;
+
+			// Calculate the FPS
+			fpsTimer += (double)dt;   // milliseconds
+			fpsFrames++;
+
+			if (fpsTimer >= 500.0) // 500 ms
+			{
+				fpsDisplay = (int)((fpsFrames * 1000.0) / fpsTimer); // frames/sec
+				fpsTimer = 0.0;
+				fpsFrames = 0;
+			}
+
 
 			move = camSpeed * (dt / 1000.f);
 
@@ -206,22 +235,80 @@ int main(int argc, char* args[])
 			if (InputManager::GetInstance().GetKey(SDL_SCANCODE_S))
 				GraphicManager::GetInstance().camera.Move(0, move);
 
+			// UPDATE ***************************************************************
 
+			// Update all the items
 			ObjectManager::GetInstance().UpdateAll();
 
+			// Used to then render the UI
+			SDL_Point world = GraphicManager::GetInstance().camera.ScreenToWorld(mouseX, mouseY);
+			SDL_Point gridIdx = GridManager::GetInstance().WorldToGrid(world.x, world.y);
+			SDL_Point gridCentered = GridManager::GetInstance().IndexToCentered(gridIdx.x, gridIdx.y);
+
+			std::string tileName = "Out of bounds";
+			if (GridManager::GetInstance().IsInside(gridIdx.x, gridIdx.y))
+			{
+				TileType t = GridManager::GetInstance().GetTile(gridIdx.x, gridIdx.y);
+				switch (t)
+				{
+				case TileType::Ground: tileName = "Ground"; break;
+				case TileType::IronVein: tileName = "IronVein"; break;
+				case TileType::CopperVein: tileName = "CopperVein"; break;
+				case TileType::Water: tileName = "Water"; break;
+				default: tileName = "Unknown"; break;
+				}
+			}
+
+			auto& cam = GraphicManager::GetInstance().camera;
+
+			// RENDERING ************************************************************
+
 			GraphicManager::GetInstance().BeginFrame();
+			SDL_Renderer* r = GraphicManager::GetInstance().gRenderer;
 
+			// Render all the items and the tiles of the map
 			GridManager::GetInstance().RenderTiles();
-
 			ObjectManager::GetInstance().RenderAll();
 			GridManager::GetInstance().RenderDebugGrid(mouseX, mouseY);
 
+			// Render the UI
+			
+			// Draw the boxes for the UI
+			SDL_SetRenderDrawBlendMode(r, SDL_BLENDMODE_BLEND);
+			SDL_SetRenderDrawColor(r, 0, 0, 0, 160);
+			SDL_Rect bg{ 0, 0, 500, 70 };
+			SDL_RenderFillRect(r, &bg);
+			bg = { SCREEN_WIDTH - 230, 0, 230, 70 };
+			SDL_RenderFillRect(r, &bg);
+
+			// Draw the text of the UI
+			TextManager::GetInstance().DrawText(
+				"Mouse cell (centered): (" + std::to_string(gridCentered.x) + ", " + std::to_string(gridCentered.y) + ")",
+				white, uiFont, 10, 10, r);
+
+			TextManager::GetInstance().DrawText(
+				"Tile: " + tileName,
+				white, uiFont, 10, 30, r);
+
+			TextManager::GetInstance().DrawText(
+				"Camera: (" + std::to_string((int)cam.GetX()) + ", " + std::to_string((int)cam.GetY()) + ")",
+				white, uiFont, 10, 50, r);
+
+			TextManager::GetInstance().DrawText(
+				"FPS: " + std::to_string(fpsDisplay),
+				white, uiFont, SCREEN_WIDTH - 130, 10, r);
+
+			TextManager::GetInstance().DrawText(
+				"Frame: " + std::to_string(msDisplay) + " ms",
+				white, uiFont, SCREEN_WIDTH - 200, 30, r);
+
+
 			GraphicManager::GetInstance().EndFrame();
-
-
 		}
 
 	}
+
+	TextManager::GetInstance().CloseFont(uiFont);
 
 	ObjectManager::GetInstance().Clear();
 	AssetManager::GetInstance().Clear();

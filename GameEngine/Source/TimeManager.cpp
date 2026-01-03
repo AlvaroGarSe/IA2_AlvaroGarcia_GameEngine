@@ -13,6 +13,7 @@ TimeManager::TimeManager()
 }
 Uint32 TimeManager::TickFrame()
 {
+    // For later performance comprobations should be done a more precise system using SDL_GetPerformanceCounter()
     Uint32 now = SDL_GetTicks();
     Uint32 delta = now - mLastTicks;
     mLastTicks = now;

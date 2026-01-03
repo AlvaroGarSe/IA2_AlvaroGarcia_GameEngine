@@ -32,13 +32,13 @@ public:
 	SDL_Renderer* gRenderer = NULL;
 
 	//Starts up SDL and creates window
-	bool init();
+	bool Init();
 
-	TTF_Font* selectFont(string fontPath, int size);
+	TTF_Font* LoadFont(string fontPath, int size);
 
-	bool renderFont(SDL_Color textColor, TTF_Font* font, int quadX, int quadY, int value, SDL_Renderer* gRenderer);
+	bool DrawText(string text, SDL_Color textColor, TTF_Font* font, int quadX, int quadY, SDL_Renderer* gRenderer);
 
 	//Frees media and shuts down SDL
-	void closeFont(TTF_Font* font);
+	void CloseFont(TTF_Font* font);
 
 };
