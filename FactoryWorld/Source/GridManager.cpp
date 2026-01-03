@@ -69,7 +69,10 @@ SDL_Point GridManager::GridToWorld(int gridX, int gridY) const
 bool GridManager::CanPlace(int gridX, int gridY)
 {
 	if (!IsInside(gridX, gridY)) return false;
-	return GetCell(gridX, gridY)->gameObject == nullptr;
+	GridCell* cell = GetCell(gridX, gridY);
+	//  If the tile is a water tile, it can not be constructed there
+	if (cell->tileType == TileType::Water) return false;
+	return cell->gameObject == nullptr;
 }
 
 bool GridManager::PlaceObject(GameObject* obj, int gridX, int gridY)
