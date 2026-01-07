@@ -8,7 +8,7 @@ class IConveyorSystem
 public:
     virtual ~IConveyorSystem() = default;
 
-    virtual ConveyorId Create(float worldX, float worldY, GameObject::Orientation o) = 0;
+    virtual ConveyorId Create(float cX, float cY, GameObject::Orientation o) = 0;
 
     virtual void StartAll() = 0;
     virtual void UpdateAll(uint32_t nowTicks) = 0;

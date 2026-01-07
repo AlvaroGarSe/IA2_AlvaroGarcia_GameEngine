@@ -81,7 +81,6 @@ int main(int argc, char* args[])
 	ConveyorManager::GetInstance().UpdateAll(now);
 	ConveyorManager::GetInstance().RenderAll();*/
 
-
 	/*auto* c1 = ObjectManager::GetInstance().Spawn<Miner>(GameObject::Orientation::EAST);
 	GridManager::GetInstance().PlaceObject(c1, 5, 5);
 	auto* c1 = ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST);
@@ -108,16 +107,18 @@ int main(int argc, char* args[])
 	//ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST);
 	//ObjectManager::GetInstance().Spawn<Crafter>(GameObject::Orientation::EAST);
 
-	GridManager::GetInstance().PlaceObjectCentered(ObjectManager::GetInstance().Spawn<Miner>(GameObject::Orientation::EAST), 1, 1);
-	GridManager::GetInstance().PlaceObjectCentered(ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST), 2, 1);
-	GridManager::GetInstance().PlaceObjectCentered(ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST), 3, 1);
-	GridManager::GetInstance().PlaceObjectCentered(ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST), 4, 1);
-	GridManager::GetInstance().PlaceObjectCentered(ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::SOUTH), 5, 1);
-	GridManager::GetInstance().PlaceObjectCentered(ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST), 5, 2);
-	GridManager::GetInstance().PlaceObjectCentered(ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST), 6, 2);
-	GridManager::GetInstance().PlaceObjectCentered(ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST), 8, 2);
-	GridManager::GetInstance().PlaceObjectCentered(ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST), 9, 2);
-	GridManager::GetInstance().PlaceObjectCentered(ObjectManager::GetInstance().Spawn<Crafter>(GameObject::Orientation::EAST), 7, 2);
+	//GridManager::GetInstance().PlaceObjectCentered(ObjectManager::GetInstance().Spawn<Miner>(GameObject::Orientation::EAST), 1, 1);
+	//GridManager::GetInstance().PlaceObjectCentered(ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST), 2, 1);
+	//GridManager::GetInstance().PlaceObjectCentered(ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST), 3, 1);
+	//GridManager::GetInstance().PlaceObjectCentered(ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST), 4, 1);
+	//GridManager::GetInstance().PlaceObjectCentered(ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::SOUTH), 5, 1);
+	//GridManager::GetInstance().PlaceObjectCentered(ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST), 5, 2);
+	//GridManager::GetInstance().PlaceObjectCentered(ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST), 6, 2);
+	//GridManager::GetInstance().PlaceObjectCentered(ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST), 8, 2);
+	//GridManager::GetInstance().PlaceObjectCentered(ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST), 9, 2);
+	//GridManager::GetInstance().PlaceObjectCentered(ObjectManager::GetInstance().Spawn<Crafter>(GameObject::Orientation::EAST), 7, 2);
+
+	ConveyorManager::GetInstance().Create(20, 20, GameObject::Orientation::EAST);
 
 	//GridManager::GetInstance().PlaceObject(ObjectManager::GetInstance().GetObject(0), 1, 1);
 	//GridManager::GetInstance().PlaceObject(ObjectManager::GetInstance().GetObject(1), 2, 1);
@@ -168,6 +169,8 @@ int main(int argc, char* args[])
 
 
 		ObjectManager::GetInstance().StartAll();
+
+		ConveyorManager::GetInstance().StartAll();
 
 
 		bool quit = false;
@@ -252,6 +255,8 @@ int main(int argc, char* args[])
 
 			// Update all the items
 			ObjectManager::GetInstance().UpdateAll();
+			ConveyorManager::GetInstance().UpdateAll(TimeManager::GetInstance().DeltaMs());
+
 
 			// Used to then render the UI
 			SDL_Point world = GraphicManager::GetInstance().camera.ScreenToWorld(mouseX, mouseY);
@@ -282,6 +287,8 @@ int main(int argc, char* args[])
 			// Render all the items and the tiles of the map
 			GridManager::GetInstance().RenderTiles();
 			ObjectManager::GetInstance().RenderAll();
+			ConveyorManager::GetInstance().RenderAll();
+
 			GridManager::GetInstance().RenderDebugGrid(mouseX, mouseY);
 
 			// Render the UI
@@ -296,7 +303,7 @@ int main(int argc, char* args[])
 
 			// Draw the text of the UI
 			TextManager::GetInstance().DrawText(
-				"Mouse cell (centered): (" + std::to_string(gridCentered.x) + ", " + std::to_string(gridCentered.y) + ")",
+				"Mouse cell (centered): (" + std::to_string(gridIdx.x) + ", " + std::to_string(gridIdx.y) + ")",
 				white, uiFont, 10, 10, r);
 
 			TextManager::GetInstance().DrawText(

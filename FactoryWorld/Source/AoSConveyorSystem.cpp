@@ -7,23 +7,26 @@ AoSConveyorSystem::~AoSConveyorSystem()
 	mConveyors.clear();
 }
 
-ConveyorId AoSConveyorSystem::Create(float x, float y, GameObject::Orientation o)
+ConveyorId AoSConveyorSystem::Create(float cX, float cY, GameObject::Orientation o)
 {
 	Conveyor* c = new Conveyor(o);
+	GridManager& gridManager = GridManager::GetInstance();
 
-	c->SetPosition(x, y);
+	SDL_Point convPos = gridManager.GridToWorld(cX, cY);
+
+	c->SetPosition(convPos.x, convPos.y);
 
 	mConveyors.push_back(c);
 
 	// id = index+1
 	int id = mConveyors.size();
 
-	GridManager& gridManager = GridManager::GetInstance();
+	//gridManager.PlaceObject(c, cX, cY);
+	//SDL_Point cellPos = gridManager.WorldToGrid(x, y);
+	//gridManager.PlaceObject(c, cellPos.x, cellPos.y);
 
-	SDL_Point cellPos = gridManager.WorldToGrid(x, y);
-	gridManager.PlaceObject(c, cellPos.x, cellPos.y);
-
-	GridCell* cell = gridManager.GetCellWorldPos(x, y);
+	//GridCell* cell = gridManager.GetCellWorldPos(x, y);
+	GridCell* cell = gridManager.GetCell(cX, cY);
 	cell->conveyorId = id;
 
 
@@ -34,6 +37,7 @@ void AoSConveyorSystem::StartAll()
 {
 	for (Conveyor* c : mConveyors)
 	{
+		c->LoadMedia();
 		c->Start();
 	}
 }
