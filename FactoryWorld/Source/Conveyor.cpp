@@ -1,5 +1,6 @@
 #include "Conveyor.h"
 #include  "GridManager.h"
+#include "AssetManager.h"
 #include "TimeManager.h"
 #include "GraphicManager.h"
 #include "Crafter.h"
@@ -53,6 +54,19 @@ Conveyor::~Conveyor()
     for (Item* item : mSlots) delete item;
 }
 
+// Used for rendering the items on the conveyor
+static const char* ItemSpritePath(ItemType t)
+{
+    switch (t)
+    {
+    case ItemType::IronOre:   return "Media/Items/IronOre.png";
+    case ItemType::IronIngot: return "Media/Items/IronIngot.png";
+    case ItemType::CopperOre:   return "Media/Items/CopperOre.png";
+    case ItemType::CopperIngot: return "Media/Items/CopperIngot.png";
+    default:                  return "Media/Items/Unknown.png";
+    }
+}
+
 void Conveyor::Update()
 {
     if (!isActive) return;
@@ -81,6 +95,7 @@ void Conveyor::Render()
 {
     // Render the belt
 	GameObject::Render();
+
 
     SDL_Renderer* r = GraphicManager::GetInstance().gRenderer;
     if (!r) return;
@@ -119,29 +134,24 @@ void Conveyor::Render()
     {
         if (!mSlots[i]) continue;
 
+        LTexture* itemText = AssetManager::GetInstance().GetTexture(ItemSpritePath(mSlots[i]->type));
+        if (!itemText) continue;
+
+        // World-space size for the item
+        const float itemSizeWorld = 32.0f;
+        float sx = itemSizeWorld / itemText->getWidth();
+        float sy = itemSizeWorld / itemText->getHeight();
+
         float offset = (i * slotSpacingWorld) - (cellSize / 2 - slotSpacingWorld / 2);
 
-        int x = startX + dirX * offset;
-        int y = startY + dirY * offset;
+        Transform itTransf;
+        itTransf.x = startX + dirX * offset - itemSizeWorld * 0.25;
+        itTransf.y = startY + dirY * offset - itemSizeWorld * 0.25;
+        itTransf.rotation = 0.0f;
+        itTransf.scaleX = sx;
+        itTransf.scaleY = sy;
 
-        SDL_Point screen = GraphicManager::GetInstance().camera.WorldToScreen(x, y);
-
-        int itemSizeScreen = (int)(itemSizeWorld * zoom);
-
-        SDL_Rect rect{ screen.x, screen.y, itemSizeScreen, itemSizeScreen };
-        switch (mSlots[i]->type)
-        {
-		case ItemType::IronOre:
-			SDL_SetRenderDrawColor(r, 121, 193, 247, 255);
-			break;
-		case ItemType::IronIngot:
-			SDL_SetRenderDrawColor(r, 212, 74, 125, 255);
-			break;
-        default:
-            SDL_SetRenderDrawColor(r, 255, 255, 255, 255);
-            break;
-        }
-        SDL_RenderFillRect(r, &rect);
+        GraphicManager::GetInstance().DrawTexture(itemText, itTransf);
     }
 }
 
@@ -228,5 +238,18 @@ void Conveyor::PassItemNextCell()
                 nextCrafter->InsertInput(item);
             }
         }
+
+        //if (nextCrafter->CanAcceptInput())
+        //{
+        //    Item item;
+        //    if (TryExtractItem(item))
+        //    {
+        //        if (nextCrafter->CanAcceptInputType(item.type))
+        //        {
+        //            nextCrafter->InsertInput(item);
+
+        //        }
+        //    }
+        //}
     }
 }

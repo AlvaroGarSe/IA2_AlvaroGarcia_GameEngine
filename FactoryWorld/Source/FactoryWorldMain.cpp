@@ -16,6 +16,7 @@
 #include "Player.h"
 #include "Crafter.h"
 #include "MapLoader.h"
+#include "RecipeManager.h"
 
 #include "iostream"
 using namespace std;
@@ -30,6 +31,7 @@ int main(int argc, char* args[])
 	TimeManager::CreateSingleton();
 	GridManager::CreateSingleton();
 	TextManager::CreateSingleton();
+	RecipeManager::CreateSingleton();
 	
 
 	if (!GraphicManager::GetInstance().init())
@@ -44,6 +46,7 @@ int main(int argc, char* args[])
 	int SCREEN_HEIGHT = GraphicManager::GetInstance().getScreenHeight();
 
 	TextManager::GetInstance().Init();
+	RecipeManager::GetInstance().InitDefaults();
 
 	TTF_Font* uiFont = TextManager::GetInstance().LoadFont("Media/Fonts/Ethnocentric-Regular.otf", 20);
 	SDL_Color white{ 255,255,255,255 };
@@ -51,6 +54,7 @@ int main(int argc, char* args[])
 	if (!MapLoader::Load("Media/Maps/map01.json"))
 	{
 		GridManager::GetInstance().CreateGrid(50, 50, 64);
+		GridManager::GetInstance().SetTile(26, 26, TileType::IronVein);
 	}
 
 	//GridManager::GetInstance().CreateGrid(50, 50, 64);
@@ -59,6 +63,7 @@ int main(int argc, char* args[])
 	int worldH = GridManager::GetInstance().GetHeight() * GridManager::GetInstance().GetCellSize();
 	int screenW = GraphicManager::GetInstance().getScreenWidth();
 	int screenH = GraphicManager::GetInstance().getScreenHeight();
+
 
 	GraphicManager::GetInstance().camera.SetWorldBounds(worldW, worldH, screenW, screenH);
 
@@ -248,7 +253,7 @@ int main(int argc, char* args[])
 			std::string tileName = "Out of bounds";
 			if (GridManager::GetInstance().IsInside(gridIdx.x, gridIdx.y))
 			{
-				TileType t = GridManager::GetInstance().GetTile(gridIdx.x, gridIdx.y);
+				TileType t = GridManager::GetInstance().GetTileWithCellPos(gridIdx.x, gridIdx.y);
 				switch (t)
 				{
 				case TileType::Ground: tileName = "Ground"; break;

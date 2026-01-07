@@ -26,16 +26,19 @@
     <ClCompile Include="Source\MapLoader.cpp" />
     <ClCompile Include="Source\Miner.cpp" />
     <ClCompile Include="Source\Player.cpp" />
+    <ClCompile Include="Source\RecipeManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Conveyor.h" />
     <ClInclude Include="Include\Crafter.h" />
     <ClInclude Include="Include\GridCell.h" />
     <ClInclude Include="Include\GridManager.h" />
-    <ClInclude Include="Include\item.h" />
+    <ClInclude Include="Include\Item.h" />
     <ClInclude Include="Include\MapLoader.h" />
     <ClInclude Include="Include\Miner.h" />
     <ClInclude Include="Include\Player.h" />
+    <ClInclude Include="Include\Recipe.h" />
+    <ClInclude Include="Include\RecipeManager.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

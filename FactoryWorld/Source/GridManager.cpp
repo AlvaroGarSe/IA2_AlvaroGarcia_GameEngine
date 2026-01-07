@@ -323,10 +323,18 @@ void GridManager::SetTile(int x, int y, TileType t)
 	GetCell(x, y)->tileType = t;
 }
 
-TileType GridManager::GetTile(int x, int y) const
+TileType GridManager::GetTileWithCellPos(int cx, int cy) const
 {
-	if (!IsInside(x, y)) return TileType::Ground;
-	return mCells[y * mGridWidth + x].tileType;
+	if (!IsInside(cx, cy)) return TileType::Ground;
+	return mCells[cy * mGridWidth + cx].tileType;
+}
+
+TileType GridManager::GetTileWithTransform(int x, int y) const
+{
+	SDL_Point cellCoords = WorldToGrid(x, y);
+
+	if (!IsInside(cellCoords.x, cellCoords.y)) return TileType::Ground;
+	return mCells[cellCoords.y * mGridWidth + cellCoords.x].tileType;
 }
 
 

@@ -2,14 +2,14 @@
 #include "TimeManager.h"
 #include "GridManager.h"
 #include "Conveyor.h"
-#include "item.h"
+#include "Item.h"
+#include "RecipeManager.h"
 
-Crafter::Crafter(Orientation orientation)
+Crafter::Crafter(Orientation orientation, std::string recipeId)
 {
-    SetPosition(0, 0);
+    type = ObjectType::CRAFTER;
 
-    craftingMaxTime = 5000;
-    craftingCurrentTime = 0;
+    SetPosition(0, 0);
 
 	transform.scaleX = 0.5;
 	transform.scaleY = 0.5;
@@ -37,13 +37,29 @@ Crafter::Crafter(Orientation orientation)
         break;
     }
 
-
     isActive = false;
 	isCrafting = false;
-
     isOn = false;
 
-	type = ObjectType::CRAFTER;
+    RecipeId = recipeId;
+
+    const Recipe* r = RecipeManager::GetInstance().GetRecipeById(recipeId);
+    if (!r)
+    {
+        printf("Crafter: invalid recipe id '%s'. Setting recipe to 'iron_ingot'\n", RecipeId.c_str());
+        RecipeId = "iron_ingot";
+        r = RecipeManager::GetInstance().GetRecipeById(RecipeId);
+    }
+
+    craftingMaxTime = r->craftTimeMs;
+    craftingCurrentTime = 0;
+
+    mNeed.fill(0);
+    mHave.fill(0);
+    mInputSlots.clear();
+    mOutputItem = nullptr;
+
+    RebuildRecipeCache();
 
 	texturePath = "Media/Crafter.png";
 }
@@ -80,12 +96,16 @@ bool Crafter::CanAcceptInput() const
 
 bool Crafter::InsertInput(const Item& item)
 {
+    if (!CanAcceptInputType(item.type))
+        return false;
+
     for (Item*& slot : mInputSlots)
     {
         if (!slot)
         {
-			slot = new Item(item);
-			TryStartCraft();
+            slot = new Item(item);
+            mHave[(int)item.type] += 1;
+            TryStartCraft();
             return true;
         }
     }
@@ -99,26 +119,109 @@ bool Crafter::HasOutput() const
 
 void Crafter::TryStartCraft()
 {
-	if (isCrafting || mOutputItem) return;
-	
-    if (mInputSlots[0] && mInputSlots[1] &&
-        mInputSlots[0]->type == ItemType::IronOre && mInputSlots[1]->type == ItemType::IronOre)
-    {
-	    isCrafting = true;
-        craftingCurrentTime = TimeManager::GetInstance().getTicks() + craftingMaxTime;
-    }
+    if (isCrafting || mOutputItem) return;
+
+    const Recipe* r = RecipeManager::GetInstance().GetRecipeById(RecipeId);
+    if (!r) return;
+
+    if (!HasAllInputsForRecipe()) return;
+
+    isCrafting = true;
+    craftingMaxTime = r->craftTimeMs;
+
+    Uint32 now = TimeManager::GetInstance().getTicks();
+    craftingCurrentTime = now + craftingMaxTime;
 }
 
 void Crafter::FinishCraft()
 {
-	isCrafting = false;
+    const Recipe* r = RecipeManager::GetInstance().GetRecipeById(RecipeId);
+    if (!r) { isCrafting = false; return; }
 
-	delete mInputSlots[0];
-	mInputSlots[0] = nullptr;
-	delete mInputSlots[1];
-	mInputSlots[1] = nullptr;
+    // Consume inputs
+    for (const auto& in : r->inputs)
+        ConsumeType(in.type, in.amount);
 
-	mOutputItem = new Item{ ItemType::IronIngot };
+    // Produce
+    if (!r->outputs.empty())
+        mOutputItem = new Item{ r->outputs[0].type };
+
+    isCrafting = false;
+}
+
+void Crafter::RebuildRecipeCache()
+{
+    // Delete all the current items and reset params
+    for (Item* it : mInputSlots)
+        delete it;
+    mInputSlots.clear();
+    if (mOutputItem)
+    {
+        delete mOutputItem;
+        mOutputItem = nullptr;
+    }
+    isCrafting = false;
+    craftingCurrentTime = 0;
+
+    mNeed.fill(0);
+    mHave.fill(0);
+
+    const Recipe* r = RecipeManager::GetInstance().GetRecipeById(RecipeId);
+    if (!r) return;
+
+    int totalNeed = 0;
+    for (const ItemStack& in : r->inputs)
+    {
+        mNeed[(int)in.type] += in.amount;
+        totalNeed += in.amount;
+    }
+
+    // Resize the slots to the needed amount
+    mInputSlots.assign(totalNeed, nullptr);
+}
+
+bool Crafter::CanAcceptInputType(ItemType t) const
+{
+    int idx = (int)t;
+    if (idx < 0 || idx >= ITEMTYPE_COUNT) return false;
+
+    // not in recipe?
+    if (mNeed[idx] <= 0) return false;
+
+    // already have enough?
+    if (mHave[idx] >= mNeed[idx]) return false;
+
+    // need a free slot
+    for (Item* s : mInputSlots)
+        if (!s) return true;
+
+    return false;
+}
+
+bool Crafter::HasAllInputsForRecipe() const
+{
+    for (int i = 0; i < ITEMTYPE_COUNT; ++i)
+        if (mNeed[i] > 0 && mHave[i] < mNeed[i])
+            return false;
+    return true;
+}
+
+void Crafter::ConsumeType(ItemType t, int count)
+{
+    int idx = (int)t;
+    int toRemove = count;
+
+    for (int i = 0; i < (int)mInputSlots.size() && toRemove > 0; ++i)
+    {
+        Item* it = mInputSlots[i];
+        if (it && it->type == t)
+        {
+            delete it;
+            mInputSlots[i] = nullptr;
+            mHave[idx] -= 1;
+            toRemove--;
+        }
+    }
 }
 
 void Crafter::Update()
@@ -157,4 +260,17 @@ void Crafter::Update()
             }
         }
     }
+}
+
+void Crafter::ChangeRecipe(const std::string& newId)
+{
+    const Recipe* newRecipe = RecipeManager::GetInstance().GetRecipeById(newId);
+    if (!newRecipe) return;
+
+    RecipeId = newId;
+    craftingMaxTime = newRecipe->craftTimeMs;
+    craftingCurrentTime = 0;
+    isCrafting = false;
+
+    RebuildRecipeCache();
 }

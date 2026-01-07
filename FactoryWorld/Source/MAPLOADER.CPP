@@ -118,6 +118,8 @@ bool MapLoader::Load(const std::string& path)
         assets.GetTexture("Media/Tiles/Water.png");
     }
 
+    std::cout << "MapLoader: Map loaded successfully\n";
+
     return true;
 }
 

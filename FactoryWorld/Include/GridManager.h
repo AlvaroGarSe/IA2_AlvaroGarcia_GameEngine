@@ -68,7 +68,12 @@ public:
 	bool IsInsideCentered(int cx, int cy) const;
 
 	void SetTile(int x, int y, TileType t);
-	TileType GetTile(int x, int y) const;
+
+	// Get the tile type of a cell position
+	TileType GetTileWithCellPos(int cx, int cy) const;
+
+	// Get the tile type of a world position
+	TileType GetTileWithTransform(int x, int y) const;
 
 	int GetWidth() const { return mGridWidth; }
 	int GetHeight() const { return mGridHeight; }

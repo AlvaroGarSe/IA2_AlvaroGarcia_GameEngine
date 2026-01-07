@@ -2,7 +2,7 @@
 #include "TimeManager.h"
 #include "GridManager.h"
 #include "Conveyor.h"
-#include "item.h"
+#include "Item.h"
 
 Miner::Miner(Orientation orientation)
 {
@@ -54,7 +54,19 @@ void Miner::Start()
 {
 	GameObject::Start();
 
-    isOn = true;
+    switch (GridManager::GetInstance().GetTileWithTransform(transform.x, transform.y))
+    {
+    case TileType::IronVein:
+        isOn = true;
+        break;
+    case TileType::CopperVein:
+        isOn = true;
+        break;
+    default:
+        isOn = false;
+        return;
+        break;
+    }
 	Uint32 currentTime = TimeManager::GetInstance().getTicks();
 
     minningCurrentTime = currentTime + minningMaxTime;
@@ -95,7 +107,22 @@ bool Miner::TransferMaterial()
     if (nextCell->gameObject->type == ObjectType::CONVEYOR)
     {
         Conveyor* nextConv = static_cast<Conveyor*>(nextCell->gameObject);
-        Item ore{ ItemType::IronOre};
+
+        ItemType type;
+        switch (GridManager::GetInstance().GetTileWithTransform(transform.x, transform.y))
+        {
+        case TileType::IronVein:
+            type = ItemType::IronOre;
+            break;
+        case TileType::CopperVein:
+            type = ItemType::CopperOre;
+            break;
+        default:
+            return false;
+            break;
+        }
+
+        Item ore{ type};
         if (nextConv->InsertItem(ore))
         {
             currentCapacity--;
