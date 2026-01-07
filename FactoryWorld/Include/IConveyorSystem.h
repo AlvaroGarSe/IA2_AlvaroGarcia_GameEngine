@@ -1,0 +1,25 @@
+#pragma once
+#include "ConveyorTypes.h"
+#include "GameObject.h"
+#include "Item.h"
+
+class IConveyorSystem
+{
+public:
+    virtual ~IConveyorSystem() = default;
+
+    virtual ConveyorId Create(float worldX, float worldY, GameObject::Orientation o) = 0;
+
+    virtual void StartAll() = 0;
+    virtual void UpdateAll(uint32_t nowTicks) = 0;
+    virtual void RenderAll() = 0;
+
+    virtual bool CanAcceptItem(ConveyorId id) const = 0;
+    virtual bool InsertItem(ConveyorId id, const Item& item) = 0;
+
+    // optional if you need it for chaining logic
+    virtual bool TryExtractItem(ConveyorId id, Item& out) = 0;
+
+    virtual SDL_Point GetWorldPos(ConveyorId id) const = 0;
+    virtual GameObject::Orientation GetOrientation(ConveyorId id) const = 0;
+};

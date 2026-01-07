@@ -6,6 +6,11 @@
 #include "Singleton.h"
 #include "GameObject.h"
 
+// *********************************************IMPORTANT********************************************* //
+// The conveyors are not stored here because there will be stored in the AoS/SoAConveyorSystem cause of the AoS and SoA variation
+// Any other object that will also be implemented with AoS and SoA will not be stored and managed here
+
+
 class ObjectManager:public Singleton<ObjectManager>
 {
 	/*****************************************************************************/
@@ -14,7 +19,7 @@ class ObjectManager:public Singleton<ObjectManager>
 
 private:
 
-	ObjectManager() { /*objects = std::vector<GameObject*>(); textures = std::vector<LTexture*>(); */};
+	ObjectManager() {};
 
 	//Contains the objects
 	std::vector<std::unique_ptr<GameObject>> objects;
@@ -46,29 +51,4 @@ public:
 	void Clear();
 
 	size_t Count() const { return objects.size(); }
-
-
-
-
-
-	//GameObject* GetObject(int index) const;
-	//GameObject& GetObject2(int index) { return *objects[index]; };
-
-	////LTexture* GetTexture(int idex);
-	
-	//void AddObject(GameObject* newObject);
-
-
-
-	////void AddTexture(LTexture* newTexture);
-	//
-	//
-
-	////Close all the Textures
-	////void FreeTextures();
-
-	////Close all the Objects
-	//void FreeObjects();
-
-	//void RemoveObject(GameObject* removeObject);
 };

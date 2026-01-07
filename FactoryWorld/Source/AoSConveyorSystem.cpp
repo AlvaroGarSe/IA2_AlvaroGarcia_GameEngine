@@ -1,0 +1,105 @@
+#include "AoSConveyorSystem.h"
+#include "GridManager.h"
+
+AoSConveyorSystem::~AoSConveyorSystem()
+{
+	for (Conveyor* c : mConveyors) delete c;
+	mConveyors.clear();
+}
+
+ConveyorId AoSConveyorSystem::Create(float x, float y, GameObject::Orientation o)
+{
+	Conveyor* c = new Conveyor(o);
+
+	c->SetPosition(x, y);
+
+	mConveyors.push_back(c);
+
+	// id = index+1
+	int id = mConveyors.size();
+
+	GridManager& gridManager = GridManager::GetInstance();
+
+	SDL_Point cellPos = gridManager.WorldToGrid(x, y);
+	gridManager.PlaceObject(c, cellPos.x, cellPos.y);
+
+	GridCell* cell = gridManager.GetCellWorldPos(x, y);
+	cell->conveyorId = id;
+
+
+	return (ConveyorId) id;
+}
+
+void AoSConveyorSystem::StartAll()
+{
+	for (Conveyor* c : mConveyors)
+	{
+		c->Start();
+	}
+}
+
+void AoSConveyorSystem::UpdateAll(uint32_t now)
+{
+	for (Conveyor* c : mConveyors)
+	{
+		c->Update();
+	}
+}
+
+void AoSConveyorSystem::RenderAll()
+{
+	for (Conveyor* c : mConveyors)
+	{
+		c->Render();
+	}
+}
+
+bool AoSConveyorSystem::CanAcceptItem(ConveyorId id) const
+{
+	int i = IndexFromId(id);
+	if (i < 0 || i >= (int)mConveyors.size()) return false;
+	Conveyor* c = mConveyors[i];
+	if (!c) return false;
+	return c->CanAcceptItem();
+}
+
+bool AoSConveyorSystem::InsertItem(ConveyorId id, const Item& item)
+{
+	int i = IndexFromId(id);
+	if (i < 0 || i >= (int)mConveyors.size()) return false;
+	Conveyor* c = mConveyors[i];
+	if (!c) return false;
+	return c->InsertItem(item);
+}
+
+bool AoSConveyorSystem::TryExtractItem(ConveyorId id, Item& outItem)
+{
+	int i = id - 1;
+
+	if (i < 0 || i >= (int)mConveyors.size()) return false;
+
+	if (!mConveyors[i]) return false;
+
+	return mConveyors[i]->TryExtractItem(outItem);
+}
+
+SDL_Point AoSConveyorSystem::GetWorldPos(ConveyorId id) const
+{
+	int i = IndexFromId(id);
+	if (i < 0 || i >= (int)mConveyors.size()) return SDL_Point{ 0,0 };
+	Conveyor* c = mConveyors[i];
+	if (!c) return SDL_Point{ 0,0 };
+
+	return c->GetPosition();
+}
+
+GameObject::Orientation AoSConveyorSystem::GetOrientation(ConveyorId id) const
+{
+	int i = IndexFromId(id);
+	if (i < 0 || i >= (int)mConveyors.size()) return GameObject::Orientation::NONE;
+
+	Conveyor* c = mConveyors[i];
+	if (!c) return GameObject::Orientation::NONE;
+
+	return c->orientation;
+}

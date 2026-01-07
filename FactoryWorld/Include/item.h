@@ -3,6 +3,7 @@
 
 enum class ItemType : uint8_t
 {
+    NONE = 0,
     IronOre,
 	IronIngot,
     CopperOre,

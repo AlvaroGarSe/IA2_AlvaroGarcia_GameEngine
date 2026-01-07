@@ -75,6 +75,7 @@ bool GridManager::CanPlace(int gridX, int gridY)
 	return cell->gameObject == nullptr;
 }
 
+// Uses cells position
 bool GridManager::PlaceObject(GameObject* obj, int gridX, int gridY)
 {
 	if (!CanPlace(gridX, gridY)) return false;
@@ -93,8 +94,6 @@ void GridManager::RemoveObject(int gridX, int gridY)
 	if (!IsInside(gridX, gridY)) return;
 	GetCell(gridX, gridY)->gameObject = nullptr;	
 }
-
-
 
 void GridManager::RenderDebugGrid(int mouseX, int mouseY)
 {
@@ -311,6 +310,13 @@ GridCell* GridManager::GetCellCentered(int cx, int cy)
 	return GetCell(idx.x, idx.y);
 }
 
+GridCell* GridManager::GetCellWorldPos(int worldX, int worldY)
+{
+	if (!IsInside(worldX, worldY)) return nullptr;
+	SDL_Point cellCoords = WorldToGrid(worldX, worldY);
+	return GetCell(cellCoords.x, cellCoords.y);
+}
+
 bool GridManager::IsInsideCentered(int cx, int cy) const
 {
 	SDL_Point idx = CenteredToIndex(cx, cy);
@@ -336,5 +342,3 @@ TileType GridManager::GetTileWithTransform(int x, int y) const
 	if (!IsInside(cellCoords.x, cellCoords.y)) return TileType::Ground;
 	return mCells[cellCoords.y * mGridWidth + cellCoords.x].tileType;
 }
-
-

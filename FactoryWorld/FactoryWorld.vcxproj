@@ -19,7 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\AoSConveyorSystem.cpp" />
     <ClCompile Include="Source\Conveyor.cpp" />
+    <ClCompile Include="Source\ConveyorManager.cpp" />
     <ClCompile Include="Source\Crafter.cpp" />
     <ClCompile Include="Source\FactoryWorldMain.cpp" />
     <ClCompile Include="Source\GridManager.cpp" />
@@ -27,18 +29,24 @@
     <ClCompile Include="Source\Miner.cpp" />
     <ClCompile Include="Source\Player.cpp" />
     <ClCompile Include="Source\RecipeManager.cpp" />
+    <ClCompile Include="Source\SoAConveyorSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\AoSConveyorSystem.h" />
     <ClInclude Include="Include\Conveyor.h" />
+    <ClInclude Include="Include\ConveyorManager.h" />
+    <ClInclude Include="Include\ConveyorTypes.h" />
     <ClInclude Include="Include\Crafter.h" />
     <ClInclude Include="Include\GridCell.h" />
     <ClInclude Include="Include\GridManager.h" />
+    <ClInclude Include="Include\IConveyorSystem.h" />
     <ClInclude Include="Include\Item.h" />
     <ClInclude Include="Include\MapLoader.h" />
     <ClInclude Include="Include\Miner.h" />
     <ClInclude Include="Include\Player.h" />
     <ClInclude Include="Include\Recipe.h" />
     <ClInclude Include="Include\RecipeManager.h" />
+    <ClInclude Include="Include\SoAConveyorSystem.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

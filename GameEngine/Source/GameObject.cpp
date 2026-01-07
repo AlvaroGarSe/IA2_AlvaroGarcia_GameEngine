@@ -31,6 +31,11 @@ void GameObject::SetPosition(float x, float y)
 	transform.y = y;
 }
 
+SDL_Point GameObject::GetPosition()
+{
+	return SDL_Point{ (int)transform.x, (int)transform.y };
+}
+
 
 bool GameObject::LoadMedia()
 {

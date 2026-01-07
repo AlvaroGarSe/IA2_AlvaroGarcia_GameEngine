@@ -65,6 +65,7 @@ public:
 	void RemoveObjectCentered(int cx, int cy);
 
 	GridCell* GetCellCentered(int cx, int cy);
+	GridCell* GetCellWorldPos(int worldX, int worldY);
 	bool IsInsideCentered(int cx, int cy) const;
 
 	void SetTile(int x, int y, TileType t);
@@ -77,6 +78,4 @@ public:
 
 	int GetWidth() const { return mGridWidth; }
 	int GetHeight() const { return mGridHeight; }
-
-
 };

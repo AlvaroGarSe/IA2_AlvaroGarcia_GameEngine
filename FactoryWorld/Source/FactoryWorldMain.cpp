@@ -17,6 +17,7 @@
 #include "Crafter.h"
 #include "MapLoader.h"
 #include "RecipeManager.h"
+#include "ConveyorManager.h"
 
 #include "iostream"
 using namespace std;
@@ -32,6 +33,7 @@ int main(int argc, char* args[])
 	GridManager::CreateSingleton();
 	TextManager::CreateSingleton();
 	RecipeManager::CreateSingleton();
+	ConveyorManager::CreateSingleton();
 	
 
 	if (!GraphicManager::GetInstance().init())
@@ -72,6 +74,12 @@ int main(int argc, char* args[])
 		(worldW - screenW) * 0.5f,
 		(worldH - screenH) * 0.5f
 	);
+
+	ConveyorManager::GetInstance().Init(ConveyorMode::AoS);
+
+	/*ConveyorId id = ConveyorManager::GetInstance().Create(...);
+	ConveyorManager::GetInstance().UpdateAll(now);
+	ConveyorManager::GetInstance().RenderAll();*/
 
 
 	/*auto* c1 = ObjectManager::GetInstance().Spawn<Miner>(GameObject::Orientation::EAST);

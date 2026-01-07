@@ -1,13 +1,12 @@
 #pragma once
 #include "GameObject.h"
+#include "ConveyorTypes.h"
 #include "Item.h"
 #include <array>
 
 class Conveyor :public GameObject
 {
 public:
-
-	static constexpr int SLOT_COUNT = 4;
 
 	//Initializes the variables
 	Conveyor(Orientation orientation = Orientation::NORTH);
@@ -19,9 +18,10 @@ public:
 	bool CanAcceptItem() const;
 	bool InsertItem(const Item& item); // Inserts an item into slot 0
 
+	bool TryExtractItem(Item& outItem); // Extracts an item from the last slot
+
 private:
 
-	bool TryExtractItem(Item& outItem); // Extracts an item from the last slot
 	void MoveItemThroughSlots();
 	void PassItemNextCell();
 

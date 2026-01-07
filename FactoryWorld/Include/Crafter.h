@@ -23,7 +23,6 @@ public:
 	bool CanAcceptInput() const;
 	bool InsertInput(const Item& item);
 
-
 	// Output
 	bool HasOutput() const;
 

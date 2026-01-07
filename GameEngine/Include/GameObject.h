@@ -49,6 +49,7 @@ public:
 	virtual void Render();
 
 	void SetPosition(float x, float y);
+	SDL_Point GetPosition();
 
 	// Requests texture from AssetManager (no per-instance load)
 	bool LoadMedia();
