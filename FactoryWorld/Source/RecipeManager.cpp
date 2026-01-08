@@ -9,14 +9,14 @@ void RecipeManager::InitDefaults()
     r.id = "iron_ingot";
     r.inputs = { {ItemType::IronOre, 2} };
     r.outputs = { {ItemType::IronIngot, 1} };
-    r.craftTimeMs = 2000;
+    r.craftTimeMs = 2500;
     mRecipes.push_back(r);
 
     // Copper Ingot: 2 CopperOre -> 1 CopperIngot
     r.id = "copper_ingot";
     r.inputs = { {ItemType::CopperOre, 2} };
     r.outputs = { {ItemType::CopperIngot, 1} };
-    r.craftTimeMs = 2000;
+    r.craftTimeMs = 2500;
     mRecipes.push_back(r);
 }
 

@@ -120,6 +120,9 @@ int main(int argc, char* args[])
 
 
 	GridManager::GetInstance().PlaceObject(ObjectManager::GetInstance().Spawn<Miner>(GameObject::Orientation::NORTH), 26, 26);
+	GridManager::GetInstance().PlaceObject(ObjectManager::GetInstance().Spawn<Miner>(GameObject::Orientation::EAST), 26, 24);
+	GridManager::GetInstance().PlaceObject(ObjectManager::GetInstance().Spawn<Crafter>(GameObject::Orientation::EAST, "iron_ingot"), 30, 25);
+	GridManager::GetInstance().PlaceObject(ObjectManager::GetInstance().Spawn<Crafter>(GameObject::Orientation::EAST, "copper_ingot"), 30, 24);
 
 	ConveyorManager::GetInstance().Create(20, 25, GameObject::Orientation::EAST);
 	ConveyorManager::GetInstance().Create(21, 25, GameObject::Orientation::EAST);
@@ -131,6 +134,21 @@ int main(int argc, char* args[])
 	ConveyorManager::GetInstance().Create(27, 25, GameObject::Orientation::EAST);
 	ConveyorManager::GetInstance().Create(28, 25, GameObject::Orientation::EAST);
 	ConveyorManager::GetInstance().Create(29, 25, GameObject::Orientation::EAST);
+	ConveyorManager::GetInstance().Create(31, 25, GameObject::Orientation::EAST);
+	ConveyorManager::GetInstance().Create(32, 25, GameObject::Orientation::EAST);
+	ConveyorManager::GetInstance().Create(33, 25, GameObject::Orientation::EAST);
+	ConveyorManager::GetInstance().Create(27, 24, GameObject::Orientation::EAST);
+	ConveyorManager::GetInstance().Create(28, 24, GameObject::Orientation::EAST);
+	ConveyorManager::GetInstance().Create(29, 24, GameObject::Orientation::EAST);
+	ConveyorManager::GetInstance().Create(31, 24, GameObject::Orientation::EAST);
+	ConveyorManager::GetInstance().Create(32, 24, GameObject::Orientation::EAST);
+	ConveyorManager::GetInstance().Create(33, 24, GameObject::Orientation::EAST);
+
+	ConveyorManager::GetInstance().Create(34, 24, GameObject::Orientation::SOUTH);
+	ConveyorManager::GetInstance().Create(34, 25, GameObject::Orientation::SOUTH);
+	ConveyorManager::GetInstance().Create(34, 26, GameObject::Orientation::SOUTH);
+	ConveyorManager::GetInstance().Create(34, 27, GameObject::Orientation::SOUTH);
+	ConveyorManager::GetInstance().Create(34, 28, GameObject::Orientation::SOUTH);
 
 	//GridManager::GetInstance().PlaceObject(ObjectManager::GetInstance().GetObject(0), 1, 1);
 	//GridManager::GetInstance().PlaceObject(ObjectManager::GetInstance().GetObject(1), 2, 1);

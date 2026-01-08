@@ -20,6 +20,11 @@
       "x": 26,
       "y": 26,
       "tile": "IronVein"
+    },
+    {
+      "x": 26,
+      "y": 24,
+      "tile": "CopperVein"
     }
   ],
 

@@ -3,6 +3,7 @@
 #include "AssetManager.h"
 #include "TimeManager.h"
 #include "GraphicManager.h"
+#include "ConveyorManager.h"
 #include "Crafter.h"
 
 Conveyor::Conveyor(Orientation orientation)
@@ -110,7 +111,7 @@ void Conveyor::Render()
     }
 
     // World-space item size (in "world pixels")
-	const int itemSizeWorld = 12;
+	const float itemSizeWorld = 32;
     const int slotSpacingWorld = cellSize / SLOT_COUNT; 
 
     // Conveyor top-left in world space
@@ -118,7 +119,7 @@ void Conveyor::Render()
     float baseWorldY = transform.y;
 
     // Center item inside the cell (world space)
-    const float centerOffsetWorld = (cellSize - itemSizeWorld) / 2;
+    const float centerOffsetWorld = (cellSize - itemSizeWorld / 2) / 2;
 
     // Start position (world space)
     int startX = baseWorldX + centerOffsetWorld;
@@ -132,7 +133,6 @@ void Conveyor::Render()
         if (!itemText) continue;
 
         // World-space size for the item
-        const float itemSizeWorld = 32.0f;
         float sx = itemSizeWorld / itemText->getWidth();
         float sy = itemSizeWorld / itemText->getHeight();
 
@@ -162,8 +162,8 @@ bool Conveyor::InsertItem(const Item& item)
 
     // Prevent instant teleport: don't allow this belt to step until next interval
     Uint32 currentTime = TimeManager::GetInstance().getTicks();
-    if (mNextMoveTime <= currentTime)
-        mNextMoveTime = currentTime + mMoveIntervalMs;
+
+    if (mNextMoveTime <= currentTime) mNextMoveTime = currentTime + mMoveIntervalMs;
 
 	return true;
 }
@@ -205,20 +205,36 @@ void Conveyor::PassItemNextCell()
     GridCell* nextCell = gridManager.GetAdjacentCell(posGrid.x, posGrid.y, orientation);
 
 	// Checks if the cell is valid and has an item object in it
-    if (!nextCell || !nextCell->gameObject) return;
+    if (!nextCell) return;
 
-    if (nextCell->gameObject->type == ObjectType::CONVEYOR)
+    if (nextCell->conveyorId != INVALID_CONVEYOR)
     {
-		Conveyor* nextConv = static_cast<Conveyor*>(nextCell->gameObject);
-
-        if (nextConv->CanAcceptItem())
+        Item item;
+        if (TryExtractItem(item))
         {
-            Item item;
-			if (TryExtractItem(item))
-			{
-				nextConv->InsertItem(item);
-			}
-        }		
+            ConveyorManager::GetInstance().InsertItem(nextCell->conveyorId, item);
+        }
+    }
+    else if (nextCell->gameObject)
+    {
+        if (nextCell->gameObject->type == ObjectType::CRAFTER)
+        {
+            Crafter* nextCrafter = static_cast<Crafter*>(nextCell->gameObject);
+
+            if (nextCrafter->CanAcceptInput())
+            {
+                Item item;
+                if (TryExtractItem(item))
+                {
+                    nextCrafter->InsertInput(item);
+                }
+            }
+        }
+    }
+
+   /* if (nextCell->gameObject->type == ObjectType::CONVEYOR)
+    {
+			
     }
     else if (nextCell->gameObject->type == ObjectType::CRAFTER)
     {
@@ -231,7 +247,7 @@ void Conveyor::PassItemNextCell()
             {
                 nextCrafter->InsertInput(item);
             }
-        }
+        }*/
 
         //if (nextCrafter->CanAcceptInput())
         //{
@@ -245,5 +261,5 @@ void Conveyor::PassItemNextCell()
         //        }
         //    }
         //}
-    }
+    //}
 }

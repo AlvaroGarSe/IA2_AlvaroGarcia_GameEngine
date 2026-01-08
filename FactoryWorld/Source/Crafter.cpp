@@ -4,6 +4,7 @@
 #include "Conveyor.h"
 #include "Item.h"
 #include "RecipeManager.h"
+#include "ConveyorManager.h"
 
 Crafter::Crafter(Orientation orientation, std::string recipeId)
 {
@@ -244,20 +245,15 @@ void Crafter::Update()
         GridCell* nextCell = gridManager.GetAdjacentCell(posGrid.x, posGrid.y, orientation);
 
         // Checks if the cell is valid and has an item object in it
-        if (!nextCell || !nextCell->gameObject) return;
+        if (!nextCell) return;
 
-        if (nextCell->gameObject->type == ObjectType::CONVEYOR)
+        ConveyorId convId = nextCell->conveyorId;
+        if (convId == INVALID_CONVEYOR) return;
+
+        if (ConveyorManager::GetInstance().InsertItem(convId, *mOutputItem))
         {
-            Conveyor* nextConv = static_cast<Conveyor*>(nextCell->gameObject);
-
-            if (nextConv->CanAcceptItem())
-            {
-                if (nextConv->InsertItem(*mOutputItem))
-                {
-                    delete mOutputItem;
-                    mOutputItem = nullptr;
-                }
-            }
+            delete mOutputItem;
+            mOutputItem = nullptr;
         }
     }
 }
