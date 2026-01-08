@@ -75,7 +75,7 @@ int main(int argc, char* args[])
 		(worldH - screenH) * 0.5f
 	);
 
-	ConveyorManager::GetInstance().Init(ConveyorMode::AoS);
+	ConveyorManager::GetInstance().Init(ConveyorMode::SoA);
 
 	/*ConveyorId id = ConveyorManager::GetInstance().Create(...);
 	ConveyorManager::GetInstance().UpdateAll(now);
@@ -107,7 +107,7 @@ int main(int argc, char* args[])
 	//ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST);
 	//ObjectManager::GetInstance().Spawn<Crafter>(GameObject::Orientation::EAST);
 
-	//GridManager::GetInstance().PlaceObjectCentered(ObjectManager::GetInstance().Spawn<Miner>(GameObject::Orientation::EAST), 1, 1);
+	////GridManager::GetInstance().PlaceObjectCentered(ObjectManager::GetInstance().Spawn<Miner>(GameObject::Orientation::EAST), 1, 1);
 	//GridManager::GetInstance().PlaceObjectCentered(ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST), 2, 1);
 	//GridManager::GetInstance().PlaceObjectCentered(ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST), 3, 1);
 	//GridManager::GetInstance().PlaceObjectCentered(ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST), 4, 1);
@@ -118,7 +118,19 @@ int main(int argc, char* args[])
 	//GridManager::GetInstance().PlaceObjectCentered(ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST), 9, 2);
 	//GridManager::GetInstance().PlaceObjectCentered(ObjectManager::GetInstance().Spawn<Crafter>(GameObject::Orientation::EAST), 7, 2);
 
-	ConveyorManager::GetInstance().Create(20, 20, GameObject::Orientation::EAST);
+
+	GridManager::GetInstance().PlaceObject(ObjectManager::GetInstance().Spawn<Miner>(GameObject::Orientation::NORTH), 26, 26);
+
+	ConveyorManager::GetInstance().Create(20, 25, GameObject::Orientation::EAST);
+	ConveyorManager::GetInstance().Create(21, 25, GameObject::Orientation::EAST);
+	ConveyorManager::GetInstance().Create(22, 25, GameObject::Orientation::EAST);
+	ConveyorManager::GetInstance().Create(23, 25, GameObject::Orientation::EAST);
+	ConveyorManager::GetInstance().Create(24, 25, GameObject::Orientation::EAST);
+	ConveyorManager::GetInstance().Create(25, 25, GameObject::Orientation::EAST);
+	ConveyorManager::GetInstance().Create(26, 25, GameObject::Orientation::EAST);
+	ConveyorManager::GetInstance().Create(27, 25, GameObject::Orientation::EAST);
+	ConveyorManager::GetInstance().Create(28, 25, GameObject::Orientation::EAST);
+	ConveyorManager::GetInstance().Create(29, 25, GameObject::Orientation::EAST);
 
 	//GridManager::GetInstance().PlaceObject(ObjectManager::GetInstance().GetObject(0), 1, 1);
 	//GridManager::GetInstance().PlaceObject(ObjectManager::GetInstance().GetObject(1), 2, 1);
@@ -255,7 +267,7 @@ int main(int argc, char* args[])
 
 			// Update all the items
 			ObjectManager::GetInstance().UpdateAll();
-			ConveyorManager::GetInstance().UpdateAll(TimeManager::GetInstance().DeltaMs());
+			ConveyorManager::GetInstance().UpdateAll(TimeManager::GetInstance().getTicks());
 
 
 			// Used to then render the UI

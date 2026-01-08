@@ -96,15 +96,9 @@ void Conveyor::Render()
     // Render the belt
 	GameObject::Render();
 
-
-    SDL_Renderer* r = GraphicManager::GetInstance().gRenderer;
-    if (!r) return;
-
     // These offsets just make the squares appear on top of the belt
 	const int cellSize = GridManager::GetInstance().GetCellSize();
-    float zoom = GraphicManager::GetInstance().camera.GetZoom();
 
-    
     int dirX = 0, dirY = 0;
     switch (orientation)
     {

@@ -19,7 +19,7 @@ GridCell* GridManager::GetCell(int x, int y)
 	return &mCells[y * mGridWidth + x];
 }
 
-GridCell* GridManager::GetAdjacentCell(int x, int y, GameObject::Orientation orientation)
+GridCell* GridManager::GetAdjacentCell(int cX, int cY, GameObject::Orientation orientation)
 {
 	switch (orientation)
 	{
@@ -27,16 +27,16 @@ GridCell* GridManager::GetAdjacentCell(int x, int y, GameObject::Orientation ori
 		return nullptr;
 		break;
 	case GameObject::Orientation::NORTH:
-		return GetCell(x, y - 1);
+		return GetCell(cX, cY - 1);
 		break;
 	case GameObject::Orientation::SOUTH:
-		return GetCell(x, y + 1);
+		return GetCell(cX, cY + 1);
 		break;
 	case GameObject::Orientation::EAST:
-		return GetCell(x + 1, y);
+		return GetCell(cX + 1, cY);
 		break;
 	case GameObject::Orientation::WEST:
-		return GetCell(x - 1, y);
+		return GetCell(cX - 1, cY);
 		break;
 	default:
 		return nullptr;

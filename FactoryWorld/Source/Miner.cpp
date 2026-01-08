@@ -2,6 +2,7 @@
 #include "TimeManager.h"
 #include "GridManager.h"
 #include "Conveyor.h"
+#include "ConveyorManager.h"
 #include "Item.h"
 
 Miner::Miner(Orientation orientation)
@@ -102,32 +103,30 @@ bool Miner::TransferMaterial()
     GridCell* nextCell = gridManager.GetAdjacentCell(posGrid.x, posGrid.y, orientation);
 
     // Checks if the cell is valid and has an item object in it
-    if (!nextCell || !nextCell->gameObject) return false;
+    if (!nextCell) return false;
 
-    if (nextCell->gameObject->type == ObjectType::CONVEYOR)
+    ConveyorId convId = nextCell->conveyorId;
+    if (convId == INVALID_CONVEYOR) return false;
+
+    ItemType type;
+    switch (GridManager::GetInstance().GetTileWithTransform(transform.x, transform.y))
     {
-        Conveyor* nextConv = static_cast<Conveyor*>(nextCell->gameObject);
+    case TileType::IronVein:
+        type = ItemType::IronOre;
+        break;
+    case TileType::CopperVein:
+        type = ItemType::CopperOre;
+        break;
+    default:
+        return false;
+        break;
+    }
 
-        ItemType type;
-        switch (GridManager::GetInstance().GetTileWithTransform(transform.x, transform.y))
-        {
-        case TileType::IronVein:
-            type = ItemType::IronOre;
-            break;
-        case TileType::CopperVein:
-            type = ItemType::CopperOre;
-            break;
-        default:
-            return false;
-            break;
-        }
-
-        Item ore{ type};
-        if (nextConv->InsertItem(ore))
-        {
-            currentCapacity--;
-            return true;
-        }
+    Item ore{ type};
+    if (ConveyorManager::GetInstance().InsertItem(convId, ore))
+    {
+        currentCapacity--;
+        return true;
     }
 	return false;
 }

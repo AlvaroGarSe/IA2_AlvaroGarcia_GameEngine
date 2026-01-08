@@ -6,7 +6,7 @@
 class SoAConveyorSystem : public IConveyorSystem
 {
 public:
-    ConveyorId Create(float x, float y, GameObject::Orientation o) override;
+    ConveyorId Create(int cX, int cY, GameObject::Orientation o) override;
 
     void StartAll() override;
     void UpdateAll(uint32_t now) override;
@@ -33,6 +33,11 @@ private:
 
     uint32_t mMoveIntervalMs = 300;
 
+    void MoveItemThroughSlots(int i);
+    void PassItemNextCell(int i);
+
+    int SlotToIndex(int convIndex, int slot) const { return convIndex * SLOT_COUNT + slot; }
     bool SlotEmpty(int convIndex, int slot) const { return mSlotType[convIndex * SLOT_COUNT + slot] == ItemType::NONE; }
     void SetSlot(int convIndex, int slot, ItemType t) { mSlotType[convIndex * SLOT_COUNT + slot] = t; }
+
 };

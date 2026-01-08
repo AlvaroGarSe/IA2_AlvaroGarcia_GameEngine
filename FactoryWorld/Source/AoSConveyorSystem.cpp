@@ -7,7 +7,7 @@ AoSConveyorSystem::~AoSConveyorSystem()
 	mConveyors.clear();
 }
 
-ConveyorId AoSConveyorSystem::Create(float cX, float cY, GameObject::Orientation o)
+ConveyorId AoSConveyorSystem::Create(int cX, int cY, GameObject::Orientation o)
 {
 	Conveyor* c = new Conveyor(o);
 	GridManager& gridManager = GridManager::GetInstance();

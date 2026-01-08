@@ -12,7 +12,7 @@ class ConveyorManager : public Singleton<ConveyorManager>
 public:
     void Init(ConveyorMode mode);
 
-    ConveyorId Create(float worldX, float worldY, GameObject::Orientation o);
+    ConveyorId Create(int cX, int cY, GameObject::Orientation o);
 
     void UpdateAll(uint32_t nowTicks);
     void RenderAll();

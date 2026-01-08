@@ -8,7 +8,7 @@ void ConveyorManager::Init(ConveyorMode mode)
     else                          mImpl = std::make_unique<SoAConveyorSystem>();
 }
 
-ConveyorId ConveyorManager::Create(float x, float y, GameObject::Orientation o) { return mImpl->Create(x, y, o); }
+ConveyorId ConveyorManager::Create(int cX, int cY, GameObject::Orientation o) { return mImpl->Create(cX, cY, o); }
 void ConveyorManager::UpdateAll(uint32_t now) { mImpl->UpdateAll(now); }
 void ConveyorManager::RenderAll() { mImpl->RenderAll(); }
 void ConveyorManager::StartAll() { mImpl->StartAll(); }

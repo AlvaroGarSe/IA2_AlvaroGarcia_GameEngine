@@ -10,7 +10,7 @@ public:
 
 	std::vector<Conveyor*> mConveyors;
 
-	ConveyorId Create(float x, float y, GameObject::Orientation o) override;
+	ConveyorId Create(int cX, int cY, GameObject::Orientation o) override;
 	void StartAll() override;
 	void UpdateAll(uint32_t now) override;
 	void RenderAll() override;

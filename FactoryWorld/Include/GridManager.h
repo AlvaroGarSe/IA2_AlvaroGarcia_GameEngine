@@ -28,7 +28,7 @@ public:
 	void CreateGrid(int gridWidth, int gridHeight, int cellSize);
 
 	GridCell* GetCell(int x, int y);
-	GridCell* GetAdjacentCell(int x, int y, GameObject::Orientation orientation);
+	GridCell* GetAdjacentCell(int cX, int cY, GameObject::Orientation orientation);
 	bool IsInside(int x, int y) const;
 
 	// Checks if the adjacent cell in the given orientation is empty (true = empty)
