@@ -11,7 +11,6 @@ GameObject::GameObject()
 	transform.scaleX = 1;
 	transform.scaleY = 1;
 	transform.rotation = 0;
-
 }
 
 
@@ -51,22 +50,29 @@ bool GameObject::LoadMedia()
 	mWidth = texture->getWidth();
 	mHeigth = texture->getHeight();
 	return true;
+}
 
+void GameObject::Rotate(int dir)
+{
+	if (orientation == GameObject::Orientation::NONE) return;
+	double aux = transform.rotation + 90 * dir;
+	if (aux >= 360) aux -= 360;
+	transform.rotation = aux;
 
-	////Loading success flag
-	//bool success = true;
-
-	////Load Conveyor texture
-	//if (!texture->loadFromFile(texture->mTexturePath))
-	//{
-	//	printf("Failed to load {} texture!\n", texture->mTexturePath);
-	//	success = false;
-	//}
-	//else
-	//{
-	//	mWidth = texture->getWidth();
-	//	mHeigth = texture->getHeight();
-	//}
-
-	//return success;
+	if (aux < 45 || aux >= 315)
+	{
+		orientation = GameObject::Orientation::NORTH;
+	}
+	else if (aux < 135)
+	{
+		orientation = GameObject::Orientation::EAST;
+	}
+	else if (aux < 225)
+	{
+		orientation = GameObject::Orientation::SOUTH;
+	}
+	else if (aux < 315)
+	{
+		orientation = GameObject::Orientation::WEST;
+	}
 }

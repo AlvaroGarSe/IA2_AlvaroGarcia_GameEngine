@@ -58,6 +58,20 @@ void AoSConveyorSystem::RenderAll()
 	}
 }
 
+void AoSConveyorSystem::RotateConveyor(ConveyorId id, int dir)
+{
+	mConveyors[IndexFromId(id)]->Rotate(dir);
+}
+
+ConveyorId AoSConveyorSystem::CreateConveyorRuntime(int cX, int cY, GameObject::Orientation o)
+{
+	if (!GridManager::GetInstance().CanPlace(cX, cY)) return INVALID_CONVEYOR;
+	int id = IndexFromId(Create(cX, cY, o));
+	mConveyors[id]->LoadMedia();
+	mConveyors[id]->Start();
+	return id;
+}
+
 bool AoSConveyorSystem::CanAcceptItem(ConveyorId id) const
 {
 	int i = IndexFromId(id);

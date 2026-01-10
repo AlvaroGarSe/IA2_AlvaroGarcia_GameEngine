@@ -15,6 +15,10 @@ public:
 	void UpdateAll(uint32_t now) override;
 	void RenderAll() override;
 
+	void RotateConveyor(ConveyorId id, int dir) override;
+
+	ConveyorId CreateConveyorRuntime(int cX, int cY, GameObject::Orientation o) override;
+
 	bool CanAcceptItem(ConveyorId id) const override;
 	bool InsertItem(ConveyorId id, const Item& item) override;
 	bool TryExtractItem(ConveyorId id, Item& out) override;

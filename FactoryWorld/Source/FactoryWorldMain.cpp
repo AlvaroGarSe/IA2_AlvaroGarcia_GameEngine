@@ -18,6 +18,7 @@
 #include "MapLoader.h"
 #include "RecipeManager.h"
 #include "ConveyorManager.h"
+#include "PlayerControlls.h"
 
 #include "iostream"
 using namespace std;
@@ -34,6 +35,7 @@ int main(int argc, char* args[])
 	TextManager::CreateSingleton();
 	RecipeManager::CreateSingleton();
 	ConveyorManager::CreateSingleton();
+	PlayerControlls::CreateSingleton();
 	
 
 	if (!GraphicManager::GetInstance().init())
@@ -76,25 +78,6 @@ int main(int argc, char* args[])
 	);
 
 	ConveyorManager::GetInstance().Init(ConveyorMode::SoA);
-
-	/*ConveyorId id = ConveyorManager::GetInstance().Create(...);
-	ConveyorManager::GetInstance().UpdateAll(now);
-	ConveyorManager::GetInstance().RenderAll();*/
-
-	/*auto* c1 = ObjectManager::GetInstance().Spawn<Miner>(GameObject::Orientation::EAST);
-	GridManager::GetInstance().PlaceObject(c1, 5, 5);
-	auto* c1 = ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST);
-	GridManager::GetInstance().PlaceObject(c1, 5, 5);
-	auto* c1 = ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST);
-	GridManager::GetInstance().PlaceObject(c1, 5, 5);
-	auto* c1 = ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST);
-	GridManager::GetInstance().PlaceObject(c1, 5, 5);
-	auto* c1 = ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::SOUTH);
-	GridManager::GetInstance().PlaceObject(c1, 5, 5);
-	auto* c1 = ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST);
-	GridManager::GetInstance().PlaceObject(c1, 5, 5);
-	auto* c1 = ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST);
-	GridManager::GetInstance().PlaceObject(c1, 5, 5);*/
 
 	//ObjectManager::GetInstance().Spawn<Miner>(GameObject::Orientation::EAST);
 	//ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST);
@@ -219,7 +202,9 @@ int main(int argc, char* args[])
 
 		while (!quit)
 		{
-			InputManager::GetInstance().Update();
+			InputManager::GetInstance().BeginFrame();
+
+			SDL_Event& e = *InputManager::GetInstance().GetSDLEvent();
 
 			Uint32 dt = TimeManager::GetInstance().TickFrame();
 
@@ -243,8 +228,6 @@ int main(int argc, char* args[])
 
 			SDL_GetMouseState(&mouseX, &mouseY);
 
-			SDL_Event& e = *InputManager::GetInstance().GetSDLEvent();
-
 			while (SDL_PollEvent(&e) != 0)
 			{
 				if (e.type == SDL_QUIT)
@@ -263,7 +246,10 @@ int main(int argc, char* args[])
 						GraphicManager::GetInstance().camera.ZoomAtScreenPoint(0.9, mouseX, mouseY);
 					}
 				}
+
+				InputManager::GetInstance().ProcessEvent(e);
 			}
+
 
 			// User can stop the game by pressing Escape
 			if (InputManager::GetInstance().GetKey(SDL_SCANCODE_ESCAPE))
@@ -281,17 +267,30 @@ int main(int argc, char* args[])
 			if (InputManager::GetInstance().GetKey(SDL_SCANCODE_S))
 				GraphicManager::GetInstance().camera.Move(0, move);
 
+			// Used to get the info of the selected cell for the inputs and the UI
+			SDL_Point world = GraphicManager::GetInstance().camera.ScreenToWorld(mouseX, mouseY);
+			SDL_Point gridIdx = GridManager::GetInstance().WorldToGrid(world.x, world.y);
+
+			// Rotate building: <--Q    E-->
+			if (InputManager::GetInstance().GetKeyDown(SDL_SCANCODE_E))
+				PlayerControlls::GetInstance().RotateBuilding(gridIdx.x, gridIdx.y, 1);
+			if (InputManager::GetInstance().GetKeyDown(SDL_SCANCODE_Q))
+				PlayerControlls::GetInstance().RotateBuilding(gridIdx.x, gridIdx.y, -1);
+
+			// Create buildings: 1 = Miner || 2 = Conveyor || 3 = Crafter
+			if (InputManager::GetInstance().GetKey(SDL_SCANCODE_1))
+				PlayerControlls::GetInstance().CreateMiner(gridIdx.x, gridIdx.y);
+			if (InputManager::GetInstance().GetKey(SDL_SCANCODE_2))
+				PlayerControlls::GetInstance().CreateConveyor(gridIdx.x, gridIdx.y);
+			if (InputManager::GetInstance().GetKey(SDL_SCANCODE_3))
+				PlayerControlls::GetInstance().CreateCrafter(gridIdx.x, gridIdx.y);
+
+
 			// UPDATE ***************************************************************
 
 			// Update all the items
 			ObjectManager::GetInstance().UpdateAll();
 			ConveyorManager::GetInstance().UpdateAll(TimeManager::GetInstance().getTicks());
-
-
-			// Used to then render the UI
-			SDL_Point world = GraphicManager::GetInstance().camera.ScreenToWorld(mouseX, mouseY);
-			SDL_Point gridIdx = GridManager::GetInstance().WorldToGrid(world.x, world.y);
-			SDL_Point gridCentered = GridManager::GetInstance().IndexToCentered(gridIdx.x, gridIdx.y);
 
 			std::string tileName = "Out of bounds";
 			if (GridManager::GetInstance().IsInside(gridIdx.x, gridIdx.y))
@@ -333,7 +332,7 @@ int main(int argc, char* args[])
 
 			// Draw the text of the UI
 			TextManager::GetInstance().DrawText(
-				"Mouse cell (centered): (" + std::to_string(gridIdx.x) + ", " + std::to_string(gridIdx.y) + ")",
+				"Mouse cell: (" + std::to_string(gridIdx.x) + ", " + std::to_string(gridIdx.y) + ")",
 				white, uiFont, 10, 10, r);
 
 			TextManager::GetInstance().DrawText(

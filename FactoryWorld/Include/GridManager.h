@@ -48,6 +48,8 @@ public:
 	void RenderSelectedCell(int mouseX, int mouseY, SDL_Renderer* gRenderer);
 	void RenderTiles();
 
+	bool CellIsEmpty(int gridX, int gridY);
+
 
 	int GetCellSize() const { return mCellSize; }
 

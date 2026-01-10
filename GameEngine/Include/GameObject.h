@@ -18,8 +18,8 @@ public:
 	{
 		NONE,
 		NORTH,
-		SOUTH,
 		EAST,
+		SOUTH,
 		WEST
 	};
 
@@ -50,6 +50,9 @@ public:
 
 	void SetPosition(float x, float y);
 	SDL_Point GetPosition();
+
+	// -1 rotate -90 || 1 rotate 90
+	void Rotate(int dir);
 
 	// Requests texture from AssetManager (no per-instance load)
 	bool LoadMedia();

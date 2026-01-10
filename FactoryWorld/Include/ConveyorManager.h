@@ -13,10 +13,13 @@ public:
     void Init(ConveyorMode mode);
 
     ConveyorId Create(int cX, int cY, GameObject::Orientation o);
+    ConveyorId CreateConveyorRuntime(int cX, int cY, GameObject::Orientation o);
 
     void UpdateAll(uint32_t nowTicks);
     void RenderAll();
     void StartAll();
+
+    void RotateConveyor(ConveyorId id, int dir);
 
     bool CanAcceptItem(ConveyorId id) const;
     bool InsertItem(ConveyorId id, const Item& item);

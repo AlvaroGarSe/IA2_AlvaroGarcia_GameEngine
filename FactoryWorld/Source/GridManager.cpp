@@ -72,7 +72,7 @@ bool GridManager::CanPlace(int gridX, int gridY)
 	GridCell* cell = GetCell(gridX, gridY);
 	//  If the tile is a water tile, it can not be constructed there
 	if (cell->tileType == TileType::Water) return false;
-	return cell->gameObject == nullptr;
+	return cell->gameObject == nullptr && cell->conveyorId == INVALID_CONVEYOR;
 }
 
 // Uses cells position
@@ -85,14 +85,14 @@ bool GridManager::PlaceObject(GameObject* obj, int gridX, int gridY)
 
 	SDL_Point worldPos = GridToWorld(gridX, gridY);
 	obj->SetPosition(worldPos.x, worldPos.y);
-
 	return true;
 }
 
 void GridManager::RemoveObject(int gridX, int gridY)
 {
+	// This function is not implemented yet
 	if (!IsInside(gridX, gridY)) return;
-	GetCell(gridX, gridY)->gameObject = nullptr;	
+	GetCell(gridX, gridY)->gameObject = nullptr;
 }
 
 void GridManager::RenderDebugGrid(int mouseX, int mouseY)
@@ -236,6 +236,13 @@ void GridManager::RenderTiles()
 			gfx.DrawTexture(tex, t);
 		}
 	}
+}
+
+bool GridManager::CellIsEmpty(int gridX, int gridY)
+{
+	if (!IsInside(gridX, gridY)) return false;
+	GridCell* cell = GetCell(gridX, gridY);
+	return cell->gameObject == nullptr && cell->conveyorId == INVALID_CONVEYOR;
 }
 
 SDL_Point GridManager::WorldToGridCameraRelative(int worldX, int worldY) const

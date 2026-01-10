@@ -4,6 +4,12 @@
 #include "GraphicManager.h"
 #include "AssetManager.h"
 #include "Crafter.h"
+
+SoAConveyorSystem::SoAConveyorSystem()
+{
+	convTexture = AssetManager::GetInstance().GetTexture("Media/Conveyor.png");
+}
+
 ConveyorId SoAConveyorSystem::Create(int cX, int cY, GameObject::Orientation o)
 {
 	// Calculate the world position of the conveyor from the given cell position(cX, cY)
@@ -85,8 +91,6 @@ void SoAConveyorSystem::RenderAll()
 	// World-space sprite size
 	const float itemSizeWorld = 32.0f;
 
-	LTexture* convText = AssetManager::GetInstance().GetTexture("Media/Conveyor.png");
-
 	Transform ct;
 	ct.scaleX = 0.5;
 	ct.scaleY = 0.5;
@@ -110,7 +114,7 @@ void SoAConveyorSystem::RenderAll()
 		ct.x = mX[i];
 		ct.y = mY[i];
 
-		GraphicManager::GetInstance().DrawTexture(convText, ct);
+		GraphicManager::GetInstance().DrawTexture(convTexture, ct);
 
 	}
 
@@ -166,6 +170,14 @@ void SoAConveyorSystem::RenderAll()
 
 }
 
+ConveyorId SoAConveyorSystem::CreateConveyorRuntime(int cX, int cY, GameObject::Orientation o)
+{
+	if (!GridManager::GetInstance().CanPlace(cX, cY)) return INVALID_CONVEYOR;
+	int id = IndexFromId(Create(cX, cY, o));
+	mActive[id] = true;
+	return mActive[id] = true;
+}
+
 bool SoAConveyorSystem::CanAcceptItem(ConveyorId id) const
 {
 	int i = IndexFromId(id);
@@ -198,6 +210,37 @@ bool SoAConveyorSystem::TryExtractItem(ConveyorId id, Item& out)
 	out.type = t;
 	mSlotType[i * SLOT_COUNT + last] = ItemType::NONE;
 	return true;
+}
+
+void SoAConveyorSystem::RotateConveyor(ConveyorId id, int dir)
+{
+	GameObject::Orientation& ori = mOri[IndexFromId(id)];
+	if (dir == 1)
+	{
+		switch (ori)
+		{
+		case GameObject::Orientation::NORTH: ori = GameObject::Orientation::EAST; break;
+		case GameObject::Orientation::EAST: ori = GameObject::Orientation::SOUTH; break;
+		case GameObject::Orientation::SOUTH: ori = GameObject::Orientation::WEST; break;
+		case GameObject::Orientation::WEST: ori = GameObject::Orientation::NORTH; break;
+		default:
+			ori = GameObject::Orientation::NONE;
+			break;
+		}
+	}
+	else if (dir == -1)
+	{
+		switch (ori)
+		{
+		case GameObject::Orientation::NORTH: ori = GameObject::Orientation::WEST; break;
+		case GameObject::Orientation::WEST: ori = GameObject::Orientation::SOUTH; break;
+		case GameObject::Orientation::SOUTH: ori = GameObject::Orientation::EAST; break;
+		case GameObject::Orientation::EAST: ori = GameObject::Orientation::NORTH; break;
+		default:
+			ori = GameObject::Orientation::NONE;
+			break;
+		}
+	}
 }
 
 SDL_Point SoAConveyorSystem::GetWorldPos(ConveyorId id) const
