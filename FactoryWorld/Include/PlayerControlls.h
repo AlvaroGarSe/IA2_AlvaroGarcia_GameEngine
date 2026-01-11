@@ -10,6 +10,8 @@ public:
 	void CreateConveyor(int cx, int cy);
 	void CreateCrafter(int cx, int cy);
 
-	void RotateBuilding(int cx, int cy, int dir);
+	void RemoveBuilding(int cx, int cy);
 
+	void RotateBuilding(int cx, int cy, int dir);
+	void ChangeCrafterRecipe(int cx, int cy);
 };

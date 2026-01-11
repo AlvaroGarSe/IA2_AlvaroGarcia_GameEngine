@@ -1,5 +1,8 @@
 #pragma once
 #include "GridCell.h"
+
+#include "json.hpp"
+using json = nlohmann::json;
 #include <string>
 
 
@@ -16,4 +19,8 @@ class MapLoader
 {
 public:
     static bool Load(const std::string& path);
+
+    static bool LoadBuildings(const std::string& path);
+
+    static bool SaveBuildings(const std::string& path);
 };

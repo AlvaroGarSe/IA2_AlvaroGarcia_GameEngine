@@ -243,6 +243,18 @@ void SoAConveyorSystem::RotateConveyor(ConveyorId id, int dir)
 	}
 }
 
+void SoAConveyorSystem::RemoveConveyor(ConveyorId id)
+{
+	int i = IndexFromId(id);
+	if (i < 0 || i >= (int)mX.size()) return;
+
+	for (int s = 0; s < SLOT_COUNT; ++s)
+		mSlotType[SlotToIndex(i, s)] = ItemType::NONE;
+
+	mActive[i] = false;
+	mNextMoveTime[i] = 0;
+}
+
 SDL_Point SoAConveyorSystem::GetWorldPos(ConveyorId id) const
 {
 	int i = IndexFromId(id);

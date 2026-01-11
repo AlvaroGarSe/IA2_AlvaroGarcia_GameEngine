@@ -14,10 +14,12 @@ public:
 
 	void Start() override;
 	void Update() override;
+	void Render() override;
 
 	void StopCrafter();
 
 	void ChangeRecipe(const std::string& newId);
+	void ChangeNextRecipe();
 
 	// Input
 	bool CanAcceptInput() const;
@@ -25,6 +27,8 @@ public:
 
 	// Output
 	bool HasOutput() const;
+
+	std::string GetRecipeId() { return RecipeId; }
 
 private:
 
@@ -40,6 +44,8 @@ private:
 	std::string RecipeId;
 
 	std::vector<Item*> mInputSlots;
+
+	LTexture* itemTexture = nullptr;
 
 	Item* mOutputItem = nullptr;
 

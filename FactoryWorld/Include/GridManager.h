@@ -41,7 +41,7 @@ public:
 	// Placement
 	bool CanPlace(int gridX, int gridY);
 	bool PlaceObject(GameObject* obj, int gridX, int gridY);
-	void RemoveObject(int gridX, int gridY);
+	bool RemoveBuilding(int gridX, int gridY);
 
 	// Debug
 	void RenderDebugGrid(int mouseX, int mouseY);
@@ -49,7 +49,6 @@ public:
 	void RenderTiles();
 
 	bool CellIsEmpty(int gridX, int gridY);
-
 
 	int GetCellSize() const { return mCellSize; }
 
@@ -61,10 +60,6 @@ public:
 
 	// Transforms the coordinate not centered to centered (25,25) -> (0,0)
 	SDL_Point IndexToCentered(int ix, int iy) const;
-
-	bool CanPlaceCentered(int cx, int cy);
-	bool PlaceObjectCentered(GameObject* obj, int cx, int cy);
-	void RemoveObjectCentered(int cx, int cy);
 
 	GridCell* GetCellCentered(int cx, int cy);
 	GridCell* GetCellWorldPos(int worldX, int worldY);

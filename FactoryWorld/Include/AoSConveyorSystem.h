@@ -17,6 +17,8 @@ public:
 
 	void RotateConveyor(ConveyorId id, int dir) override;
 
+	void RemoveConveyor(ConveyorId id) override;
+
 	ConveyorId CreateConveyorRuntime(int cX, int cY, GameObject::Orientation o) override;
 
 	bool CanAcceptItem(ConveyorId id) const override;

@@ -21,11 +21,6 @@ ConveyorId AoSConveyorSystem::Create(int cX, int cY, GameObject::Orientation o)
 	// id = index+1
 	int id = mConveyors.size();
 
-	//gridManager.PlaceObject(c, cX, cY);
-	//SDL_Point cellPos = gridManager.WorldToGrid(x, y);
-	//gridManager.PlaceObject(c, cellPos.x, cellPos.y);
-
-	//GridCell* cell = gridManager.GetCellWorldPos(x, y);
 	GridCell* cell = gridManager.GetCell(cX, cY);
 	cell->conveyorId = id;
 
@@ -61,6 +56,18 @@ void AoSConveyorSystem::RenderAll()
 void AoSConveyorSystem::RotateConveyor(ConveyorId id, int dir)
 {
 	mConveyors[IndexFromId(id)]->Rotate(dir);
+}
+
+void AoSConveyorSystem::RemoveConveyor(ConveyorId id)
+{
+	int i = IndexFromId(id);
+	if (i < 0 || i >= (int)mConveyors.size()) return;
+
+	if (mConveyors[i])
+	{
+		delete mConveyors[i];
+		mConveyors[i] = nullptr;
+	}
 }
 
 ConveyorId AoSConveyorSystem::CreateConveyorRuntime(int cX, int cY, GameObject::Orientation o)

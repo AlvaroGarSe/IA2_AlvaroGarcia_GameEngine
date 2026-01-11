@@ -2,11 +2,12 @@
 #include <fstream>
 #include <iostream>
 
-#include "json.hpp"
-using json = nlohmann::json;
-
 #include "GridManager.h"
 #include "AssetManager.h"
+#include "ConveyorManager.h"
+#include "Crafter.h"
+#include "Miner.h"
+#include "ObjectManager.h"
 
 
 bool MapLoader::Load(const std::string& path)
@@ -108,6 +109,8 @@ bool MapLoader::Load(const std::string& path)
         }
     }
 
+    //LoadBuildings(j);
+
     // Optional preload
     if (j.value("preloadTileTextures", true))
     {
@@ -120,6 +123,210 @@ bool MapLoader::Load(const std::string& path)
 
     std::cout << "MapLoader: Map loaded successfully\n";
 
+    return true;
+}
+
+static GameObject::Orientation OrientationFromString(const std::string& s)
+{
+    if (s == "NORTH") return GameObject::Orientation::NORTH;
+    if (s == "SOUTH") return GameObject::Orientation::SOUTH;
+    if (s == "EAST")  return GameObject::Orientation::EAST;
+    if (s == "WEST")  return GameObject::Orientation::WEST;
+    return GameObject::Orientation::NONE;
+}
+
+static bool IsInsideGrid(int x, int y)
+{
+    auto& g = GridManager::GetInstance();
+    return g.IsInside(x, y);
+}
+
+bool MapLoader::LoadBuildings(const std::string& path)
+{
+    std::ifstream f(path);
+    if (!f.is_open())
+    {
+        std::cout << "MapLoader: cannot open " << path << "\n";
+        return false;
+    }
+
+    json j;
+    try { f >> j; }
+    catch (const std::exception& e)
+    {
+        std::cout << "MapLoader: JSON parse error: " << e.what() << "\n";
+        return false;
+    }
+
+    if (!j.contains("buildings") || !j["buildings"].is_array()){
+        printf("NO OBJ");
+        return true; // no buildings = not an error
+    }
+
+    auto& grid = GridManager::GetInstance();
+
+    for (const auto& b : j["buildings"])
+    {
+        if (!b.is_object()) continue;
+
+        const std::string type = b.value("type", "");
+        const int x = b.value("x", -1);
+        const int y = b.value("y", -1);
+        const std::string oStr = b.value("orientation", "NONE");
+        const GameObject::Orientation o = OrientationFromString(oStr);
+
+        if (!IsInsideGrid(x, y))
+            continue;
+
+        // Prevent double placement if something already there
+        GridCell* cell = grid.GetCell(x, y);
+        if (!cell) continue;
+        if (cell->gameObject || cell->conveyorId != INVALID_CONVEYOR) continue;
+
+        // ---- Conveyor (special because can be AoS or SoA)
+        if (type == "Conveyor")
+        {
+            // If you're in SoA mode, use ConveyorManager (recommended)
+            // If you're in AoS mode, Spawn<Conveyor> and place it
+
+            // Easiest: always go through ConveyorManager if you want the system to decide:
+            ConveyorManager::GetInstance().Create(x, y, o);
+            continue;
+        }
+
+        // ---- Miner
+        if (type == "Miner")
+        {
+            auto* m = ObjectManager::GetInstance().Spawn<Miner>(o);
+            grid.PlaceObject(m, x, y);
+            continue;
+        }
+
+        // ---- Crafter
+        if (type == "Crafter")
+        {
+            std::string recipeId = b.value("recipeId", "iron_ingot");
+            auto* c = ObjectManager::GetInstance().Spawn<Crafter>(o, recipeId);
+            grid.PlaceObject(c, x, y);
+            continue;
+        }
+
+        // Unknown type -> ignore
+    }
+
+    return true;
+}
+
+static const char* OrientationToString(GameObject::Orientation o)
+{
+    switch (o)
+    {
+    case GameObject::Orientation::NORTH: return "NORTH";
+    case GameObject::Orientation::SOUTH: return "SOUTH";
+    case GameObject::Orientation::EAST:  return "EAST";
+    case GameObject::Orientation::WEST:  return "WEST";
+    default: return "NONE";
+    }
+}
+
+static const char* ObjectTypeToString(GameObject::ObjectType t)
+{
+    switch (t)
+    {
+    case GameObject::ObjectType::MINER:    return "Miner";
+    case GameObject::ObjectType::CRAFTER:  return "Crafter";
+    case GameObject::ObjectType::CONVEYOR: return "Conveyor";
+    default: return "Unknown";
+    }
+}
+
+bool MapLoader::SaveBuildings(const std::string& path)
+{
+    GridManager& grid = GridManager::GetInstance();
+
+    const int w = grid.GetWidth();
+    const int h = grid.GetHeight();
+
+    if (w <= 0 || h <= 0)
+    {
+        std::cout << "MapLoader::SaveBuildings: grid not created\n";
+        return false;
+    }
+
+    json out;
+    out["buildings"] = json::array();
+
+    for (int y = 0; y < h; ++y)
+    {
+        for (int x = 0; x < w; ++x)
+        {
+            GridCell* cell = grid.GetCell(x, y);
+            if (!cell) continue;
+
+            // --- Case 1: SoA conveyor stored as conveyorId (no GameObject)
+            if (cell->conveyorId != 0)
+            {
+                json b;
+                b["type"] = "Conveyor";
+                b["x"] = x;
+                b["y"] = y;
+
+                // Get orientation from the system/manager if you have it
+                // If you don't yet, you can skip this field.
+                b["orientation"] = OrientationToString(ConveyorManager::GetInstance().GetOrientation(cell->conveyorId));
+
+                out["buildings"].push_back(b);
+                continue;
+            }
+
+            // --- Case 2: Classic GameObject building
+            if (!cell->gameObject) continue;
+
+            GameObject* go = cell->gameObject;
+
+            // Only save buildings you care about
+            if (go->type != GameObject::ObjectType::MINER &&
+                go->type != GameObject::ObjectType::CRAFTER 
+                //&&
+                //go->type != GameObject::ObjectType::CONVEYOR
+                )
+                continue;
+
+            json b;
+            b["type"] = ObjectTypeToString(go->type);
+            b["x"] = x;
+            b["y"] = y;
+            b["orientation"] = OrientationToString(go->orientation);
+
+            // Crafter extra data
+            if (go->type == GameObject::ObjectType::CRAFTER)
+            {
+                Crafter* c = static_cast<Crafter*>(go);
+
+                b["recipeId"] = c->GetRecipeId();
+            }
+
+            out["buildings"].push_back(b);
+        }
+    }
+
+    try
+    {
+        std::ofstream f(path);
+        if (!f.is_open())
+        {
+            std::cout << "MapLoader::SaveBuildings: cannot open " << path << "\n";
+            return false;
+        }
+        f << out.dump(2); // pretty print
+    }
+    catch (const std::exception& e)
+    {
+        std::cout << "MapLoader::SaveBuildings: write error: " << e.what() << "\n";
+        return false;
+    }
+
+    std::cout << "MapLoader::SaveBuildings: saved to " << path << "\n";
     return true;
 }
 

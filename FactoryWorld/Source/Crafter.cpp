@@ -5,6 +5,8 @@
 #include "Item.h"
 #include "RecipeManager.h"
 #include "ConveyorManager.h"
+#include "AssetManager.h"
+#include "GraphicManager.h"
 
 Crafter::Crafter(Orientation orientation, std::string recipeId)
 {
@@ -170,6 +172,8 @@ void Crafter::RebuildRecipeCache()
     const Recipe* r = RecipeManager::GetInstance().GetRecipeById(RecipeId);
     if (!r) return;
 
+    itemTexture = AssetManager::GetInstance().GetTexture(r->itemSpritePath);
+
     int totalNeed = 0;
     for (const ItemStack& in : r->inputs)
     {
@@ -258,6 +262,42 @@ void Crafter::Update()
     }
 }
 
+void Crafter::Render()
+{
+    // Render the crafter
+    GameObject::Render();
+
+    // These offsets just make the squares appear on top of the belt
+    const int cellSize = GridManager::GetInstance().GetCellSize();
+
+    // World-space item size (in "world pixels")
+    const float itemSizeWorld = 32;
+
+    // Conveyor top-left in world space
+    float baseWorldX = transform.x;
+    float baseWorldY = transform.y;
+
+    // Center item inside the cell (world space)
+    const float centerOffsetWorld = (cellSize - itemSizeWorld / 2) / 2;
+
+    // Start position (world space)
+    int startX = baseWorldX + centerOffsetWorld;
+    int startY = baseWorldY + centerOffsetWorld;
+
+    float sx = itemSizeWorld / itemTexture->getWidth();
+    float sy = itemSizeWorld / itemTexture->getHeight();
+
+    Transform itTransf;
+    itTransf.x = startX - centerOffsetWorld * 0.5f;
+    itTransf.y = startY - centerOffsetWorld * 0.5f;
+    itTransf.rotation = 0.0f;
+    itTransf.scaleX = sx;
+    itTransf.scaleY = sy;
+
+    GraphicManager::GetInstance().DrawTexture(itemTexture, itTransf);
+
+}
+
 void Crafter::ChangeRecipe(const std::string& newId)
 {
     const Recipe* newRecipe = RecipeManager::GetInstance().GetRecipeById(newId);
@@ -265,6 +305,18 @@ void Crafter::ChangeRecipe(const std::string& newId)
 
     RecipeId = newId;
     craftingMaxTime = newRecipe->craftTimeMs;
+    craftingCurrentTime = 0;
+    isCrafting = false;
+
+    RebuildRecipeCache();
+}
+
+void Crafter::ChangeNextRecipe()
+{
+    const Recipe* r = RecipeManager::GetInstance().GetNextRecipeById(RecipeId);
+
+    RecipeId = r->id;
+    craftingMaxTime = r->craftTimeMs;
     craftingCurrentTime = 0;
     isCrafting = false;
 

@@ -55,12 +55,15 @@ int main(int argc, char* args[])
 	TTF_Font* uiFont = TextManager::GetInstance().LoadFont("Media/Fonts/Ethnocentric-Regular.otf", 20);
 	SDL_Color white{ 255,255,255,255 };
 
+	ConveyorManager::GetInstance().Init(ConveyorMode::SoA);
+
 	if (!MapLoader::Load("Media/Maps/map01.json"))
 	{
 		GridManager::GetInstance().CreateGrid(50, 50, 64);
 		GridManager::GetInstance().SetTile(26, 26, TileType::IronVein);
 	}
 
+	
 	//GridManager::GetInstance().CreateGrid(50, 50, 64);
 
 	int worldW = GridManager::GetInstance().GetWidth() * GridManager::GetInstance().GetCellSize();
@@ -77,103 +80,43 @@ int main(int argc, char* args[])
 		(worldH - screenH) * 0.5f
 	);
 
-	ConveyorManager::GetInstance().Init(ConveyorMode::SoA);
+	if (!MapLoader::LoadBuildings("Media/Maps/map02.json"))
+	{
 
-	//ObjectManager::GetInstance().Spawn<Miner>(GameObject::Orientation::EAST);
-	//ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST);
-	//ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST);
-	//ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST);
-	//ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::SOUTH);
-	//ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST);
-	//ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST);
-	//ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST);
-	//ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST);
-	//ObjectManager::GetInstance().Spawn<Crafter>(GameObject::Orientation::EAST);
+		GridManager::GetInstance().PlaceObject(ObjectManager::GetInstance().Spawn<Miner>(GameObject::Orientation::NORTH), 26, 26);
+		GridManager::GetInstance().PlaceObject(ObjectManager::GetInstance().Spawn<Miner>(GameObject::Orientation::EAST), 26, 24);
+		GridManager::GetInstance().PlaceObject(ObjectManager::GetInstance().Spawn<Crafter>(GameObject::Orientation::EAST, "iron_ingot"), 30, 25);
+		GridManager::GetInstance().PlaceObject(ObjectManager::GetInstance().Spawn<Crafter>(GameObject::Orientation::EAST, "copper_ingot"), 30, 24);
 
-	////GridManager::GetInstance().PlaceObjectCentered(ObjectManager::GetInstance().Spawn<Miner>(GameObject::Orientation::EAST), 1, 1);
-	//GridManager::GetInstance().PlaceObjectCentered(ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST), 2, 1);
-	//GridManager::GetInstance().PlaceObjectCentered(ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST), 3, 1);
-	//GridManager::GetInstance().PlaceObjectCentered(ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST), 4, 1);
-	//GridManager::GetInstance().PlaceObjectCentered(ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::SOUTH), 5, 1);
-	//GridManager::GetInstance().PlaceObjectCentered(ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST), 5, 2);
-	//GridManager::GetInstance().PlaceObjectCentered(ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST), 6, 2);
-	//GridManager::GetInstance().PlaceObjectCentered(ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST), 8, 2);
-	//GridManager::GetInstance().PlaceObjectCentered(ObjectManager::GetInstance().Spawn<Conveyor>(GameObject::Orientation::EAST), 9, 2);
-	//GridManager::GetInstance().PlaceObjectCentered(ObjectManager::GetInstance().Spawn<Crafter>(GameObject::Orientation::EAST), 7, 2);
+		ConveyorManager::GetInstance().Create(20, 25, GameObject::Orientation::EAST);
+		ConveyorManager::GetInstance().Create(21, 25, GameObject::Orientation::EAST);
+		ConveyorManager::GetInstance().Create(22, 25, GameObject::Orientation::EAST);
+		ConveyorManager::GetInstance().Create(23, 25, GameObject::Orientation::EAST);
+		ConveyorManager::GetInstance().Create(24, 25, GameObject::Orientation::EAST);
+		ConveyorManager::GetInstance().Create(25, 25, GameObject::Orientation::EAST);
+		ConveyorManager::GetInstance().Create(26, 25, GameObject::Orientation::EAST);
+		ConveyorManager::GetInstance().Create(27, 25, GameObject::Orientation::EAST);
+		ConveyorManager::GetInstance().Create(28, 25, GameObject::Orientation::EAST);
+		ConveyorManager::GetInstance().Create(29, 25, GameObject::Orientation::EAST);
+		ConveyorManager::GetInstance().Create(31, 25, GameObject::Orientation::EAST);
+		ConveyorManager::GetInstance().Create(32, 25, GameObject::Orientation::EAST);
+		ConveyorManager::GetInstance().Create(33, 25, GameObject::Orientation::EAST);
+		ConveyorManager::GetInstance().Create(27, 24, GameObject::Orientation::EAST);
+		ConveyorManager::GetInstance().Create(28, 24, GameObject::Orientation::EAST);
+		ConveyorManager::GetInstance().Create(29, 24, GameObject::Orientation::EAST);
+		ConveyorManager::GetInstance().Create(31, 24, GameObject::Orientation::EAST);
+		ConveyorManager::GetInstance().Create(32, 24, GameObject::Orientation::EAST);
+		ConveyorManager::GetInstance().Create(33, 24, GameObject::Orientation::EAST);
 
+		ConveyorManager::GetInstance().Create(34, 24, GameObject::Orientation::SOUTH);
+		ConveyorManager::GetInstance().Create(34, 25, GameObject::Orientation::SOUTH);
+		ConveyorManager::GetInstance().Create(34, 26, GameObject::Orientation::SOUTH);
+		ConveyorManager::GetInstance().Create(34, 27, GameObject::Orientation::SOUTH);
+		ConveyorManager::GetInstance().Create(34, 28, GameObject::Orientation::SOUTH);
 
-	GridManager::GetInstance().PlaceObject(ObjectManager::GetInstance().Spawn<Miner>(GameObject::Orientation::NORTH), 26, 26);
-	GridManager::GetInstance().PlaceObject(ObjectManager::GetInstance().Spawn<Miner>(GameObject::Orientation::EAST), 26, 24);
-	GridManager::GetInstance().PlaceObject(ObjectManager::GetInstance().Spawn<Crafter>(GameObject::Orientation::EAST, "iron_ingot"), 30, 25);
-	GridManager::GetInstance().PlaceObject(ObjectManager::GetInstance().Spawn<Crafter>(GameObject::Orientation::EAST, "copper_ingot"), 30, 24);
-
-	ConveyorManager::GetInstance().Create(20, 25, GameObject::Orientation::EAST);
-	ConveyorManager::GetInstance().Create(21, 25, GameObject::Orientation::EAST);
-	ConveyorManager::GetInstance().Create(22, 25, GameObject::Orientation::EAST);
-	ConveyorManager::GetInstance().Create(23, 25, GameObject::Orientation::EAST);
-	ConveyorManager::GetInstance().Create(24, 25, GameObject::Orientation::EAST);
-	ConveyorManager::GetInstance().Create(25, 25, GameObject::Orientation::EAST);
-	ConveyorManager::GetInstance().Create(26, 25, GameObject::Orientation::EAST);
-	ConveyorManager::GetInstance().Create(27, 25, GameObject::Orientation::EAST);
-	ConveyorManager::GetInstance().Create(28, 25, GameObject::Orientation::EAST);
-	ConveyorManager::GetInstance().Create(29, 25, GameObject::Orientation::EAST);
-	ConveyorManager::GetInstance().Create(31, 25, GameObject::Orientation::EAST);
-	ConveyorManager::GetInstance().Create(32, 25, GameObject::Orientation::EAST);
-	ConveyorManager::GetInstance().Create(33, 25, GameObject::Orientation::EAST);
-	ConveyorManager::GetInstance().Create(27, 24, GameObject::Orientation::EAST);
-	ConveyorManager::GetInstance().Create(28, 24, GameObject::Orientation::EAST);
-	ConveyorManager::GetInstance().Create(29, 24, GameObject::Orientation::EAST);
-	ConveyorManager::GetInstance().Create(31, 24, GameObject::Orientation::EAST);
-	ConveyorManager::GetInstance().Create(32, 24, GameObject::Orientation::EAST);
-	ConveyorManager::GetInstance().Create(33, 24, GameObject::Orientation::EAST);
-
-	ConveyorManager::GetInstance().Create(34, 24, GameObject::Orientation::SOUTH);
-	ConveyorManager::GetInstance().Create(34, 25, GameObject::Orientation::SOUTH);
-	ConveyorManager::GetInstance().Create(34, 26, GameObject::Orientation::SOUTH);
-	ConveyorManager::GetInstance().Create(34, 27, GameObject::Orientation::SOUTH);
-	ConveyorManager::GetInstance().Create(34, 28, GameObject::Orientation::SOUTH);
-
-	//GridManager::GetInstance().PlaceObject(ObjectManager::GetInstance().GetObject(0), 1, 1);
-	//GridManager::GetInstance().PlaceObject(ObjectManager::GetInstance().GetObject(1), 2, 1);
-	//GridManager::GetInstance().PlaceObject(ObjectManager::GetInstance().GetObject(2), 3, 1);
-	//GridManager::GetInstance().PlaceObject(ObjectManager::GetInstance().GetObject(3), 4, 1);
-	//GridManager::GetInstance().PlaceObject(ObjectManager::GetInstance().GetObject(4), 5, 1);
-	//GridManager::GetInstance().PlaceObject(ObjectManager::GetInstance().GetObject(5), 5, 2);
-	//GridManager::GetInstance().PlaceObject(ObjectManager::GetInstance().GetObject(6), 6, 2);
-	//GridManager::GetInstance().PlaceObject(ObjectManager::GetInstance().GetObject(7), 8, 2);
-	//GridManager::GetInstance().PlaceObject(ObjectManager::GetInstance().GetObject(8), 9, 2);
-	//GridManager::GetInstance().PlaceObject(ObjectManager::GetInstance().GetObject(9), 7, 2);
-
-	/*Miner miner1 = Miner(GameObject::Orientation::EAST);
-
-	Conveyor conveyor1 = Conveyor(GameObject::Orientation::EAST);
-	Conveyor conveyor2 = Conveyor(GameObject::Orientation::EAST);
-	Conveyor conveyor3 = Conveyor(GameObject::Orientation::EAST);
-	Conveyor conveyor4 = Conveyor(GameObject::Orientation::SOUTH);
-	Conveyor conveyor5 = Conveyor(GameObject::Orientation::EAST);
-	Conveyor conveyor6 = Conveyor(GameObject::Orientation::EAST);
-	Conveyor conveyor7 = Conveyor(GameObject::Orientation::EAST);
-	Conveyor conveyor8 = Conveyor(GameObject::Orientation::EAST);
-
-	Crafter crafter1 = Crafter(GameObject::Orientation::EAST);
-
-	GridManager::GetInstance().PlaceObject(&miner1, 1, 1);
-	GridManager::GetInstance().PlaceObject(&conveyor1, 2, 1);
-	GridManager::GetInstance().PlaceObject(&conveyor2, 3, 1);
-	GridManager::GetInstance().PlaceObject(&conveyor3, 4, 1);
-	GridManager::GetInstance().PlaceObject(&conveyor4, 5, 1);
-	GridManager::GetInstance().PlaceObject(&conveyor5, 5, 2);
-	GridManager::GetInstance().PlaceObject(&conveyor6, 6, 2);
-	GridManager::GetInstance().PlaceObject(&conveyor7, 8, 2);
-	GridManager::GetInstance().PlaceObject(&conveyor8, 9, 2);
-
-	GridManager::GetInstance().PlaceObject(&crafter1, 7, 2);*/
-
-
+	}
 
 	float camSpeed = 400.f; // pixels per second
-	
-
 	
 	{
 		TimeManager::GetInstance().start();
@@ -250,6 +193,7 @@ int main(int argc, char* args[])
 				InputManager::GetInstance().ProcessEvent(e);
 			}
 
+			// *************************************************************** INPUTS ***************************************************************
 
 			// User can stop the game by pressing Escape
 			if (InputManager::GetInstance().GetKey(SDL_SCANCODE_ESCAPE))
@@ -285,8 +229,20 @@ int main(int argc, char* args[])
 			if (InputManager::GetInstance().GetKey(SDL_SCANCODE_3))
 				PlayerControlls::GetInstance().CreateCrafter(gridIdx.x, gridIdx.y);
 
+			// Remove buildings
+			if (InputManager::GetInstance().GetKeyDown(SDL_SCANCODE_BACKSPACE) || InputManager::GetInstance().GetMouseButton(SDL_BUTTON_RIGHT))
+				PlayerControlls::GetInstance().RemoveBuilding(gridIdx.x, gridIdx.y);
+			
+			// Change recipe of crafter
+			if (InputManager::GetInstance().GetKeyDown(SDL_SCANCODE_R))
+				PlayerControlls::GetInstance().ChangeCrafterRecipe(gridIdx.x, gridIdx.y);
 
-			// UPDATE ***************************************************************
+			// Save the buildings placed on the map
+			if (InputManager::GetInstance().GetKey(SDL_SCANCODE_M))
+				MapLoader::SaveBuildings("Media/Maps/map02.json");
+
+
+			// *************************************************************** UPDATE ***************************************************************
 
 			// Update all the items
 			ObjectManager::GetInstance().UpdateAll();
@@ -308,7 +264,7 @@ int main(int argc, char* args[])
 
 			auto& cam = GraphicManager::GetInstance().camera;
 
-			// RENDERING ************************************************************
+			// *************************************************************** RENDERING ************************************************************
 
 			GraphicManager::GetInstance().BeginFrame();
 			SDL_Renderer* r = GraphicManager::GetInstance().gRenderer;

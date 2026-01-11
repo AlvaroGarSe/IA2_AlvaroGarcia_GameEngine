@@ -16,4 +16,5 @@ struct Recipe
     std::vector<ItemStack> inputs;
     std::vector<ItemStack> outputs;
     uint32_t craftTimeMs = 1000;
+    std::string itemSpritePath;
 };

@@ -20,6 +20,8 @@ public:
 
     void RotateConveyor(ConveyorId id, int dir) override;
 
+    void RemoveConveyor(ConveyorId id) override;
+
     SDL_Point GetWorldPos(ConveyorId id) const override;
     GameObject::Orientation GetOrientation(ConveyorId id) const override;
 

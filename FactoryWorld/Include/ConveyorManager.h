@@ -26,6 +26,8 @@ public:
 
     bool TryExtractItem(ConveyorId id, Item& out);
 
+    void RemoveConveyor(ConveyorId id);
+
     SDL_Point GetWorldPos(ConveyorId id) const;
     GameObject::Orientation GetOrientation(ConveyorId id) const;
 

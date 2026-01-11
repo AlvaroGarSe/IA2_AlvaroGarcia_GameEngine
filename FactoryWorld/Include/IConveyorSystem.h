@@ -20,6 +20,8 @@ public:
     virtual bool CanAcceptItem(ConveyorId id) const = 0;
     virtual bool InsertItem(ConveyorId id, const Item& item) = 0;
 
+    virtual void RemoveConveyor(ConveyorId id) = 0;
+
     // optional if you need it for chaining logic
     virtual bool TryExtractItem(ConveyorId id, Item& out) = 0;
 

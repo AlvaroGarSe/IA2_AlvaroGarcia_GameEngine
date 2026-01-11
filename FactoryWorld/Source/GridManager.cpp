@@ -2,6 +2,8 @@
 #include "GraphicManager.h"
 #include "Camera2D.h"
 #include "AssetManager.h"
+#include "ConveyorManager.h"
+#include "ObjectManager.h"
 
 void GridManager::CreateGrid(int gridWidth, int gridHeight, int cellSize)
 {
@@ -88,11 +90,26 @@ bool GridManager::PlaceObject(GameObject* obj, int gridX, int gridY)
 	return true;
 }
 
-void GridManager::RemoveObject(int gridX, int gridY)
+bool GridManager::RemoveBuilding(int gridX, int gridY)
 {
-	// This function is not implemented yet
-	if (!IsInside(gridX, gridY)) return;
-	GetCell(gridX, gridY)->gameObject = nullptr;
+	GridCell* cell = GetCell(gridX, gridY);
+	if (!cell) return false;
+
+	if (cell->conveyorId != INVALID_CONVEYOR)
+	{
+		ConveyorManager::GetInstance().RemoveConveyor(cell->conveyorId);
+		cell->conveyorId = INVALID_CONVEYOR;
+		return true;
+	}
+	if (cell->gameObject != nullptr)
+	{
+		GameObject* obj = cell->gameObject;
+		cell->gameObject = nullptr;
+		ObjectManager::GetInstance().Destroy(obj);
+		return true;
+	}
+		
+	return false;
 }
 
 void GridManager::RenderDebugGrid(int mouseX, int mouseY)
@@ -291,24 +308,6 @@ SDL_Point GridManager::CenteredToIndex(int cx, int cy) const
 SDL_Point GridManager::IndexToCentered(int ix, int iy) const
 {
 	return { ix - mGridWidth / 2, iy - mGridHeight / 2 };
-}
-
-bool GridManager::CanPlaceCentered(int cx, int cy)
-{
-	SDL_Point idx = CenteredToIndex(cx, cy);
-	return CanPlace(idx.x, idx.y);
-}
-
-bool GridManager::PlaceObjectCentered(GameObject* obj, int cx, int cy)
-{
-	SDL_Point idx = CenteredToIndex(cx, cy);
-	return PlaceObject(obj, idx.x, idx.y);
-}
-
-void GridManager::RemoveObjectCentered(int cx, int cy)
-{
-	SDL_Point idx = CenteredToIndex(cx, cy);
-	RemoveObject(idx.x, idx.y);
 }
 
 GridCell* GridManager::GetCellCentered(int cx, int cy)

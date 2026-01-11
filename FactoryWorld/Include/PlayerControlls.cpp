@@ -32,6 +32,12 @@ void PlayerControlls::CreateCrafter(int cx, int cy)
 	}
 }
 
+void PlayerControlls::RemoveBuilding(int cx, int cy)
+{
+	if (GridManager::GetInstance().RemoveBuilding(cx, cy))
+		printf("PlayerControlls::RemoveBuilding: Object deleted succesfully");
+}
+
 void PlayerControlls::RotateBuilding(int cx, int cy, int dir)
 {
 	GridCell* cell = GridManager::GetInstance().GetCell(cx, cy);
@@ -44,4 +50,13 @@ void PlayerControlls::RotateBuilding(int cx, int cy, int dir)
 	{
 		cell->gameObject->Rotate(dir);
 	}
+}
+
+void PlayerControlls::ChangeCrafterRecipe(int cx, int cy)
+{
+	GridCell* cell = GridManager::GetInstance().GetCell(cx, cy);
+	if (!cell) return;
+	if (!cell->gameObject) return;
+	if (cell->gameObject->type != GameObject::ObjectType::CRAFTER) return;
+	static_cast<Crafter*>(cell->gameObject)->ChangeNextRecipe();
 }

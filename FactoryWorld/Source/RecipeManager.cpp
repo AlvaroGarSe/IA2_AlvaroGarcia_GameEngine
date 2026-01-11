@@ -10,6 +10,7 @@ void RecipeManager::InitDefaults()
     r.inputs = { {ItemType::IronOre, 2} };
     r.outputs = { {ItemType::IronIngot, 1} };
     r.craftTimeMs = 2500;
+    r.itemSpritePath = "Media/Items/IronIngot.png";
     mRecipes.push_back(r);
 
     // Copper Ingot: 2 CopperOre -> 1 CopperIngot
@@ -17,6 +18,7 @@ void RecipeManager::InitDefaults()
     r.inputs = { {ItemType::CopperOre, 2} };
     r.outputs = { {ItemType::CopperIngot, 1} };
     r.craftTimeMs = 2500;
+    r.itemSpritePath = "Media/Items/CopperIngot.png";
     mRecipes.push_back(r);
 }
 
@@ -24,6 +26,23 @@ const Recipe* RecipeManager::GetRecipeById(const std::string& id) const
 {
     for (const Recipe& r : mRecipes)
         if (r.id == id) return &r;
+    return nullptr;
+}
+
+const Recipe* RecipeManager::GetNextRecipeById(const std::string& id) const
+{
+    for (int i = 0; i < mRecipes.size(); i++)
+    {
+        if (mRecipes[i].id == id)
+        {
+            // Checks if the recipe is the last one
+            if (i == mRecipes.size() - 1)
+            {
+                return &mRecipes[0];
+            }
+            return &mRecipes[i + 1];
+        }
+    }
     return nullptr;
 }
 

@@ -19,5 +19,7 @@ public:
     const Recipe* GetRecipeById(const std::string& id) const;
     const std::vector<Recipe>& GetAll() const { return mRecipes; }
 
+    const Recipe* GetNextRecipeById(const std::string& id) const;
+
     bool AddRecipe(const Recipe& newRecipe);
 };
