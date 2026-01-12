@@ -36,6 +36,8 @@ public:
 
 	SDL_Texture* getSDLTexture() { return mTexture; }
 
+	bool LoadFromSurface(SDL_Surface* loadedSurface);
+
 	// File path to the image of the texture
 	std::string mTexturePath;
 

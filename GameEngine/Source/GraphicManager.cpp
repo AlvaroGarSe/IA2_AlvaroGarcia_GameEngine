@@ -1,5 +1,6 @@
 #include "GraphicManager.h"
 #include "Camera2D.h"
+#include <iostream>
 
 bool GraphicManager::init()
 {
@@ -77,6 +78,58 @@ void GraphicManager::BeginFrame()
 void GraphicManager::EndFrame()
 {
 	SDL_RenderPresent(gRenderer);
+}
+
+void GraphicManager::setScreenSize(int screenWidth, int screenHeight)
+{
+	SCREEN_WIDTH = screenWidth;
+	SCREEN_HEIGHT = screenHeight;
+
+	if (gWindow && !IsFullscreen())
+		SDL_SetWindowSize(gWindow, SCREEN_WIDTH, SCREEN_HEIGHT);
+}
+
+bool GraphicManager::SetFullscreen(bool enabled, bool borderless)
+{
+	if (!gWindow) return false;
+
+	Uint32 flag = 0;
+	if (enabled)
+		flag = borderless ? SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_FULLSCREEN;
+
+	if (SDL_SetWindowFullscreen(gWindow, flag) != 0)
+	{
+		std::cout << "SDL_SetWindowFullscreen error: " << SDL_GetError() << "\n";
+		return false;
+	}
+
+	// Update cached size
+	RefreshWindowSizeCache();
+
+	camera.SetViewPortSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+
+	return true;
+}
+
+void GraphicManager::ToggleFullscreen(bool borderless)
+{
+	SetFullscreen(!IsFullscreen(), borderless);
+}
+
+bool GraphicManager::IsFullscreen() const
+{
+	if (!gWindow) return false;
+	Uint32 f = SDL_GetWindowFlags(gWindow);
+	return (f & SDL_WINDOW_FULLSCREEN) || (f & SDL_WINDOW_FULLSCREEN_DESKTOP);
+}
+
+void GraphicManager::RefreshWindowSizeCache()
+{
+	if (!gWindow) return;
+	int w = 0, h = 0;
+	SDL_GetWindowSize(gWindow, &w, &h);
+	SCREEN_WIDTH = w;
+	SCREEN_HEIGHT = h;
 }
 
 void GraphicManager::DrawTexture(LTexture* texture, const Transform& transform, SDL_Rect* clip, SDL_RendererFlip flip)

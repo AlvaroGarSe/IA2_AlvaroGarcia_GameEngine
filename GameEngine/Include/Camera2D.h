@@ -14,6 +14,7 @@ public:
 	SDL_Point ScreenToWorld(int screenX, int screenY) const;
 
 	void SetWorldBounds(int worldW, int worldH, int screenW, int screenH);
+	void SetViewPortSize(int screenW, int screenH);
 	void Clamp();
 
 	// Zoom

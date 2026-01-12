@@ -37,6 +37,7 @@ int main(int argc, char* args[])
 	ConveyorManager::CreateSingleton();
 	PlayerControlls::CreateSingleton();
 	
+	GraphicManager::GetInstance().setScreenSize(1920, 1080);
 
 	if (!GraphicManager::GetInstance().init())
 	{
@@ -44,10 +45,9 @@ int main(int argc, char* args[])
 		return 0;
 	}
 
-	GraphicManager::GetInstance().setScreenSize(1280, 960);
-
 	int SCREEN_WIDTH = GraphicManager::GetInstance().getScreenWidth();
 	int SCREEN_HEIGHT = GraphicManager::GetInstance().getScreenHeight();
+
 
 	TextManager::GetInstance().Init();
 	RecipeManager::GetInstance().InitDefaults();
@@ -57,7 +57,7 @@ int main(int argc, char* args[])
 
 	ConveyorManager::GetInstance().Init(ConveyorMode::SoA);
 
-	if (!MapLoader::Load("Media/Maps/map01.json"))
+	if (!MapLoader::LoadMap("Media/Maps/map01.json"))
 	{
 		GridManager::GetInstance().CreateGrid(50, 50, 64);
 		GridManager::GetInstance().SetTile(26, 26, TileType::IronVein);
@@ -80,7 +80,7 @@ int main(int argc, char* args[])
 		(worldH - screenH) * 0.5f
 	);
 
-	if (!MapLoader::LoadBuildings("Media/Maps/map02.json"))
+	if (!MapLoader::LoadBuildings("Media/Maps/buildings01.json"))
 	{
 
 		GridManager::GetInstance().PlaceObject(ObjectManager::GetInstance().Spawn<Miner>(GameObject::Orientation::NORTH), 26, 26);
@@ -116,7 +116,7 @@ int main(int argc, char* args[])
 
 	}
 
-	float camSpeed = 400.f; // pixels per second
+	float camSpeed = GraphicManager::GetInstance().getScreenWidth() / 3 * GridManager::GetInstance().GetWidth() / 50; // pixels per second
 	
 	{
 		TimeManager::GetInstance().start();
@@ -132,7 +132,6 @@ int main(int argc, char* args[])
 		bool quit = false;
 
 		float move = 0.f;
-
 
 		int mouseX, mouseY;
 
@@ -201,6 +200,14 @@ int main(int argc, char* args[])
 				quit = true;
 			}
 
+			// Toggle the window to Fullscreen in borderless mode
+			if (InputManager::GetInstance().GetKeyDown(SDL_SCANCODE_F11))
+			{
+				GraphicManager::GetInstance().ToggleFullscreen(true);
+				SCREEN_WIDTH = GraphicManager::GetInstance().getScreenWidth();
+				SCREEN_HEIGHT = GraphicManager::GetInstance().getScreenHeight();
+			}
+
 			// Input to move the camera
 			if (InputManager::GetInstance().GetKey(SDL_SCANCODE_A))
 				GraphicManager::GetInstance().camera.Move(-move, 0);
@@ -239,7 +246,7 @@ int main(int argc, char* args[])
 
 			// Save the buildings placed on the map
 			if (InputManager::GetInstance().GetKey(SDL_SCANCODE_M))
-				MapLoader::SaveBuildings("Media/Maps/map02.json");
+				MapLoader::SaveBuildingsAsync("Media/Maps/buildings01.json");
 
 
 			// *************************************************************** UPDATE ***************************************************************
@@ -317,6 +324,7 @@ int main(int argc, char* args[])
 
 	ObjectManager::GetInstance().Clear();
 	AssetManager::GetInstance().Clear();
+
 	GraphicManager::GetInstance().close();
 
 	return 0;

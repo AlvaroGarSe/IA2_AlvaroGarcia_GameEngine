@@ -8,9 +8,11 @@
 #include "Crafter.h"
 #include "Miner.h"
 #include "ObjectManager.h"
+#include <thread>
 
+std::atomic<bool> MapLoader::sIsSaving{ false };
 
-bool MapLoader::Load(const std::string& path)
+bool MapLoader::LoadMap(const std::string& path)
 {
     std::ifstream f(path);
     if (!f.is_open())
@@ -52,8 +54,7 @@ bool MapLoader::Load(const std::string& path)
         const auto& tiles = j["tiles"];
         if ((int)tiles.size() != w * h)
         {
-            std::cout << "MapLoader: tiles size mismatch. expected "
-                << (w * h) << " got " << tiles.size() << "\n";
+            std::cout << "MapLoader: tiles size mismatch. expected " << (w * h) << " got " << tiles.size() << "\n";
             return false;
         }
 
@@ -94,7 +95,7 @@ bool MapLoader::Load(const std::string& path)
             }
         }
 
-        // 4) Sparse mode: apply individual cells (last = overrides)
+        // 4) Sparse mode: apply individual cells
         if (j.contains("cells") && j["cells"].is_array())
         {
             for (const auto& c : j["cells"])
@@ -108,10 +109,8 @@ bool MapLoader::Load(const std::string& path)
             }
         }
     }
-
-    //LoadBuildings(j);
-
-    // Optional preload
+    
+    // Preload textures of the cells
     if (j.value("preloadTileTextures", true))
     {
         AssetManager& assets = AssetManager::GetInstance();
@@ -121,7 +120,7 @@ bool MapLoader::Load(const std::string& path)
         assets.GetTexture("Media/Tiles/Water.png");
     }
 
-    std::cout << "MapLoader: Map loaded successfully\n";
+    printf("MapLoader: Map loaded successfully\n");
 
     return true;
 }
@@ -133,12 +132,6 @@ static GameObject::Orientation OrientationFromString(const std::string& s)
     if (s == "EAST")  return GameObject::Orientation::EAST;
     if (s == "WEST")  return GameObject::Orientation::WEST;
     return GameObject::Orientation::NONE;
-}
-
-static bool IsInsideGrid(int x, int y)
-{
-    auto& g = GridManager::GetInstance();
-    return g.IsInside(x, y);
 }
 
 bool MapLoader::LoadBuildings(const std::string& path)
@@ -163,7 +156,7 @@ bool MapLoader::LoadBuildings(const std::string& path)
         return true; // no buildings = not an error
     }
 
-    auto& grid = GridManager::GetInstance();
+    GridManager& grid = GridManager::GetInstance();
 
     for (const auto& b : j["buildings"])
     {
@@ -175,7 +168,7 @@ bool MapLoader::LoadBuildings(const std::string& path)
         const std::string oStr = b.value("orientation", "NONE");
         const GameObject::Orientation o = OrientationFromString(oStr);
 
-        if (!IsInsideGrid(x, y))
+        if (!grid.IsInside(x, y))
             continue;
 
         // Prevent double placement if something already there
@@ -264,7 +257,7 @@ bool MapLoader::SaveBuildings(const std::string& path)
             if (!cell) continue;
 
             // --- Case 1: SoA conveyor stored as conveyorId (no GameObject)
-            if (cell->conveyorId != 0)
+            if (cell->conveyorId != INVALID_CONVEYOR)
             {
                 json b;
                 b["type"] = "Conveyor";
@@ -328,5 +321,128 @@ bool MapLoader::SaveBuildings(const std::string& path)
 
     std::cout << "MapLoader::SaveBuildings: saved to " << path << "\n";
     return true;
+}
+
+bool MapLoader::SaveBuildingsAsync(const std::string& path)
+{
+    if (sIsSaving.exchange(true)) {
+        printf("MapLoader::SaveBuildings: ALREADY SAVING\n");
+        return false; // already saving
+    }
+
+    auto snapshot = CollectBuildingsSnapshot();
+
+    std::thread([path, snapshot = std::move(snapshot)]() mutable
+        {
+            try
+            {
+                json out = BuildBuildingsJson(snapshot);
+                WriteJsonToFileAtomic(path, out);
+            }
+            catch (...) {}
+
+            sIsSaving.store(false);
+        }).detach();
+
+    std::cout << "MapLoader::SaveBuildings: saved to " << path << "\n";
+    return true;
+}
+
+std::vector<BuildingSaveData> MapLoader::CollectBuildingsSnapshot()
+{
+    GridManager& grid = GridManager::GetInstance();
+    std::vector<BuildingSaveData> out;
+
+    const int w = grid.GetWidth();
+    const int h = grid.GetHeight();
+
+    out.reserve(w * h / 4);
+
+    for (int y = 0; y < h; ++y)
+        for (int x = 0; x < w; ++x)
+        {
+            GridCell* cell = grid.GetCell(x, y);
+            if (!cell) continue;
+
+            // SoA conveyor
+            if (cell->conveyorId != INVALID_CONVEYOR)
+            {
+                BuildingSaveData b;
+                b.type = "Conveyor";
+                b.x = x; b.y = y;
+                b.orientation = ConveyorManager::GetInstance().GetOrientation(cell->conveyorId);
+                out.push_back(std::move(b));
+                continue;
+            }
+
+            // GameObject buildings
+            if (!cell->gameObject) continue;
+
+            GameObject* go = cell->gameObject;
+
+            if (go->type == GameObject::ObjectType::MINER)
+            {
+                BuildingSaveData b;
+                b.type = "Miner";
+                b.x = x; b.y = y;
+                b.orientation = go->orientation;
+                out.push_back(std::move(b));
+            }
+            else if (go->type == GameObject::ObjectType::CRAFTER)
+            {
+                auto* c = static_cast<Crafter*>(go);
+
+                BuildingSaveData b;
+                b.type = "Crafter";
+                b.x = x; b.y = y;
+                b.orientation = go->orientation;
+                b.recipeId = c->GetRecipeId();
+                b.hasRecipe = true;
+                out.push_back(std::move(b));
+            }
+        }
+
+    return out;
+}
+
+json MapLoader::BuildBuildingsJson(const std::vector<BuildingSaveData>& snapshot)
+{
+    json out;
+    out["buildings"] = json::array();
+
+    for (const auto& b : snapshot)
+    {
+        json j;
+        j["type"] = b.type;
+        j["x"] = b.x;
+        j["y"] = b.y;
+        j["orientation"] = OrientationToString(b.orientation);
+        if (b.hasRecipe) j["recipeId"] = b.recipeId;
+        out["buildings"].push_back(std::move(j));
+    }
+    return out;
+}
+
+bool MapLoader::WriteJsonToFileAtomic(const std::string& path, const json& j)
+{
+    const std::string tmp = path + ".tmp";
+
+    std::ofstream f(tmp, std::ios::binary);
+    if (!f.is_open())
+    {
+        std::cout << "MapLoader: cannot open tmp file " << tmp << "\n";
+        return false;
+    }
+
+    f << j.dump(2);
+    f.close();
+
+    std::remove(path.c_str());
+    return std::rename(tmp.c_str(), path.c_str()) == 0;
+}
+
+bool MapLoader::IsSaving()
+{
+    return sIsSaving.load();
 }
 

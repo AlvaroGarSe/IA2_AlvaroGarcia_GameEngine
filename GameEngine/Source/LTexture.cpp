@@ -26,6 +26,20 @@ void LTexture::render(int x, int y, float scaleX, float scaleY,  SDL_Rect* clip,
 	SDL_RenderCopyEx(GraphicManager::GetInstance().gRenderer, mTexture, clip, &renderQuad, angle, center, flip);
 }
 
+bool LTexture::LoadFromSurface(SDL_Surface* loadedSurface)
+{
+	// Destroy previous texture if any
+	free();
+
+	SDL_Texture* newTexture = SDL_CreateTextureFromSurface(GraphicManager::GetInstance().gRenderer, loadedSurface);
+	if (!newTexture) return false;
+
+	mTexture = newTexture;
+	mWidth = loadedSurface->w;
+	mHeight = loadedSurface->h;
+	return true;
+}
+
 LTexture::LTexture(int Widht, int Height)
 {
 	//Initialize

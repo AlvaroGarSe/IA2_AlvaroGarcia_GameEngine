@@ -31,10 +31,10 @@ private:
 public:
 
 	//The window we'll be rendering to
-	SDL_Window* gWindow = NULL;
+	SDL_Window* gWindow = nullptr;
 
 	//The window renderer
-	SDL_Renderer* gRenderer = NULL;
+	SDL_Renderer* gRenderer = nullptr;
 
 	Camera2D camera;
 
@@ -50,13 +50,22 @@ public:
 	// Present frame
 	void EndFrame();
 
-	void setScreenSize(int screenWidht, int screenHeight) { SCREEN_WIDTH = screenWidht;  SCREEN_HEIGHT = screenHeight; };
-
-	void DrawTexture(LTexture* texture, const Transform& transform, SDL_Rect* clip = nullptr, SDL_RendererFlip flip = SDL_FLIP_NONE);
+	void setScreenSize(int screenWidth, int screenHeight);
 
 	//Gives SCREEN_WIDTH
 	int getScreenWidth() { return SCREEN_WIDTH; };
 
 	//Gives SCREEN_HEIGHT
 	int getScreenHeight() { return SCREEN_HEIGHT; };
+
+	// FULLSCREEN
+	bool SetFullscreen(bool enabled, bool borderless = true);
+	void ToggleFullscreen(bool borderless = true);
+	bool IsFullscreen() const;
+
+	void DrawTexture(LTexture* texture, const Transform& transform, SDL_Rect* clip = nullptr, SDL_RendererFlip flip = SDL_FLIP_NONE);
+
+	// Updates SCREEN_WIDTH/SCREEN_HEIGHT from SDL
+	void RefreshWindowSizeCache();
+
 };

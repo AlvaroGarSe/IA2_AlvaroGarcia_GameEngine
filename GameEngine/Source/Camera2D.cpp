@@ -42,6 +42,13 @@ void Camera2D::SetWorldBounds(int worldW, int worldH, int screenW, int screenH)
 	Clamp();
 }
 
+void Camera2D::SetViewPortSize(int screenW, int screenH)
+{
+	mScreenW = screenW;
+	mScreenH = screenH;
+	Clamp();
+}
+
 static float ClampF(float value, float min, float max)
 {
 	if (value < min) return min;
