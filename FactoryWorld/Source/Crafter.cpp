@@ -64,7 +64,7 @@ Crafter::Crafter(Orientation orientation, std::string recipeId)
 
     RebuildRecipeCache();
 
-	texturePath = "Media/Crafter.png";
+	texturePath = "Media/Crafter1.png";
 }
 
 Crafter::~Crafter()

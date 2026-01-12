@@ -48,7 +48,7 @@
     <ClCompile Include="Source\SoAConveyorSystem.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="Include\PlayerControlls.cpp">
+    <ClCompile Include="Source\PlayerControlls.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
   </ItemGroup>

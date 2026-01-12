@@ -13,7 +13,8 @@ public:
 	~Conveyor();
 
 	void Update() override;
-	void Render() override;
+	void RenderItems();
+	void RenderItemsBehind();
 
 	bool CanAcceptItem() const;
 	bool InsertItem(const Item& item); // Inserts an item into slot 0

@@ -47,7 +47,7 @@ void SoAConveyorSystem::StartAll()
 
 void SoAConveyorSystem::UpdateAll(uint32_t now)
 {
-	for (int i = 0; i < (int)mX.size(); ++i)
+	for (int i = 0; i < mX.size(); ++i)
 	{
 		if (!mActive[i]) continue;
 
@@ -72,75 +72,76 @@ static const char* ItemSpritePath(ItemType t)
 {
 	switch (t)
 	{
-	case ItemType::IronOre:      return "Media/Items/IronOre.png";
-	case ItemType::IronIngot:    return "Media/Items/IronIngot.png";
-	case ItemType::CopperOre:    return "Media/Items/CopperOre.png";
-	case ItemType::CopperIngot:  return "Media/Items/CopperIngot.png";
-	default:                     return "Media/Items/Unknown.png";
+		case ItemType::IronOre:   return "Media/Items/IronOre.png";
+		case ItemType::IronIngot: return "Media/Items/IronIngot.png";
+		case ItemType::CopperOre:   return "Media/Items/CopperOre.png";
+		case ItemType::CopperIngot: return "Media/Items/CopperIngot.png";
+		case ItemType::IronRod: return "Media/Items/IronRod.png";
+		case ItemType::IronWrench: return "Media/Items/IronWrench.png";
+		case ItemType::IronGear: return "Media/Items/IronGear.png";
+		case ItemType::CopperGear: return "Media/Items/CopperGear.png";
+		default:                  return "Media/Items/UnknownItem.png";
 	}
 }
 
 void SoAConveyorSystem::RenderAll()
 {
-	auto& gfx = GraphicManager::GetInstance();
+	GraphicManager& gfx = GraphicManager::GetInstance();
 
 	const int cellSize = GridManager::GetInstance().GetCellSize();
 
-	const int slotSpacingWorld = cellSize / SLOT_COUNT;
-
-	// World-space sprite size
-	const float itemSizeWorld = 32.0f;
-
-	Transform ct;
-	ct.scaleX = 0.5;
-	ct.scaleY = 0.5;
+	double rotation = 0.0;
+	float scaleX = 0.5f;
+	float scaleY = 0.5f;
 
 	// Renders first all the Conveyor sprites to not render some items behind the next conveyor
-	for (int i = 0; i < (int)mX.size(); ++i)
+	for (int i = 0; i < mX.size(); ++i)
 	{
 		if (!mActive[i]) continue;
 
 		// Direction of the sprite deppending on the orientation
-		int dirX = 0, dirY = 0;
 		switch (mOri[i])
 		{
-		case GameObject::Orientation::NORTH: dirX = 0;  dirY = -1; ct.rotation = 0; break;
-		case GameObject::Orientation::SOUTH: dirX = 0;  dirY = 1; ct.rotation = 180; break;
-		case GameObject::Orientation::EAST:  dirX = 1;  dirY = 0; ct.rotation = 90;  break;
-		case GameObject::Orientation::WEST:  dirX = -1; dirY = 0; ct.rotation = 270; break;
-		default: ct.rotation = 0; break;
+		case GameObject::Orientation::NORTH: rotation = 0; break;
+		case GameObject::Orientation::SOUTH: rotation = 180; break;
+		case GameObject::Orientation::EAST:  rotation = 90;  break;
+		case GameObject::Orientation::WEST:  rotation = 270; break;
+		default: rotation = 0; break;
 		}
 
-		ct.x = mX[i];
-		ct.y = mY[i];
-
-		GraphicManager::GetInstance().DrawTexture(convTexture, ct);
+		gfx.DrawTextureSoA(convTexture, mX[i], mY[i], rotation, scaleX, scaleY);
 
 	}
 
-	for (int i = 0; i < (int)mX.size(); ++i)
+	// World-space item size (in "world pixels")
+	const int itemSizeWorld = 32;
+	const int slotSpacingWorld = cellSize / SLOT_COUNT;
+
+	const int centerOffsetWorld = (int)((cellSize - itemSizeWorld / 2) / 2);
+
+	int dirX = 0, dirY = 0;
+	
+	// Parameters for the transform of the items
+	int startX, startY;
+	float sx, sy, offset;
+
+	// Rendering of all the items on the conveyors
+	for (int i = 0; i < mX.size(); ++i)
 	{
 		if (!mActive[i]) continue;
 
 		// Direction of the sprite deppending on the orientation
-		int dirX = 0, dirY = 0;
 		switch (mOri[i])
 		{
-		case GameObject::Orientation::NORTH: dirX = 0;  dirY = -1; ct.rotation = 0; break;
-		case GameObject::Orientation::SOUTH: dirX = 0;  dirY = 1; ct.rotation = 180; break;
-		case GameObject::Orientation::EAST:  dirX = 1;  dirY = 0; ct.rotation = 90;  break;
-		case GameObject::Orientation::WEST:  dirX = -1; dirY = 0; ct.rotation = 270; break;
-		default: ct.rotation = 0; break;
+		case GameObject::Orientation::NORTH: dirX = 0;  dirY = -1; break;
+		case GameObject::Orientation::SOUTH: dirX = 0;  dirY = 1; break;
+		case GameObject::Orientation::EAST:  dirX = 1;  dirY = 0; break;
+		case GameObject::Orientation::WEST:  dirX = -1; dirY = 0; break;
+		default: break;
 		}
 
-		//GraphicManager::GetInstance().DrawTexture(convText, ct);
-
-		// but then used itemSizeWorld=32 for the sprite. We'll mimic your logic.)
-		const float centerItemForCell = 12.0f;
-		const float centerOffsetWorld = (cellSize - centerItemForCell) / 2.0f;
-
-		float startX = mX[i] + centerOffsetWorld;
-		float startY = mY[i] + centerOffsetWorld;
+		startX = mX[i] + centerOffsetWorld;
+		startY = mY[i] + centerOffsetWorld;
 
 		for (int s = 0; s < SLOT_COUNT; ++s)
 		{
@@ -150,24 +151,80 @@ void SoAConveyorSystem::RenderAll()
 			LTexture* itemTex = AssetManager::GetInstance().GetTexture(ItemSpritePath(t));
 			if (!itemTex) continue;
 
-			
+			sx = (float)itemSizeWorld / (float)itemTex->getWidth();
+			sy = (float)itemSizeWorld / (float)itemTex->getHeight();
 
-			float sx = itemSizeWorld / (float)itemTex->getWidth();
-			float sy = itemSizeWorld / (float)itemTex->getHeight();
+			offset = (s * slotSpacingWorld) - (cellSize / 2.0f - slotSpacingWorld / 2.0f);
 
-			float offset = (s * slotSpacingWorld) - (cellSize / 2.0f - slotSpacingWorld / 2.0f);
-
-			Transform it;
-			it.x = startX + dirX * offset - itemSizeWorld * 0.25f;
-			it.y = startY + dirY * offset - itemSizeWorld * 0.25f;
-			it.rotation = 0.0f;
-			it.scaleX = sx;
-			it.scaleY = sy;
-
-			gfx.DrawTexture(itemTex, it);
+			gfx.DrawTextureSoA(itemTex, startX + dirX * offset - itemSizeWorld * 0.25f, startY + dirY * offset - itemSizeWorld * 0.25f, 0.0f, sx, sy);
 		}
 	}
+}
 
+void SoAConveyorSystem::RenderAllItemsBehind()
+{
+	GraphicManager& gfx = GraphicManager::GetInstance();
+
+	const int cellSize = GridManager::GetInstance().GetCellSize();
+
+	double rotation = 0.0;
+	float scaleX = 0.5f;
+	float scaleY = 0.5f;
+
+	// World-space item size (in "world pixels")
+	const int itemSizeWorld = 32;
+	const int slotSpacingWorld = cellSize / SLOT_COUNT;
+
+	const int centerOffsetWorld = (int)((cellSize - itemSizeWorld / 2) / 2);
+
+	int dirX = 0, dirY = 0;
+
+	// Parameters for the transform of the items
+	int startX, startY;
+	float sx, sy, offset;
+	ItemType previousItem = ItemType::NONE;
+	LTexture* itemTex = nullptr;
+
+	// Rendering of all the items on the conveyors
+	for (int i = 0; i < mX.size(); ++i)
+	{
+		if (!mActive[i]) continue;
+
+		// Direction of the sprite deppending on the orientation
+		switch (mOri[i])
+		{
+		case GameObject::Orientation::NORTH: dirX = 0;  dirY = -1; rotation = 0; break;
+		case GameObject::Orientation::SOUTH: dirX = 0;  dirY = 1; rotation = 180; break;
+		case GameObject::Orientation::EAST:  dirX = 1;  dirY = 0; rotation = 90; break;
+		case GameObject::Orientation::WEST:  dirX = -1; dirY = 0; rotation = 270; break;
+		default: break;
+		}
+
+		gfx.DrawTextureSoA(convTexture, mX[i], mY[i], rotation, scaleX, scaleY);
+
+		startX = mX[i] + centerOffsetWorld;
+		startY = mY[i] + centerOffsetWorld;
+
+		for (int s = 0; s < SLOT_COUNT; ++s)
+		{
+			ItemType t = mSlotType[SlotToIndex(i, s)];
+			if (t == ItemType::NONE) continue;
+			if (previousItem != t)
+			{
+				itemTex = AssetManager::GetInstance().GetTexture(ItemSpritePath(t));
+				previousItem = t;
+			}
+
+			if (!itemTex) continue;
+
+			sx = (float)itemSizeWorld / (float)itemTex->getWidth();
+			sy = (float)itemSizeWorld / (float)itemTex->getHeight();
+
+			offset = (s * slotSpacingWorld) - (cellSize / 2.0f - slotSpacingWorld / 2.0f);
+
+			gfx.DrawTextureSoA(itemTex, startX + dirX * offset - itemSizeWorld * 0.25f, startY + dirY * offset - itemSizeWorld * 0.25f, 0.0f, sx, sy);
+		}
+	}
 }
 
 ConveyorId SoAConveyorSystem::CreateConveyorRuntime(int cX, int cY, GameObject::Orientation o)
@@ -181,7 +238,7 @@ ConveyorId SoAConveyorSystem::CreateConveyorRuntime(int cX, int cY, GameObject::
 bool SoAConveyorSystem::CanAcceptItem(ConveyorId id) const
 {
 	int i = IndexFromId(id);
-	    if (i < 0 || i >= (int)mX.size()) return false;
+	    if (i < 0 || i >= mX.size()) return false;
 	
 	    return SlotEmpty(i, 0);
 }
@@ -201,7 +258,7 @@ bool SoAConveyorSystem::InsertItem(ConveyorId id, const Item& item)
 bool SoAConveyorSystem::TryExtractItem(ConveyorId id, Item& out)
 {
 	int i = IndexFromId(id);
-	if (i < 0 || i >= (int)mX.size()) return false;
+	if (i < 0 || i >= mX.size()) return false;
 
 	int last = SLOT_COUNT - 1;
 	ItemType t = mSlotType[i * SLOT_COUNT + last];
@@ -246,7 +303,7 @@ void SoAConveyorSystem::RotateConveyor(ConveyorId id, int dir)
 void SoAConveyorSystem::RemoveConveyor(ConveyorId id)
 {
 	int i = IndexFromId(id);
-	if (i < 0 || i >= (int)mX.size()) return;
+	if (i < 0 || i >= mX.size()) return;
 
 	for (int s = 0; s < SLOT_COUNT; ++s)
 		mSlotType[SlotToIndex(i, s)] = ItemType::NONE;
@@ -258,14 +315,14 @@ void SoAConveyorSystem::RemoveConveyor(ConveyorId id)
 SDL_Point SoAConveyorSystem::GetWorldPos(ConveyorId id) const
 {
 	int i = IndexFromId(id);
-	if (i < 0 || i >= (int)mX.size()) return SDL_Point{ 0,0 };
-	return SDL_Point{ (int)mX[i], (int)mY[i] };
+	if (i < 0 || i >= mX.size()) return SDL_Point{ 0,0 };
+	return SDL_Point{ mX[i], mY[i] };
 }
 
 GameObject::Orientation SoAConveyorSystem::GetOrientation(ConveyorId id) const
 {
 	int i = IndexFromId(id);
-	if (i < 0 || i >= (int)mOri.size()) return GameObject::Orientation::NONE;
+	if (i < 0 || i >= mOri.size()) return GameObject::Orientation::NONE;
 	return mOri[i];
 }
 
@@ -296,7 +353,7 @@ void SoAConveyorSystem::PassItemNextCell(int i)
 	// Current conveyor grid cell from world pos
 	GridManager& grid = GridManager::GetInstance();
 
-	SDL_Point gridPos = grid.WorldToGrid((int)mX[i], (int)mY[i]);
+	SDL_Point gridPos = grid.WorldToGrid(mX[i], mY[i]);
 	GridCell* nextCell = grid.GetAdjacentCell(gridPos.x, gridPos.y, mOri[i]);
 
 	if (!nextCell) return;

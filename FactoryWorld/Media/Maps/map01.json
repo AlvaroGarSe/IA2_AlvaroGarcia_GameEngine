@@ -35,6 +35,11 @@
       "tile": "Water"
     },
     {
+      "from": [ 31, 20 ],
+      "to": [ 41, 24 ],
+      "tile": "IronVein"
+    },
+    {
       "from": [ 20, 20 ],
       "to": [ 25, 22 ],
       "tile": "CopperVein"

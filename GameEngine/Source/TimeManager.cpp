@@ -8,15 +8,16 @@ TimeManager::TimeManager()
     mPaused = false;
     mStarted = false;
 
-    mLastTicks = NULL;
+    mLastCounter = NULL;
+    mLastTicksMs = 0;
+    mDeltaSeconds = 0.0;
 	mDeltaMs = 0;
 }
 Uint32 TimeManager::TickFrame()
 {
-    // For later performance comprobations should be done a more precise system using SDL_GetPerformanceCounter()
     Uint32 now = SDL_GetTicks();
-    Uint32 delta = now - mLastTicks;
-    mLastTicks = now;
+    Uint32 delta = now - mLastCounter;
+    mLastTicksMs = now;
     mDeltaMs = delta;
     return delta;
 }
@@ -36,7 +37,11 @@ void TimeManager::start()
     mStartTicks = SDL_GetTicks();
     mPausedTicks = 0;
 
-	mLastTicks = mStartTicks;
+    mLastTicksMs = SDL_GetTicks();
+    mLastCounter = SDL_GetPerformanceCounter();
+
+	mLastCounter = SDL_GetPerformanceCounter();
+    mDeltaSeconds = 0.0;
 	mDeltaMs = 0;
 }
 Uint32 TimeManager::getTicks()
@@ -61,4 +66,18 @@ Uint32 TimeManager::getTicks()
     }
 
     return time;
+}
+
+double TimeManager::TickFrameSeconds()
+{
+    const Uint64 now = SDL_GetPerformanceCounter();
+    const Uint64 freq = SDL_GetPerformanceFrequency();
+
+    Uint64 counterDelta = now - mLastCounter;
+    mLastCounter = now;
+
+    mDeltaSeconds = (freq > 0) ? (double)counterDelta / (double)freq : 0.0;
+    mDeltaMs = (Uint32)(mDeltaSeconds * 1000.0);
+
+    return mDeltaSeconds;
 }

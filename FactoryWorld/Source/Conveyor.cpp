@@ -60,11 +60,15 @@ static const char* ItemSpritePath(ItemType t)
 {
     switch (t)
     {
-    case ItemType::IronOre:   return "Media/Items/IronOre.png";
-    case ItemType::IronIngot: return "Media/Items/IronIngot.png";
-    case ItemType::CopperOre:   return "Media/Items/CopperOre.png";
-    case ItemType::CopperIngot: return "Media/Items/CopperIngot.png";
-    default:                  return "Media/Items/Unknown.png";
+        case ItemType::IronOre:   return "Media/Items/IronOre.png";
+        case ItemType::IronIngot: return "Media/Items/IronIngot.png";
+        case ItemType::CopperOre:   return "Media/Items/CopperOre.png";
+        case ItemType::CopperIngot: return "Media/Items/CopperIngot.png";
+        case ItemType::IronRod: return "Media/Items/IronRod.png";
+        case ItemType::IronWrench: return "Media/Items/IronWrench.png";
+        case ItemType::IronGear: return "Media/Items/IronGear.png";
+        case ItemType::CopperGear: return "Media/Items/CopperGear.png";
+        default:                  return "Media/Items/UnknownItem.png";
     }
 }
 
@@ -92,11 +96,8 @@ void Conveyor::Update()
     }
 }
 
-void Conveyor::Render()
+void Conveyor::RenderItems()
 {
-    // Render the belt
-	GameObject::Render();
-
     // These offsets just make the squares appear on top of the belt
 	const int cellSize = GridManager::GetInstance().GetCellSize();
 
@@ -147,6 +148,13 @@ void Conveyor::Render()
 
         GraphicManager::GetInstance().DrawTexture(itemText, itTransf);
     }
+}
+
+void Conveyor::RenderItemsBehind()
+{
+    Render();
+
+    RenderItems();
 }
 
 bool Conveyor::CanAcceptItem() const
@@ -231,35 +239,4 @@ void Conveyor::PassItemNextCell()
             }
         }
     }
-
-   /* if (nextCell->gameObject->type == ObjectType::CONVEYOR)
-    {
-			
-    }
-    else if (nextCell->gameObject->type == ObjectType::CRAFTER)
-    {
-        Crafter* nextCrafter = static_cast<Crafter*>(nextCell->gameObject);
-
-        if (nextCrafter->CanAcceptInput())
-        {
-            Item item;
-            if (TryExtractItem(item))
-            {
-                nextCrafter->InsertInput(item);
-            }
-        }*/
-
-        //if (nextCrafter->CanAcceptInput())
-        //{
-        //    Item item;
-        //    if (TryExtractItem(item))
-        //    {
-        //        if (nextCrafter->CanAcceptInputType(item.type))
-        //        {
-        //            nextCrafter->InsertInput(item);
-
-        //        }
-        //    }
-        //}
-    //}
 }

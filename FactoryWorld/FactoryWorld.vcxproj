@@ -19,7 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Include\PlayerControlls.cpp" />
     <ClCompile Include="Source\AoSConveyorSystem.cpp" />
     <ClCompile Include="Source\Conveyor.cpp" />
     <ClCompile Include="Source\ConveyorManager.cpp" />
@@ -29,6 +28,7 @@
     <ClCompile Include="Source\MapLoader.cpp" />
     <ClCompile Include="Source\Miner.cpp" />
     <ClCompile Include="Source\Player.cpp" />
+    <ClCompile Include="Source\PlayerControlls.cpp" />
     <ClCompile Include="Source\RecipeManager.cpp" />
     <ClCompile Include="Source\SoAConveyorSystem.cpp" />
   </ItemGroup>

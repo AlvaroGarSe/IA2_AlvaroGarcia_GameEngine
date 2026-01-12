@@ -20,6 +20,38 @@ void RecipeManager::InitDefaults()
     r.craftTimeMs = 2500;
     r.itemSpritePath = "Media/Items/CopperIngot.png";
     mRecipes.push_back(r);
+
+    // Iron Rod: 1 IronIngot -> 1 IronRod
+    r.id = "iron_rod";
+    r.inputs = { {ItemType::IronIngot, 1} };
+    r.outputs = { {ItemType::IronRod, 1} };
+    r.craftTimeMs = 1000;
+    r.itemSpritePath = "Media/Items/IronRod.png";
+    mRecipes.push_back(r);
+
+    // Iron Wrench: 1 IronRod -> 1 IronWrench
+    r.id = "iron_wrench";
+    r.inputs = { {ItemType::IronRod, 1} };
+    r.outputs = { {ItemType::IronWrench, 1} };
+    r.craftTimeMs = 1500;
+    r.itemSpritePath = "Media/Items/IronWrench.png";
+    mRecipes.push_back(r);
+
+    // Iron Gear: 1 IronWrench + 1 IronIngot -> 1 IronGear
+    r.id = "iron_gear";
+    r.inputs = { {ItemType::IronWrench, 1}, {ItemType::IronIngot, 1} };
+    r.outputs = { {ItemType::IronGear, 1} };
+    r.craftTimeMs = 3000;
+    r.itemSpritePath = "Media/Items/IronGear.png";
+    mRecipes.push_back(r);
+
+    // Copper Gear: 1 IronWrench + 1 CopperIngot -> 1 CopperGear
+    r.id = "copper_gear";
+    r.inputs = { {ItemType::IronWrench, 1}, {ItemType::CopperIngot, 1} };
+    r.outputs = { {ItemType::CopperGear, 1} };
+    r.craftTimeMs = 3000;
+    r.itemSpritePath = "Media/Items/CopperGear.png";
+    mRecipes.push_back(r);
 }
 
 const Recipe* RecipeManager::GetRecipeById(const std::string& id) const

@@ -149,3 +149,20 @@ void GraphicManager::DrawTexture(LTexture* texture, const Transform& transform, 
 	SDL_RenderCopyEx(gRenderer, texture->getSDLTexture(), clip, &renderQuad, transform.rotation, &center, flip);
 
 }
+
+void GraphicManager::DrawTextureSoA(LTexture* texture, int x, int y, double rotation, float scaleX, float scaleY, SDL_Rect* clip, SDL_RendererFlip flip)
+{
+	float zoom = camera.GetZoom();
+
+	SDL_Point screenPos = camera.WorldToScreen((int)x, (int)y);
+
+	//Set rendering space and render to screen
+	SDL_Rect renderQuad = { screenPos.x, screenPos.y, texture->getWidth() * scaleX * zoom, texture->getHeight() * scaleY * zoom };
+
+	SDL_Point center;
+	center.x = renderQuad.w / 2;
+	center.y = renderQuad.h / 2;
+
+	//Render to screen
+	SDL_RenderCopyEx(gRenderer, texture->getSDLTexture(), clip, &renderQuad, rotation, &center, flip);
+}

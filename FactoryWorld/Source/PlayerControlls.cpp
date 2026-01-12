@@ -34,8 +34,7 @@ void PlayerControlls::CreateCrafter(int cx, int cy)
 
 void PlayerControlls::RemoveBuilding(int cx, int cy)
 {
-	if (GridManager::GetInstance().RemoveBuilding(cx, cy))
-		printf("PlayerControlls::RemoveBuilding: Object deleted succesfully");
+	GridManager::GetInstance().RemoveBuilding(cx, cy);
 }
 
 void PlayerControlls::RotateBuilding(int cx, int cy, int dir)

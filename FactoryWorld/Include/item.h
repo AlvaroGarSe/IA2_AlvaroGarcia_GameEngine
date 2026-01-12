@@ -8,6 +8,10 @@ enum class ItemType : uint8_t
 	IronIngot,
     CopperOre,
     CopperIngot,
+    IronRod,
+    IronWrench,
+    IronGear,
+    CopperGear,
     COUNT
 };
 

@@ -41,6 +41,7 @@ void AoSConveyorSystem::UpdateAll(uint32_t now)
 {
 	for (Conveyor* c : mConveyors)
 	{
+		//if (!c) continue;
 		c->Update();
 	}
 }
@@ -49,7 +50,23 @@ void AoSConveyorSystem::RenderAll()
 {
 	for (Conveyor* c : mConveyors)
 	{
+		//if (!c) continue;
 		c->Render();
+	}
+	for (Conveyor* c : mConveyors)
+	{
+		//if (!c) continue;
+		c->RenderItems();
+	}
+}
+
+void AoSConveyorSystem::RenderAllItemsBehind()
+{
+	for (Conveyor* c : mConveyors)
+	{
+		//if (!c) continue;
+		c->Render();
+		c->RenderItems();
 	}
 }
 

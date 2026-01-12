@@ -57,6 +57,7 @@ void GameObject::Rotate(int dir)
 	if (orientation == GameObject::Orientation::NONE) return;
 	double aux = transform.rotation + 90 * dir;
 	if (aux >= 360) aux -= 360;
+	if (aux < 0) aux += 360;
 	transform.rotation = aux;
 
 	if (aux < 45 || aux >= 315)

@@ -11,6 +11,7 @@ public:
     void StartAll() override;
     void UpdateAll(uint32_t now) override;
     void RenderAll() override;
+    void RenderAllItemsBehind() override;
 
     ConveyorId CreateConveyorRuntime(int cX, int cY, GameObject::Orientation o);
     
@@ -34,10 +35,10 @@ private:
 
 
     // SoA arrays
-    std::vector<float> mX, mY;
+    std::vector<int> mX, mY;
     std::vector<GameObject::Orientation> mOri;
     std::vector<uint32_t> mNextMoveTime;
-    std::vector<bool> mActive;
+    std::vector<int> mActive;
 
     // flattened [conveyorIndex * SLOT_COUNT + slot]
     std::vector<ItemType> mSlotType;
