@@ -25,8 +25,6 @@ public:
     bool CanAcceptItem(ConveyorId id) const;
     bool InsertItem(ConveyorId id, const Item& item);
 
-    bool TryExtractItem(ConveyorId id, Item& out);
-
     void RemoveConveyor(ConveyorId id);
 
     bool IsSoAMode() const;

@@ -24,9 +24,6 @@ public:
 
     virtual void RemoveConveyor(ConveyorId id) = 0;
 
-    // optional if you need it for chaining logic
-    virtual bool TryExtractItem(ConveyorId id, Item& out) = 0;
-
     virtual SDL_Point GetWorldPos(ConveyorId id) const = 0;
     virtual GameObject::Orientation GetOrientation(ConveyorId id) const = 0;
 };

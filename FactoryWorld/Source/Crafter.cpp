@@ -229,13 +229,11 @@ void Crafter::ConsumeType(ItemType t, int count)
     }
 }
 
-void Crafter::Update()
+void Crafter::Update(uint32_t now)
 {
     if (!isActive || !isOn) return;
 
-	Uint32 currentTime = TimeManager::GetInstance().getTicks();
-
-    if (isCrafting && currentTime >= craftingCurrentTime)
+    if (isCrafting && now >= craftingCurrentTime)
     {
 		FinishCraft();
     }

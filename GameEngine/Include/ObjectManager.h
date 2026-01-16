@@ -40,7 +40,7 @@ public:
 
 	void StartAll();
 
-	void UpdateAll();
+	void UpdateAll(uint32_t now);
 
 	void LoadAllMedia();
 

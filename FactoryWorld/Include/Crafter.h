@@ -13,7 +13,7 @@ public:
 	~Crafter();
 
 	void Start() override;
-	void Update() override;
+	void Update(uint32_t now) override;
 	void Render() override;
 
 	void StopCrafter();

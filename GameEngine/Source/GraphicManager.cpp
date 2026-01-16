@@ -15,10 +15,10 @@ bool GraphicManager::init()
 	}
 	else
 	{
-		//Set texture filtering to linear
+		//Set texture filtering to Nearest, better for a pixel art game with tyles, rather than Linear
 		if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1"))
 		{
-			printf("Warning: Linear texture filtering not enabled!");
+			printf("Warning: Nearest texture filtering not enabled!");
 		}
 
 		//Create window
@@ -136,10 +136,13 @@ void GraphicManager::DrawTexture(LTexture* texture, const Transform& transform, 
 {
 	float zoom = camera.GetZoom();
 
-	SDL_Point screenPos = camera.WorldToScreen((int)transform.x, (int)transform.y);
+	SDL_Point screenPos = camera.WorldToScreen(transform.x, transform.y);
+
+	int w = (int)SDL_roundf(texture->getWidth() * transform.scaleX * zoom);
+	int h = (int)SDL_roundf(texture->getHeight() * transform.scaleY * zoom);
 
 	//Set rendering space and render to screen
-	SDL_Rect renderQuad = {screenPos.x, screenPos.y, texture->getWidth() * transform.scaleX * zoom, texture->getHeight() * transform.scaleY * zoom};
+	SDL_Rect renderQuad = { screenPos.x, screenPos.y, w, h };
 
 	SDL_Point center;
 	center.x = renderQuad.w / 2;
@@ -154,10 +157,13 @@ void GraphicManager::DrawTextureSoA(LTexture* texture, int x, int y, double rota
 {
 	float zoom = camera.GetZoom();
 
-	SDL_Point screenPos = camera.WorldToScreen((int)x, (int)y);
+	SDL_Point screenPos = camera.WorldToScreen(x, y);
+
+	int w = (int)SDL_roundf(texture->getWidth() * scaleX * zoom);
+	int h = (int)SDL_roundf(texture->getHeight() * scaleY * zoom);
 
 	//Set rendering space and render to screen
-	SDL_Rect renderQuad = { screenPos.x, screenPos.y, texture->getWidth() * scaleX * zoom, texture->getHeight() * scaleY * zoom };
+	SDL_Rect renderQuad = { screenPos.x, screenPos.y, w, h };
 
 	SDL_Point center;
 	center.x = renderQuad.w / 2;
@@ -165,4 +171,29 @@ void GraphicManager::DrawTextureSoA(LTexture* texture, int x, int y, double rota
 
 	//Render to screen
 	SDL_RenderCopyEx(gRenderer, texture->getSDLTexture(), clip, &renderQuad, rotation, &center, flip);
+}
+
+void GraphicManager::DrawTile(LTexture* texture, const Transform& transform, SDL_Rect* clip, SDL_RendererFlip flip)
+{
+	float zoom = camera.GetZoom();
+
+	SDL_Point screenPos = camera.WorldToScreen(transform.x, transform.y);
+
+	int w = (int)SDL_roundf(texture->getWidth() * transform.scaleX * zoom);
+	int h = (int)SDL_roundf(texture->getHeight() * transform.scaleY * zoom);
+
+	//Set rendering space and render to screen
+	SDL_Rect renderQuad = { screenPos.x, screenPos.y, w, h };
+
+	// Fixes a bug that render lines on the screen when zooming cause of tiles are truncated to a lower size
+	renderQuad.w += 1;
+	renderQuad.h += 1;
+
+	SDL_Point center;
+	center.x = renderQuad.w / 2;
+	center.y = renderQuad.h / 2;
+
+	//Render to screen
+	SDL_RenderCopyEx(gRenderer, texture->getSDLTexture(), clip, &renderQuad, transform.rotation, &center, flip);
+
 }

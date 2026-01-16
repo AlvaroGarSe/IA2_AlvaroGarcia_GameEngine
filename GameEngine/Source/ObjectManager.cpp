@@ -8,11 +8,11 @@ void ObjectManager::StartAll()
 	}
 }
 
-void ObjectManager::UpdateAll()
+void ObjectManager::UpdateAll(uint32_t now)
 {
 	for (auto& obj : objects)
 	{
-		obj->Update();
+		obj->Update(now);
 	}
 }
 

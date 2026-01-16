@@ -64,8 +64,9 @@ public:
 	bool IsFullscreen() const;
 
 	void DrawTexture(LTexture* texture, const Transform& transform, SDL_Rect* clip = nullptr, SDL_RendererFlip flip = SDL_FLIP_NONE);
-
 	void DrawTextureSoA(LTexture* texture, int x, int y, double rotation, float scaleX, float scaleY, SDL_Rect* clip = nullptr, SDL_RendererFlip flip = SDL_FLIP_NONE);
+
+	void DrawTile(LTexture* texture, const Transform& transform, SDL_Rect* clip = nullptr, SDL_RendererFlip flip = SDL_FLIP_NONE);
 
 	// Updates SCREEN_WIDTH/SCREEN_HEIGHT from SDL
 	void RefreshWindowSizeCache();

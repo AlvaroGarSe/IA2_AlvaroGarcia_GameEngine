@@ -44,7 +44,7 @@ public:
 
 	virtual void Start() { isActive = true; };
 
-	virtual void Update() {};
+	virtual void Update(uint32_t now) {};
 
 	virtual void Render();
 

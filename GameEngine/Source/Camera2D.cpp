@@ -1,4 +1,5 @@
 #include "Camera2D.h"
+#include "GraphicManager.h"
 
 Camera2D::Camera2D()
 {
@@ -23,7 +24,9 @@ SDL_Point Camera2D::WorldToScreen(float worldX, float worldY) const
 {
 	float screenX = (worldX - camX) * mZoom;
 	float screenY = (worldY - camY) * mZoom;
-	return { (int)(screenX), (int)(screenY) };
+
+	// Round the pos
+	return { (int)SDL_roundf(screenX), (int)SDL_roundf(screenY) };
 }
 
 SDL_Point Camera2D::ScreenToWorld(int screenX, int screenY) const
@@ -100,5 +103,15 @@ void Camera2D::SetZoom(float zoom)
 void Camera2D::AddZoom(float deltaZoom)
 {
 	SetZoom(mZoom + deltaZoom);
+}
+
+SDL_FRect Camera2D::GetWorldViewRect() const
+{
+	SDL_FRect r;
+	r.x = camX;
+	r.y = camY;
+	r.w = mScreenW / mZoom;
+	r.h = mScreenH / mZoom;
+	return r;
 }
 

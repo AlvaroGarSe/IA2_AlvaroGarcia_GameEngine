@@ -13,7 +13,7 @@ public:
 
 	void StopMiner();
 
-	void Update() override;
+	void Update(uint32_t now) override;
 
 	void Mine();
 

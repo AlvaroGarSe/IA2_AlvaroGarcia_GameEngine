@@ -72,7 +72,7 @@ static const char* ItemSpritePath(ItemType t)
     }
 }
 
-void Conveyor::Update()
+void Conveyor::Update(uint32_t now)
 {
     if (!isActive) return;
 
@@ -82,11 +82,9 @@ void Conveyor::Update()
 
     if (!hasItem) return;
 
-    Uint32 currentTime = TimeManager::GetInstance().getTicks();
-
-    if (currentTime >= mNextMoveTime)
+    if (now >= mNextMoveTime)
     {
-        mNextMoveTime = currentTime + mMoveIntervalMs;
+        mNextMoveTime = now + mMoveIntervalMs;
 
         // First try to pass the item at the end to the next cell
         PassItemNextCell();
@@ -207,35 +205,36 @@ void Conveyor::PassItemNextCell()
     if (!mSlots[last]) return;
 
     GridManager& gridManager = GridManager::GetInstance();
-
     SDL_Point posGrid = gridManager.WorldToGrid((int)transform.x, (int)transform.y);
-
     GridCell* nextCell = gridManager.GetAdjacentCell(posGrid.x, posGrid.y, orientation);
 
 	// Checks if the cell is valid and has an item object in it
     if (!nextCell) return;
 
+    Item item = *mSlots[last];
+
+    // Case A: next cell has a SoA conveyor id
     if (nextCell->conveyorId != INVALID_CONVEYOR)
     {
-        Item item;
-        if (TryExtractItem(item))
+        if (ConveyorManager::GetInstance().InsertItem(nextCell->conveyorId, item))
         {
-            ConveyorManager::GetInstance().InsertItem(nextCell->conveyorId, item);
+            delete mSlots[last];
+            mSlots[last] = nullptr;
         }
+        return;
     }
-    else if (nextCell->gameObject)
+
+    // Case B: Next cell has a normal GameObject (Crafter)
+    if (nextCell->gameObject)
     {
         if (nextCell->gameObject->type == ObjectType::CRAFTER)
         {
             Crafter* nextCrafter = static_cast<Crafter*>(nextCell->gameObject);
 
-            if (nextCrafter->CanAcceptInput())
+            if (nextCrafter->CanAcceptInput() && nextCrafter->InsertInput(item))
             {
-                Item item;
-                if (TryExtractItem(item))
-                {
-                    nextCrafter->InsertInput(item);
-                }
+                delete mSlots[last];
+                mSlots[last] = nullptr;
             }
         }
     }

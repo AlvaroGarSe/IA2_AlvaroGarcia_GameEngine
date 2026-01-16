@@ -22,7 +22,8 @@ public:
 	float GetZoom() const { return mZoom; }
 	void SetZoom(float zoom);
 	void AddZoom(float deltaZoom);
-
+	
+	SDL_FRect GetWorldViewRect() const;
 
 	float GetX() const { return camX; }
 	float GetY() const { return camY; }
@@ -38,6 +39,6 @@ private:
 
 	float mZoom = 1.0f;
 	float mMinZoom = 0.5f;
-	float mMaxZoom = 2.0f;
+	float mMaxZoom = 4.0f;
 
 };

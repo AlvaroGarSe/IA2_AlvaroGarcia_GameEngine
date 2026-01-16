@@ -24,7 +24,6 @@ public:
 
 	bool CanAcceptItem(ConveyorId id) const override;
 	bool InsertItem(ConveyorId id, const Item& item) override;
-	bool TryExtractItem(ConveyorId id, Item& out) override;
 	SDL_Point GetWorldPos(ConveyorId id) const override;
 	GameObject::Orientation GetOrientation(ConveyorId id) const override;
 

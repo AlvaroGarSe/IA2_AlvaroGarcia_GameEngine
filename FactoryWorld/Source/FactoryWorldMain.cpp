@@ -25,7 +25,7 @@ using namespace std;
 
 int main(int argc, char* args[])
 {
-	// Create all the managers
+	// Create all the managers and singletons
 	InputManager::CreateSingleton();
 	GraphicManager::CreateSingleton();
 	AssetManager::CreateSingleton();
@@ -36,18 +36,18 @@ int main(int argc, char* args[])
 	RecipeManager::CreateSingleton();
 	ConveyorManager::CreateSingleton();
 	PlayerControlls::CreateSingleton();
-	
+
+	// Setup the screen size
 	GraphicManager::GetInstance().setScreenSize(1366, 768);
 
+	// Initialize SDL
 	if (!GraphicManager::GetInstance().init())
 	{
 		printf("Failed to initialize!\n");
 		return 0;
 	}
-
 	int SCREEN_WIDTH = GraphicManager::GetInstance().getScreenWidth();
 	int SCREEN_HEIGHT = GraphicManager::GetInstance().getScreenHeight();
-
 
 	TextManager::GetInstance().Init();
 	RecipeManager::GetInstance().InitDefaults();
@@ -67,7 +67,10 @@ int main(int argc, char* args[])
 		conveyorMode = "AoS";
 	}
 
-	if (!MapLoader::LoadMap("Media/Maps/map01.json"))
+	string map = "Media/Maps/map01.json";
+	string buildingsMap = "Media/Maps/buildings01.json";
+
+	if (!MapLoader::LoadMap(map))
 	{
 		GridManager::GetInstance().CreateGrid(50, 50, 64);
 		GridManager::GetInstance().SetTile(26, 26, TileType::IronVein);
@@ -79,12 +82,15 @@ int main(int argc, char* args[])
 	int screenH = GraphicManager::GetInstance().getScreenHeight();
 
 	GraphicManager::GetInstance().camera.SetWorldBounds(worldW, worldH, screenW, screenH);
+	float camSpeed = GraphicManager::GetInstance().getScreenWidth() / 2 * GridManager::GetInstance().GetWidth() / 50; // pixels per second
+	if (camSpeed > 5000) camSpeed = 5000;
+
 
 	// Center the camera at the start of the game
-	GraphicManager::GetInstance().camera.SetPosition((worldW - screenW) * 0.5f, (worldH - screenH) * 0.5f);
+	GraphicManager::GetInstance().camera.SetPosition(0, 0);
 
 	// Basic buildings if not loaded buildings
-	if (!MapLoader::LoadBuildings("Media/Maps/buildings01.json"))
+	if (!MapLoader::LoadBuildings(buildingsMap))
 	{
 		GridManager::GetInstance().PlaceObject(ObjectManager::GetInstance().Spawn<Miner>(GameObject::Orientation::NORTH), 26, 26);
 		GridManager::GetInstance().PlaceObject(ObjectManager::GetInstance().Spawn<Miner>(GameObject::Orientation::EAST), 26, 24);
@@ -118,15 +124,11 @@ int main(int argc, char* args[])
 		ConveyorManager::GetInstance().Create(34, 28, GameObject::Orientation::SOUTH);
 	}
 
-	float camSpeed = GraphicManager::GetInstance().getScreenWidth() / 3 * GridManager::GetInstance().GetWidth() / 50; // pixels per second
-
 	TimeManager::GetInstance().start();
 
+	// Start and loads the media all the objects
 	ObjectManager::GetInstance().LoadAllMedia();
-
-
 	ObjectManager::GetInstance().StartAll();
-
 	ConveyorManager::GetInstance().StartAll();
 
 	bool quit = false;
@@ -142,6 +144,7 @@ int main(int argc, char* args[])
 	int fpsDisplay = 0;
 
 
+	// Game Loop
 	while (!quit)
 	{
 		InputManager::GetInstance().BeginFrame();
@@ -246,16 +249,16 @@ int main(int argc, char* args[])
 
 		// Save the buildings placed on the map
 		if (InputManager::GetInstance().GetKeyDown(SDL_SCANCODE_M))
-			MapLoader::SaveBuildingsAsync("Media/Maps/buildings01.json");
+			MapLoader::SaveBuildingsAsync(buildingsMap);
 
 
 		// *************************************************************** UPDATE ***************************************************************
 
 		// Update all the items
-		ObjectManager::GetInstance().UpdateAll();
+		ObjectManager::GetInstance().UpdateAll(TimeManager::GetInstance().getTicks());
 		ConveyorManager::GetInstance().UpdateAll(TimeManager::GetInstance().getTicks());
 
-		std::string tileName = "Out of bounds";
+		string tileName = "Out of bounds";
 		if (GridManager::GetInstance().IsInside(gridIdx.x, gridIdx.y))
 		{
 			TileType t = GridManager::GetInstance().GetTileWithCellPos(gridIdx.x, gridIdx.y);
@@ -313,7 +316,6 @@ int main(int argc, char* args[])
 		GraphicManager::GetInstance().EndFrame();
 	}
 
-
 	TextManager::GetInstance().CloseFont(uiFont);
 
 	ObjectManager::GetInstance().Clear();
@@ -322,5 +324,4 @@ int main(int argc, char* args[])
 	GraphicManager::GetInstance().close();
 
 	return 0;
-
 }

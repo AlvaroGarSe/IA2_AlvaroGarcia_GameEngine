@@ -22,7 +22,6 @@ void ConveyorManager::RemoveConveyor(ConveyorId id) { mImpl->RemoveConveyor(id);
 
 bool ConveyorManager::CanAcceptItem(ConveyorId id) const { return mImpl->CanAcceptItem(id); }
 bool ConveyorManager::InsertItem(ConveyorId id, const Item& item) { return mImpl->InsertItem(id, item); }
-bool ConveyorManager::TryExtractItem(ConveyorId id, Item& out) { return mImpl->TryExtractItem(id, out); }
 
 SDL_Point ConveyorManager::GetWorldPos(ConveyorId id) const { return mImpl->GetWorldPos(id); }
 GameObject::Orientation ConveyorManager::GetOrientation(ConveyorId id) const { return mImpl->GetOrientation(id); }

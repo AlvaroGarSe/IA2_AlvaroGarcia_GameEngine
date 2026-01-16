@@ -130,21 +130,19 @@ bool Miner::TransferMaterial()
 	return false;
 }
 
-void Miner::Update()
+void Miner::Update(uint32_t now)
 {
     if (!isActive || !isOn) return;
 
-	Uint32 currentTime = TimeManager::GetInstance().getTicks();
-
-    if (currentTime >= minningCurrentTime)
+    if (now >= minningCurrentTime)
     {
         Mine();
     }
-    if (currentCapacity > 0 && currentTime >= nextOutputTime)
+    if (currentCapacity > 0 && now >= nextOutputTime)
     {
         if (TransferMaterial())
         {
-			nextOutputTime = currentTime + outputIntervalMs;
+			nextOutputTime = now + outputIntervalMs;
         }
     }
 

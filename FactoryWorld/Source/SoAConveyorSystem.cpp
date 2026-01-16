@@ -255,20 +255,6 @@ bool SoAConveyorSystem::InsertItem(ConveyorId id, const Item& item)
 	return true;
 }
 
-bool SoAConveyorSystem::TryExtractItem(ConveyorId id, Item& out)
-{
-	int i = IndexFromId(id);
-	if (i < 0 || i >= mX.size()) return false;
-
-	int last = SLOT_COUNT - 1;
-	ItemType t = mSlotType[i * SLOT_COUNT + last];
-	if (t == ItemType::NONE) return false;
-
-	out.type = t;
-	mSlotType[i * SLOT_COUNT + last] = ItemType::NONE;
-	return true;
-}
-
 void SoAConveyorSystem::RotateConveyor(ConveyorId id, int dir)
 {
 	GameObject::Orientation& ori = mOri[IndexFromId(id)];
@@ -359,19 +345,15 @@ void SoAConveyorSystem::PassItemNextCell(int i)
 	if (!nextCell) return;
 
 	// Case A: next cell has a SoA conveyor id
-	if (nextCell->conveyorId != 0)
+	if (nextCell->conveyorId != INVALID_CONVEYOR)
 	{
 		ConveyorId nextId = nextCell->conveyorId;
 
 		// Try insert into next conveyor slot 0
-		if (CanAcceptItem(nextId))
+		if (InsertItem(nextId, Item{t}))
 		{
-			Item insItem{ t };
-			if (InsertItem(nextId, insItem))
-			{
-				// Remove last slot
-				mSlotType[lastIdx] = ItemType::NONE;
-			}
+			// Remove last slot
+			mSlotType[lastIdx] = ItemType::NONE;
 		}
 		return;
 	}
@@ -383,13 +365,11 @@ void SoAConveyorSystem::PassItemNextCell(int i)
 		if (nextCell->gameObject->type == GameObject::ObjectType::CRAFTER)
 		{
 			Crafter* c = static_cast<Crafter*>(nextCell->gameObject);
-			if (c->CanAcceptInput())
+
+			// Try insert the item in the crafter
+			if (c->InsertInput(Item{t}))
 			{
-				Item insItem{ t };
-				if (c->InsertInput(insItem))
-				{
-					mSlotType[lastIdx] = ItemType::NONE;
-				}
+				mSlotType[lastIdx] = ItemType::NONE;
 			}
 		}
 	}

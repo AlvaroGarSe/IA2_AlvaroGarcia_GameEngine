@@ -17,7 +17,6 @@ public:
     
     bool CanAcceptItem(ConveyorId id) const override;
     bool InsertItem(ConveyorId id, const Item& item) override;
-    bool TryExtractItem(ConveyorId id, Item& out) override;
 
     void RotateConveyor(ConveyorId id, int dir) override;
 

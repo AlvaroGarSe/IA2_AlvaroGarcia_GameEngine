@@ -327,24 +327,28 @@ bool MapLoader::SaveBuildingsAsync(const std::string& path)
 {
     if (sIsSaving.exchange(true)) {
         printf("MapLoader::SaveBuildings: ALREADY SAVING\n");
-        return false; // already saving
+        return false;
     }
 
     auto snapshot = CollectBuildingsSnapshot();
 
     std::thread([path, snapshot = std::move(snapshot)]() mutable
         {
+            bool success = false;
             try
             {
                 json out = BuildBuildingsJson(snapshot);
-                WriteJsonToFileAtomic(path, out);
+                success = WriteJsonToFileAtomic(path, out);
             }
             catch (...) {}
+
+            if (success) std::cout << "MapLoader::SaveBuildings: saved to " << path << "\n";
+            else    std::cout << "MapLoader::SaveBuildings: FAILED saving to " << path << "\n";
 
             sIsSaving.store(false);
         }).detach();
 
-    std::cout << "MapLoader::SaveBuildings: saved to " << path << "\n";
+    std::cout << "MapLoader::SaveBuildings: saving started...\n";
     return true;
 }
 

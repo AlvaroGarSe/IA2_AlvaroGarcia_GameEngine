@@ -12,7 +12,7 @@ public:
 	Conveyor(Orientation orientation = Orientation::NORTH);
 	~Conveyor();
 
-	void Update() override;
+	void Update(uint32_t now) override;
 	void RenderItems();
 	void RenderItemsBehind();
 

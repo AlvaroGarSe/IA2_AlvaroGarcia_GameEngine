@@ -114,31 +114,43 @@ bool GridManager::RemoveBuilding(int gridX, int gridY)
 
 void GridManager::RenderDebugGrid(int mouseX, int mouseY)
 {
-	SDL_Renderer* renderer = GraphicManager::GetInstance().gRenderer;
+	SDL_Renderer* r = GraphicManager::GetInstance().gRenderer;
+	Camera2D& cam = GraphicManager::GetInstance().camera;
 
-	// Draw grid
-	SDL_SetRenderDrawColor(renderer, 50, 50, 50, 255);
+	SDL_SetRenderDrawColor(r, 50, 50, 50, 255);
 
-	float z = GraphicManager::GetInstance().camera.GetZoom();
+	const SDL_FRect worldView = cam.GetWorldViewRect();
 
-	for (int y = 0; y < mGridHeight; y++)
+	int minX = (int)floorf(worldView.x / mCellSize);
+	int minY = (int)floorf(worldView.y / mCellSize);
+	int maxX = (int)ceilf((worldView.x + worldView.w) / mCellSize);
+	int maxY = (int)ceilf((worldView.y + worldView.h) / mCellSize);
+
+	// Clamp
+	minX = std::max(0, minX);
+	minY = std::max(0, minY);
+	maxX = std::min(mGridWidth, maxX);
+	maxY = std::min(mGridHeight, maxY);
+
+	// Draw vertical lines
+	for (int x = minX; x <= maxX; ++x)
 	{
-		for (int x = 0; x < mGridWidth; x++)
-		{
-			SDL_Point screen = GraphicManager::GetInstance().camera.WorldToScreen((float)(x * mCellSize), (float)(y * mCellSize));
-
-			SDL_Rect rect;
-			rect.x = screen.x;
-			rect.y = screen.y;
-			rect.w = (int)(mCellSize * z);
-			rect.h = (int)(mCellSize * z);
-
-			SDL_RenderDrawRect(renderer, &rect);
-		}
+		float wx = (float)(x * mCellSize);
+		SDL_Point a = cam.WorldToScreen(wx, (float)(minY * mCellSize));
+		SDL_Point b = cam.WorldToScreen(wx, (float)(maxY * mCellSize));
+		SDL_RenderDrawLine(r, a.x, a.y, b.x, b.y);
 	}
 
-	// Highlight cell under mouse
-	RenderSelectedCell(mouseX, mouseY, renderer);
+	// Draw horizontal lines
+	for (int y = minY; y <= maxY; ++y)
+	{
+		float wy = (float)(y * mCellSize);
+		SDL_Point a = cam.WorldToScreen((float)(minX * mCellSize), wy);
+		SDL_Point b = cam.WorldToScreen((float)(maxX * mCellSize), wy);
+		SDL_RenderDrawLine(r, a.x, a.y, b.x, b.y);
+	}
+
+	RenderSelectedCell(mouseX, mouseY, r);
 }
 
 void GridManager::RenderSelectedCell(int mouseX, int mouseY, SDL_Renderer* gRenderer)
@@ -250,7 +262,7 @@ void GridManager::RenderTiles()
 			t.scaleX = (float)mCellSize / (float)tex->getWidth();
 			t.scaleY = (float)mCellSize / (float)tex->getHeight();
 
-			gfx.DrawTexture(tex, t);
+			gfx.DrawTile(tex, t);
 		}
 	}
 }

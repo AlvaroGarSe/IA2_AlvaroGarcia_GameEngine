@@ -41,8 +41,9 @@ void AoSConveyorSystem::UpdateAll(uint32_t now)
 {
 	for (Conveyor* c : mConveyors)
 	{
-		//if (!c) continue;
-		c->Update();
+		// This is for checking the removed conveyors at runtime
+		if (!c) continue;
+		c->Update(now);
 	}
 }
 
@@ -50,12 +51,14 @@ void AoSConveyorSystem::RenderAll()
 {
 	for (Conveyor* c : mConveyors)
 	{
-		//if (!c) continue;
+		// This is for checking the removed conveyors at runtime
+		if (!c) continue;
 		c->Render();
 	}
 	for (Conveyor* c : mConveyors)
 	{
-		//if (!c) continue;
+		// This is for checking the removed conveyors at runtime
+		if (!c) continue;
 		c->RenderItems();
 	}
 }
@@ -64,7 +67,8 @@ void AoSConveyorSystem::RenderAllItemsBehind()
 {
 	for (Conveyor* c : mConveyors)
 	{
-		//if (!c) continue;
+		// This is for checking the removed conveyors at runtime
+		if (!c) continue;
 		c->Render();
 		c->RenderItems();
 	}
@@ -112,17 +116,6 @@ bool AoSConveyorSystem::InsertItem(ConveyorId id, const Item& item)
 	Conveyor* c = mConveyors[i];
 	if (!c) return false;
 	return c->InsertItem(item);
-}
-
-bool AoSConveyorSystem::TryExtractItem(ConveyorId id, Item& outItem)
-{
-	int i = id - 1;
-
-	if (i < 0 || i >= (int)mConveyors.size()) return false;
-
-	if (!mConveyors[i]) return false;
-
-	return mConveyors[i]->TryExtractItem(outItem);
 }
 
 SDL_Point AoSConveyorSystem::GetWorldPos(ConveyorId id) const
