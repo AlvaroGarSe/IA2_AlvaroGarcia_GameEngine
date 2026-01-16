@@ -49,13 +49,16 @@ int main(int argc, char* args[])
 	int SCREEN_WIDTH = GraphicManager::GetInstance().getScreenWidth();
 	int SCREEN_HEIGHT = GraphicManager::GetInstance().getScreenHeight();
 
+	// Init the TextManager and load a font to then be used in the UI
 	TextManager::GetInstance().Init();
-	RecipeManager::GetInstance().InitDefaults();
-
 	TTF_Font* uiFont = TextManager::GetInstance().LoadFont("Media/Fonts/Ethnocentric-Regular.otf", 20);
 	SDL_Color white{ 255,255,255,255 };
 
-	ConveyorManager::GetInstance().Init(ConveyorMode::SoA);
+	// Create the default recipes
+	RecipeManager::GetInstance().InitDefaults();
+
+	// Here can be selected what system to use to manager the conveyors: AoS = OOP || SoA = DOP
+	ConveyorManager::GetInstance().Init(ConveyorMode::AoS);
 
 	string conveyorMode;
 	if (ConveyorManager::GetInstance().IsSoAMode())
@@ -67,9 +70,11 @@ int main(int argc, char* args[])
 		conveyorMode = "AoS";
 	}
 
+	// Map that the game is using
 	string map = "Media/Maps/map01.json";
 	string buildingsMap = "Media/Maps/buildings01.json";
 
+	// If map not loaded create a basic map
 	if (!MapLoader::LoadMap(map))
 	{
 		GridManager::GetInstance().CreateGrid(50, 50, 64);
@@ -82,11 +87,11 @@ int main(int argc, char* args[])
 	int screenH = GraphicManager::GetInstance().getScreenHeight();
 
 	GraphicManager::GetInstance().camera.SetWorldBounds(worldW, worldH, screenW, screenH);
-	float camSpeed = GraphicManager::GetInstance().getScreenWidth() / 2 * GridManager::GetInstance().GetWidth() / 50; // pixels per second
+	// Camera speed scales with the grid and screen size
+	float camSpeed = SCREEN_HEIGHT / 2 * GridManager::GetInstance().GetWidth() / 50; // pixels per second
 	if (camSpeed > 5000) camSpeed = 5000;
 
-
-	// Center the camera at the start of the game
+	// Set the position of the camera at the start at the top left corner
 	GraphicManager::GetInstance().camera.SetPosition(0, 0);
 
 	// Basic buildings if not loaded buildings
@@ -144,7 +149,7 @@ int main(int argc, char* args[])
 	int fpsDisplay = 0;
 
 
-	// Game Loop
+	// ******************************************** Game Loop ******************************************** //
 	while (!quit)
 	{
 		InputManager::GetInstance().BeginFrame();
@@ -168,7 +173,6 @@ int main(int argc, char* args[])
 			fpsFrames = 0;
 		}
 
-
 		move = camSpeed * (float)dt;
 
 		SDL_GetMouseState(&mouseX, &mouseY);
@@ -180,6 +184,7 @@ int main(int argc, char* args[])
 				quit = true;
 			}
 
+			// Zoom of the camera
 			if (e.type == SDL_MOUSEWHEEL)
 			{
 				if (e.wheel.y > 0)
@@ -195,7 +200,7 @@ int main(int argc, char* args[])
 			InputManager::GetInstance().ProcessEvent(e);
 		}
 
-		// *************************************************************** INPUTS ***************************************************************
+		// *************************************************************** INPUTS *************************************************************** //
 
 		// User can stop the game by pressing Escape
 		if (InputManager::GetInstance().GetKey(SDL_SCANCODE_ESCAPE))
@@ -239,22 +244,22 @@ int main(int argc, char* args[])
 		if (InputManager::GetInstance().GetKey(SDL_SCANCODE_3))
 			PlayerControlls::GetInstance().CreateCrafter(gridIdx.x, gridIdx.y);
 
-		// Remove buildings
+		// Remove buildings: Right Click or Backspace
 		if (InputManager::GetInstance().GetKeyDown(SDL_SCANCODE_BACKSPACE) || InputManager::GetInstance().GetMouseButton(SDL_BUTTON_RIGHT))
 			PlayerControlls::GetInstance().RemoveBuilding(gridIdx.x, gridIdx.y);
 			
-		// Change recipe of crafter
+		// Change recipe of crafter: R
 		if (InputManager::GetInstance().GetKeyDown(SDL_SCANCODE_R))
 			PlayerControlls::GetInstance().ChangeCrafterRecipe(gridIdx.x, gridIdx.y);
 
-		// Save the buildings placed on the map
+		// Save the buildings placed on the map: M
 		if (InputManager::GetInstance().GetKeyDown(SDL_SCANCODE_M))
 			MapLoader::SaveBuildingsAsync(buildingsMap);
 
 
-		// *************************************************************** UPDATE ***************************************************************
+		// *************************************************************** UPDATE *************************************************************** //
 
-		// Update all the items
+		// Update all the buildings and items
 		ObjectManager::GetInstance().UpdateAll(TimeManager::GetInstance().getTicks());
 		ConveyorManager::GetInstance().UpdateAll(TimeManager::GetInstance().getTicks());
 
@@ -274,7 +279,7 @@ int main(int argc, char* args[])
 
 		Camera2D& cam = GraphicManager::GetInstance().camera;
 
-		// *************************************************************** RENDERING ************************************************************
+		// *************************************************************** RENDERING ************************************************************ //
 
 		GraphicManager::GetInstance().BeginFrame();
 		SDL_Renderer* r = GraphicManager::GetInstance().gRenderer;
@@ -287,7 +292,7 @@ int main(int argc, char* args[])
 		GridManager::GetInstance().RenderDebugGrid(mouseX, mouseY);
 
 			
-		// ********************** Render the UI ******************************************+
+		// ************************* Render the UI ******************************************* //
 		// Draw the boxes for the UI
 		SDL_SetRenderDrawBlendMode(r, SDL_BLENDMODE_BLEND);
 		SDL_SetRenderDrawColor(r, 0, 0, 0, 160);
@@ -316,6 +321,7 @@ int main(int argc, char* args[])
 		GraphicManager::GetInstance().EndFrame();
 	}
 
+	// Clear the memory
 	TextManager::GetInstance().CloseFont(uiFont);
 
 	ObjectManager::GetInstance().Clear();

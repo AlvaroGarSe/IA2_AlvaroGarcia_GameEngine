@@ -33,7 +33,7 @@ public:
     static bool LoadBuildings(const std::string& path);
 
     static bool SaveBuildings(const std::string& path);
-    static bool SaveBuildingsAsync(const std::string& path);
+    static bool SaveBuildingsAsync(const std::string& path); // Multithreading
 
     static bool IsSaving();
 
@@ -43,5 +43,6 @@ private:
     static json BuildBuildingsJson(const std::vector<BuildingSaveData>& snapshot);
     static bool WriteJsonToFileAtomic(const std::string& path, const json& j);
 
+    // Variable to check when using multithreading if it is already saving
     static std::atomic<bool> sIsSaving;
 };

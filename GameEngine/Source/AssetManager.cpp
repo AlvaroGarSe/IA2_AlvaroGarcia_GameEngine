@@ -10,7 +10,7 @@ LTexture* AssetManager::GetTexture(const std::string& path)
     // Not loaded yet -> load once
     auto tex = std::make_unique<LTexture>();
 
-    // Your LTexture::loadFromFile uses GraphicManager renderer internally
+    // LTexture::loadFromFile uses GraphicManager renderer internally
     if (!tex->loadFromFile(path))
     {
         std::printf("AssetManager: Failed to load texture: %s\n", path.c_str());
@@ -24,5 +24,6 @@ LTexture* AssetManager::GetTexture(const std::string& path)
 
 void AssetManager::Clear()
 {
-    mTextures.clear(); // unique_ptr frees textures automatically
+    // unique_ptr frees textures automatically
+    mTextures.clear();
 }

@@ -14,7 +14,6 @@ public:
 	void StartAll() override;
 	void UpdateAll(uint32_t now) override;
 	void RenderAll() override;
-	void RenderAllItemsBehind() override;
 
 	void RotateConveyor(ConveyorId id, int dir) override;
 

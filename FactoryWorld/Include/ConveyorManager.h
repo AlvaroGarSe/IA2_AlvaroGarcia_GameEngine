@@ -18,7 +18,6 @@ public:
     void UpdateAll(uint32_t nowTicks);
     void StartAll();
     void RenderAll();
-    void RenderAllItemsBehind();
 
     void RotateConveyor(ConveyorId id, int dir);
 
@@ -35,5 +34,6 @@ public:
 private:
     ConveyorManager() {};
 
+    // Stores both systems AoS and SoA for conveyors, to then select the one that is being used
     std::unique_ptr<IConveyorSystem> mImpl;    
 };

@@ -23,6 +23,6 @@ public:
 	// Returns a shared raw pointer (non-owning). AssetManager keeps ownership.
 	LTexture* GetTexture(const std::string& path);
 
-	void Clear(); // frees all textures (called on shutdown)
+	void Clear(); // Frees all textures (called on shutdown)
 
 };

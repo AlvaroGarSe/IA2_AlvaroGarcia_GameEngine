@@ -2,7 +2,6 @@
 
 bool TextManager::Init()
 {
-
 	if (TTF_Init() == -1) {
 		std::cerr << "Failed to initialize SDL_ttf: " << TTF_GetError() << std::endl;
 		return false;
@@ -47,10 +46,7 @@ bool TextManager::DrawText(string text, SDL_Color textColor, TTF_Font* font, int
 	return true;
 }
 
-
-
 void TextManager::CloseFont(TTF_Font* font)
 {
 	TTF_CloseFont(font);
 }
-

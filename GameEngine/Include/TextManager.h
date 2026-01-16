@@ -34,8 +34,10 @@ public:
 	//Starts up SDL and creates window
 	bool Init();
 
+	// Loaded the font and returns it to then be used in DrawText()
 	TTF_Font* LoadFont(string fontPath, int size);
 
+	// Draws text on the selected position
 	bool DrawText(string text, SDL_Color textColor, TTF_Font* font, int quadX, int quadY, SDL_Renderer* gRenderer);
 
 	//Frees media and shuts down SDL

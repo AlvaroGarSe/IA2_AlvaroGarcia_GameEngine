@@ -2,6 +2,7 @@
 #include "SDL.h"
 #include "GameObject.h"
 
+// Not currently used
 class Player :public GameObject
 {
 public:

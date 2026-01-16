@@ -16,7 +16,8 @@ bool GraphicManager::init()
 	else
 	{
 		//Set texture filtering to Nearest, better for a pixel art game with tyles, rather than Linear
-		if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1"))
+		// It reduces the amount of filtering lines between sprites
+		if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0"))
 		{
 			printf("Warning: Nearest texture filtering not enabled!");
 		}
@@ -31,7 +32,10 @@ bool GraphicManager::init()
 		else
 		{
 			//Create vsynced renderer for window
-			gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+			//gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+
+			// Not vsynced renderer
+			gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED);
 			if (gRenderer == NULL)
 			{
 				printf("Renderer could not be created! SDL Error: %s\n", SDL_GetError());

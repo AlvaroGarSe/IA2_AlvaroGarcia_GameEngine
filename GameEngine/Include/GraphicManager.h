@@ -1,6 +1,5 @@
 #pragma once
 #include "SDL.h"
-#include <SDL.h>
 #include <SDL_image.h>
 #include <stdio.h>
 #include <string>
@@ -63,9 +62,11 @@ public:
 	void ToggleFullscreen(bool borderless = true);
 	bool IsFullscreen() const;
 
+	// Used for rendering the objects and itmes in the screen
 	void DrawTexture(LTexture* texture, const Transform& transform, SDL_Rect* clip = nullptr, SDL_RendererFlip flip = SDL_FLIP_NONE);
 	void DrawTextureSoA(LTexture* texture, int x, int y, double rotation, float scaleX, float scaleY, SDL_Rect* clip = nullptr, SDL_RendererFlip flip = SDL_FLIP_NONE);
 
+	// Render only the tiles because it fixes a view error that showed imaginary lines when zooming doe to the space between tiles when changing their scale
 	void DrawTile(LTexture* texture, const Transform& transform, SDL_Rect* clip = nullptr, SDL_RendererFlip flip = SDL_FLIP_NONE);
 
 	// Updates SCREEN_WIDTH/SCREEN_HEIGHT from SDL

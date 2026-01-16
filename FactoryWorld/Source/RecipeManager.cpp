@@ -3,6 +3,7 @@
 void RecipeManager::InitDefaults()
 {
     mRecipes.clear();
+    // Create the basic recipes, this could also be saved in a JSON and charged at the start with the AddRecipe
 
     // Iron Ingot: 2 IronOre -> 1 IronIngot
     Recipe r;
@@ -80,7 +81,7 @@ const Recipe* RecipeManager::GetNextRecipeById(const std::string& id) const
 
 bool RecipeManager::AddRecipe(const Recipe& newRecipe)
 {
-    // already exists?
+    // Cehck if already exists
     for (const Recipe& r : mRecipes)
         if (r.id == newRecipe.id) return false;
 

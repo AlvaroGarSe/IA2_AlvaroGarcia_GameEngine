@@ -152,7 +152,6 @@ bool MapLoader::LoadBuildings(const std::string& path)
     }
 
     if (!j.contains("buildings") || !j["buildings"].is_array()){
-        printf("NO OBJ");
         return true; // no buildings = not an error
     }
 
@@ -176,18 +175,14 @@ bool MapLoader::LoadBuildings(const std::string& path)
         if (!cell) continue;
         if (cell->gameObject || cell->conveyorId != INVALID_CONVEYOR) continue;
 
-        // ---- Conveyor (special because can be AoS or SoA)
+        // Conveyor
         if (type == "Conveyor")
         {
-            // If you're in SoA mode, use ConveyorManager (recommended)
-            // If you're in AoS mode, Spawn<Conveyor> and place it
-
-            // Easiest: always go through ConveyorManager if you want the system to decide:
             ConveyorManager::GetInstance().Create(x, y, o);
             continue;
         }
 
-        // ---- Miner
+        // Miner
         if (type == "Miner")
         {
             auto* m = ObjectManager::GetInstance().Spawn<Miner>(o);
@@ -195,7 +190,7 @@ bool MapLoader::LoadBuildings(const std::string& path)
             continue;
         }
 
-        // ---- Crafter
+        // Crafter
         if (type == "Crafter")
         {
             std::string recipeId = b.value("recipeId", "iron_ingot");
@@ -203,8 +198,6 @@ bool MapLoader::LoadBuildings(const std::string& path)
             grid.PlaceObject(c, x, y);
             continue;
         }
-
-        // Unknown type -> ignore
     }
 
     return true;
@@ -256,7 +249,7 @@ bool MapLoader::SaveBuildings(const std::string& path)
             GridCell* cell = grid.GetCell(x, y);
             if (!cell) continue;
 
-            // --- Case 1: SoA conveyor stored as conveyorId (no GameObject)
+            // Conveyor
             if (cell->conveyorId != INVALID_CONVEYOR)
             {
                 json b;
@@ -264,15 +257,13 @@ bool MapLoader::SaveBuildings(const std::string& path)
                 b["x"] = x;
                 b["y"] = y;
 
-                // Get orientation from the system/manager if you have it
-                // If you don't yet, you can skip this field.
                 b["orientation"] = OrientationToString(ConveyorManager::GetInstance().GetOrientation(cell->conveyorId));
 
                 out["buildings"].push_back(b);
                 continue;
             }
 
-            // --- Case 2: Classic GameObject building
+            // GameObject
             if (!cell->gameObject) continue;
 
             GameObject* go = cell->gameObject;
@@ -280,8 +271,6 @@ bool MapLoader::SaveBuildings(const std::string& path)
             // Only save buildings you care about
             if (go->type != GameObject::ObjectType::MINER &&
                 go->type != GameObject::ObjectType::CRAFTER 
-                //&&
-                //go->type != GameObject::ObjectType::CONVEYOR
                 )
                 continue;
 
@@ -311,7 +300,7 @@ bool MapLoader::SaveBuildings(const std::string& path)
             std::cout << "MapLoader::SaveBuildings: cannot open " << path << "\n";
             return false;
         }
-        f << out.dump(2); // pretty print
+        f << out.dump(2); // Pretty print
     }
     catch (const std::exception& e)
     {
@@ -368,7 +357,7 @@ std::vector<BuildingSaveData> MapLoader::CollectBuildingsSnapshot()
             GridCell* cell = grid.GetCell(x, y);
             if (!cell) continue;
 
-            // SoA conveyor
+            // Conveyor
             if (cell->conveyorId != INVALID_CONVEYOR)
             {
                 BuildingSaveData b;

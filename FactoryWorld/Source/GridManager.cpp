@@ -114,6 +114,7 @@ bool GridManager::RemoveBuilding(int gridX, int gridY)
 
 void GridManager::RenderDebugGrid(int mouseX, int mouseY)
 {
+	// Only renders the grid lines in what the camera renders
 	SDL_Renderer* r = GraphicManager::GetInstance().gRenderer;
 	Camera2D& cam = GraphicManager::GetInstance().camera;
 
@@ -258,7 +259,7 @@ void GridManager::RenderTiles()
 			t.y = (float)worldPos.y;
 			t.rotation = 0.0f;
 
-			// scale so that texture fills one cell in world space
+			// Scale so that texture fills one cell in world space
 			t.scaleX = (float)mCellSize / (float)tex->getWidth();
 			t.scaleY = (float)mCellSize / (float)tex->getHeight();
 
@@ -276,10 +277,10 @@ bool GridManager::CellIsEmpty(int gridX, int gridY)
 
 SDL_Point GridManager::WorldToGridCameraRelative(int worldX, int worldY) const
 {
-	// 1) celda bajo el mouse
+	// Get the cell on the mouse mosition
 	SDL_Point grid = WorldToGrid(worldX, worldY);
 
-	// 2) centro de la pantalla en world
+	// Center of the camera in world
 	const Camera2D& cam = GraphicManager::GetInstance().camera;
 	int screenW = GraphicManager::GetInstance().getScreenWidth();
 	int screenH = GraphicManager::GetInstance().getScreenHeight();
@@ -287,10 +288,10 @@ SDL_Point GridManager::WorldToGridCameraRelative(int worldX, int worldY) const
 	int centerWorldX = (int)(cam.GetX() + screenW * 0.5f);
 	int centerWorldY = (int)(cam.GetY() + screenH * 0.5f);
 
-	// 3) celda central
+	// Center cell
 	SDL_Point centerGrid = WorldToGrid(centerWorldX, centerWorldY);
 
-	// 4) coordenadas relativas
+	// Relative Coordinates
 	return { grid.x - centerGrid.x, grid.y - centerGrid.y };
 }
 
@@ -312,33 +313,11 @@ SDL_Point GridManager::GridCameraRelativeToWorld(int gx, int gy) const
 	return GridToWorld(absX, absY);
 }
 
-SDL_Point GridManager::CenteredToIndex(int cx, int cy) const
-{
-	return { cx + mGridWidth / 2, cy + mGridHeight / 2 };
-}
-
-SDL_Point GridManager::IndexToCentered(int ix, int iy) const
-{
-	return { ix - mGridWidth / 2, iy - mGridHeight / 2 };
-}
-
-GridCell* GridManager::GetCellCentered(int cx, int cy)
-{
-	SDL_Point idx = CenteredToIndex(cx, cy);
-	return GetCell(idx.x, idx.y);
-}
-
 GridCell* GridManager::GetCellWorldPos(int worldX, int worldY)
 {
 	if (!IsInside(worldX, worldY)) return nullptr;
 	SDL_Point cellCoords = WorldToGrid(worldX, worldY);
 	return GetCell(cellCoords.x, cellCoords.y);
-}
-
-bool GridManager::IsInsideCentered(int cx, int cy) const
-{
-	SDL_Point idx = CenteredToIndex(cx, cy);
-	return IsInside(idx.x, idx.y);
 }
 
 void GridManager::SetTile(int x, int y, TileType t)

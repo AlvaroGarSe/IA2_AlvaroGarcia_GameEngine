@@ -23,6 +23,7 @@ public:
 	void SetZoom(float zoom);
 	void AddZoom(float deltaZoom);
 	
+	// Used to render the grid of the cells
 	SDL_FRect GetWorldViewRect() const;
 
 	float GetX() const { return camX; }

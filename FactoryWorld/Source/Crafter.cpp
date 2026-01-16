@@ -190,13 +190,13 @@ bool Crafter::CanAcceptInputType(ItemType t) const
     int idx = (int)t;
     if (idx < 0 || idx >= ITEMTYPE_COUNT) return false;
 
-    // not in recipe?
+    // Not in recipe?
     if (mNeed[idx] <= 0) return false;
 
-    // already have enough?
+    // Already have enough?
     if (mHave[idx] >= mNeed[idx]) return false;
 
-    // need a free slot
+    // Need a free slot
     for (Item* s : mInputSlots)
         if (!s) return true;
 
@@ -279,8 +279,8 @@ void Crafter::Render()
     const float centerOffsetWorld = (cellSize - itemSizeWorld / 2) / 2;
 
     // Start position (world space)
-    int startX = baseWorldX + centerOffsetWorld;
-    int startY = baseWorldY + centerOffsetWorld;
+    int startX = (int)(baseWorldX + centerOffsetWorld);
+    int startY = (int)(baseWorldY + centerOffsetWorld);
 
     float sx = itemSizeWorld / itemTexture->getWidth();
     float sy = itemSizeWorld / itemTexture->getHeight();

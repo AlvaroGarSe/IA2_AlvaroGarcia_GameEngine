@@ -5,9 +5,9 @@
 enum class TileType : uint8_t
 {
 	Ground,
-	IronVein,
-	CopperVein,
-	Water
+	IronVein, // Miner produces iron ore
+	CopperVein, // Miner produces copper ore
+	Water // Can not be build here
 };
 
 struct GridCell
@@ -15,5 +15,5 @@ struct GridCell
 	TileType tileType = TileType::Ground;
 	GameObject* gameObject = nullptr; // Pointer to the object occupying this cell (nullptr if empty)
 
-	ConveyorId conveyorId = INVALID_CONVEYOR; // Used for AOS in the conveyors
+	ConveyorId conveyorId = INVALID_CONVEYOR; // Used for AoS and SoA in the conveyors
 };

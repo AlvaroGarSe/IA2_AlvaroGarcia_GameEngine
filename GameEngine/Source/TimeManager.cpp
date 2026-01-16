@@ -70,6 +70,7 @@ Uint32 TimeManager::getTicks()
 
 double TimeManager::TickFrameSeconds()
 {
+    // This function returns a more precissed timer to be used to calculate Ms and FPS
     const Uint64 now = SDL_GetPerformanceCounter();
     const Uint64 freq = SDL_GetPerformanceFrequency();
 

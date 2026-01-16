@@ -4,6 +4,7 @@
 
 void ConveyorManager::Init(ConveyorMode mode)
 {
+    // Select the current system
     if (mode == ConveyorMode::AoS) mImpl = std::make_unique<AoSConveyorSystem>();
     else                          mImpl = std::make_unique<SoAConveyorSystem>();
 }
@@ -13,9 +14,7 @@ ConveyorId ConveyorManager::CreateConveyorRuntime(int cX, int cY, GameObject::Or
 
 void ConveyorManager::UpdateAll(uint32_t now) { mImpl->UpdateAll(now); }
 void ConveyorManager::StartAll() { mImpl->StartAll(); }
-
 void ConveyorManager::RenderAll() { mImpl->RenderAll(); }
-void ConveyorManager::RenderAllItemsBehind() { mImpl->RenderAllItemsBehind(); }
 
 void ConveyorManager::RotateConveyor(ConveyorId id, int dir) { mImpl->RotateConveyor(id, dir); }
 void ConveyorManager::RemoveConveyor(ConveyorId id) { mImpl->RemoveConveyor(id); }

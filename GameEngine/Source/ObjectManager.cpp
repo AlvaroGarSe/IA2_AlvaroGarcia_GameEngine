@@ -33,12 +33,13 @@ void ObjectManager::RenderAll()
 
 void ObjectManager::Destroy(GameObject* objPtr)
 {
+	// Destroys and frees one single object
 	objects.erase(std::remove_if(objects.begin(), objects.end(),
-		[&](const std::unique_ptr<GameObject>& o) { return o.get() == objPtr; }),
-		objects.end());
+		[&](const std::unique_ptr<GameObject>& o) { return o.get() == objPtr; }), objects.end());
 }
 
 void ObjectManager::Clear()
 {
+	// Free all the objects because uses unique_ptr
 	objects.clear();
 }

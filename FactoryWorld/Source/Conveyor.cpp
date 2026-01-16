@@ -43,15 +43,16 @@ Conveyor::Conveyor(Orientation orientation)
 
     texturePath = "Media/Conveyor.png";
 
-    // slots start empty
+    // Slots start empty
     for (auto& s : mSlots) s = nullptr;
 
-    // start stepping immediately
+    // Start stepping immediately
     mNextMoveTime = 0;
 }
 
 Conveyor::~Conveyor()
 {
+    // Free the inside items
     for (Item* item : mSlots) delete item;
 }
 
@@ -121,8 +122,8 @@ void Conveyor::RenderItems()
     const float centerOffsetWorld = (cellSize - itemSizeWorld / 2) / 2;
 
     // Start position (world space)
-    int startX = baseWorldX + centerOffsetWorld;
-    int startY = baseWorldY + centerOffsetWorld;
+    int startX = (int)(baseWorldX + centerOffsetWorld);
+    int startY = (int)(baseWorldY + centerOffsetWorld);
 
     for (int i = 0; i < SLOT_COUNT; ++i)
     {
@@ -135,7 +136,7 @@ void Conveyor::RenderItems()
         float sx = itemSizeWorld / itemText->getWidth();
         float sy = itemSizeWorld / itemText->getHeight();
 
-        float offset = (i * slotSpacingWorld) - (cellSize / 2 - slotSpacingWorld / 2);
+        float offset = (float)((i * slotSpacingWorld) - (cellSize / 2 - slotSpacingWorld / 2));
 
         Transform itTransf;
         itTransf.x = startX + dirX * offset - itemSizeWorld * 0.25;
@@ -146,13 +147,6 @@ void Conveyor::RenderItems()
 
         GraphicManager::GetInstance().DrawTexture(itemText, itTransf);
     }
-}
-
-void Conveyor::RenderItemsBehind()
-{
-    Render();
-
-    RenderItems();
 }
 
 bool Conveyor::CanAcceptItem() const

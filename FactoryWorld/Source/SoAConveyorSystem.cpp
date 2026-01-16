@@ -27,7 +27,7 @@ ConveyorId SoAConveyorSystem::Create(int cX, int cY, GameObject::Orientation o)
 	    mSlotType.push_back(ItemType::NONE);
 
 	// id = index+1
-	ConveyorId id = mX.size();
+	ConveyorId id = (ConveyorId)mX.size();
 
 	if (GridCell* cell = GridManager::GetInstance().GetCell(cX, cY))
 	{
@@ -156,73 +156,7 @@ void SoAConveyorSystem::RenderAll()
 
 			offset = (s * slotSpacingWorld) - (cellSize / 2.0f - slotSpacingWorld / 2.0f);
 
-			gfx.DrawTextureSoA(itemTex, startX + dirX * offset - itemSizeWorld * 0.25f, startY + dirY * offset - itemSizeWorld * 0.25f, 0.0f, sx, sy);
-		}
-	}
-}
-
-void SoAConveyorSystem::RenderAllItemsBehind()
-{
-	GraphicManager& gfx = GraphicManager::GetInstance();
-
-	const int cellSize = GridManager::GetInstance().GetCellSize();
-
-	double rotation = 0.0;
-	float scaleX = 0.5f;
-	float scaleY = 0.5f;
-
-	// World-space item size (in "world pixels")
-	const int itemSizeWorld = 32;
-	const int slotSpacingWorld = cellSize / SLOT_COUNT;
-
-	const int centerOffsetWorld = (int)((cellSize - itemSizeWorld / 2) / 2);
-
-	int dirX = 0, dirY = 0;
-
-	// Parameters for the transform of the items
-	int startX, startY;
-	float sx, sy, offset;
-	ItemType previousItem = ItemType::NONE;
-	LTexture* itemTex = nullptr;
-
-	// Rendering of all the items on the conveyors
-	for (int i = 0; i < mX.size(); ++i)
-	{
-		if (!mActive[i]) continue;
-
-		// Direction of the sprite deppending on the orientation
-		switch (mOri[i])
-		{
-		case GameObject::Orientation::NORTH: dirX = 0;  dirY = -1; rotation = 0; break;
-		case GameObject::Orientation::SOUTH: dirX = 0;  dirY = 1; rotation = 180; break;
-		case GameObject::Orientation::EAST:  dirX = 1;  dirY = 0; rotation = 90; break;
-		case GameObject::Orientation::WEST:  dirX = -1; dirY = 0; rotation = 270; break;
-		default: break;
-		}
-
-		gfx.DrawTextureSoA(convTexture, mX[i], mY[i], rotation, scaleX, scaleY);
-
-		startX = mX[i] + centerOffsetWorld;
-		startY = mY[i] + centerOffsetWorld;
-
-		for (int s = 0; s < SLOT_COUNT; ++s)
-		{
-			ItemType t = mSlotType[SlotToIndex(i, s)];
-			if (t == ItemType::NONE) continue;
-			if (previousItem != t)
-			{
-				itemTex = AssetManager::GetInstance().GetTexture(ItemSpritePath(t));
-				previousItem = t;
-			}
-
-			if (!itemTex) continue;
-
-			sx = (float)itemSizeWorld / (float)itemTex->getWidth();
-			sy = (float)itemSizeWorld / (float)itemTex->getHeight();
-
-			offset = (s * slotSpacingWorld) - (cellSize / 2.0f - slotSpacingWorld / 2.0f);
-
-			gfx.DrawTextureSoA(itemTex, startX + dirX * offset - itemSizeWorld * 0.25f, startY + dirY * offset - itemSizeWorld * 0.25f, 0.0f, sx, sy);
+			gfx.DrawTextureSoA(itemTex, (int)(startX + dirX * offset - itemSizeWorld * 0.25f), (int)(startY + dirY * offset - itemSizeWorld * 0.25f), 0.0f, sx, sy);
 		}
 	}
 }

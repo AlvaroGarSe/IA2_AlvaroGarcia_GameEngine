@@ -14,22 +14,23 @@ public:
 
 	void Update(uint32_t now) override;
 	void RenderItems();
-	void RenderItemsBehind();
 
 	bool CanAcceptItem() const;
-	bool InsertItem(const Item& item); // Inserts an item into slot 0
+	// Inserts an item into slot 0
+	bool InsertItem(const Item& item); 
 
-	bool TryExtractItem(Item& outItem); // Extracts an item from the last slot
+	// Extracts an item from the last slot
+	bool TryExtractItem(Item& outItem);
 
 private:
 
 	void MoveItemThroughSlots();
 	void PassItemNextCell();
 
+	// Stores the items inside the conveyor
 	std::array<Item*, SLOT_COUNT> mSlots{};
 
-
-	uint32_t mMoveIntervalMs = 300; // e.g. 0.3s per step
+	// Speed of the conveyor
+	uint32_t mMoveIntervalMs = 300;
 	uint32_t mNextMoveTime = 0;
-
 };

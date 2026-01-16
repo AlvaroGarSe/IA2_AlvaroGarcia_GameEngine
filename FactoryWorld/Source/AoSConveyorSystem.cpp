@@ -14,16 +14,15 @@ ConveyorId AoSConveyorSystem::Create(int cX, int cY, GameObject::Orientation o)
 
 	SDL_Point convPos = gridManager.GridToWorld(cX, cY);
 
-	c->SetPosition(convPos.x, convPos.y);
+	c->SetPosition((float)convPos.x, (float)convPos.y);
 
 	mConveyors.push_back(c);
 
 	// id = index+1
-	int id = mConveyors.size();
+	int id = (int)mConveyors.size();
 
 	GridCell* cell = gridManager.GetCell(cX, cY);
 	cell->conveyorId = id;
-
 
 	return (ConveyorId) id;
 }
@@ -59,17 +58,6 @@ void AoSConveyorSystem::RenderAll()
 	{
 		// This is for checking the removed conveyors at runtime
 		if (!c) continue;
-		c->RenderItems();
-	}
-}
-
-void AoSConveyorSystem::RenderAllItemsBehind()
-{
-	for (Conveyor* c : mConveyors)
-	{
-		// This is for checking the removed conveyors at runtime
-		if (!c) continue;
-		c->Render();
 		c->RenderItems();
 	}
 }

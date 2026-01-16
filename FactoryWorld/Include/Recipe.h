@@ -10,6 +10,7 @@ struct ItemStack
     int amount;
 };
 
+// Stores the information of the recipe to then obtain it in the crafter through the RecipeManager
 struct Recipe
 {
     std::string id;

@@ -7,14 +7,17 @@ class TimeManager:public Singleton<TimeManager>
     friend class Singleton<TimeManager>;
 
 public:
-    //The various clock actions
+
     void start();
+
+    // Not implemented yet because not used for the current prototype
     //void stop();
     //void pause();
     //void unpause();
 
     //Gets the timer's time
     Uint32 getTicks();
+    // For more precission
     double TickFrameSeconds();
 
     //Checks the status of the timer
@@ -22,9 +25,7 @@ public:
     //bool isPaused();
 
     Uint32 TickFrame();
-    Uint32 DeltaMs() const;
-
-    
+    Uint32 DeltaMs() const;    
 
 private:
     //Initializes variables
@@ -40,7 +41,6 @@ private:
     Uint32 mDeltaMs;
     double mDeltaSeconds;
     Uint32 mLastTicksMs;
-
 
     //The timer status
     bool mPaused;

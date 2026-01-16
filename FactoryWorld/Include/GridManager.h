@@ -22,6 +22,7 @@ private:
 
 	int mCellSize = 0;
 
+	// Stores all the cells
 	std::vector<GridCell> mCells;
 
 public:
@@ -55,15 +56,7 @@ public:
 	SDL_Point WorldToGridCameraRelative(int worldX, int worldY) const;
 	SDL_Point GridCameraRelativeToWorld(int gx, int gy) const;
 
-	// Transforms the coordinate centered to the relative not centered (0,0) -> (25,25)
-	SDL_Point CenteredToIndex(int cx, int cy) const;
-
-	// Transforms the coordinate not centered to centered (25,25) -> (0,0)
-	SDL_Point IndexToCentered(int ix, int iy) const;
-
-	GridCell* GetCellCentered(int cx, int cy);
 	GridCell* GetCellWorldPos(int worldX, int worldY);
-	bool IsInsideCentered(int cx, int cy) const;
 
 	void SetTile(int x, int y, TileType t);
 

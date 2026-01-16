@@ -11,7 +11,6 @@ public:
     void StartAll() override;
     void UpdateAll(uint32_t now) override;
     void RenderAll() override;
-    void RenderAllItemsBehind() override;
 
     ConveyorId CreateConveyorRuntime(int cX, int cY, GameObject::Orientation o);
     
@@ -30,8 +29,8 @@ public:
     SoAConveyorSystem();
 
 private:
+    // Pointer to the texture of all the conveyors becuase they use the same (AssetManager)
     LTexture* convTexture;
-
 
     // SoA arrays
     std::vector<int> mX, mY;
@@ -39,7 +38,7 @@ private:
     std::vector<uint32_t> mNextMoveTime;
     std::vector<int> mActive;
 
-    // flattened [conveyorIndex * SLOT_COUNT + slot]
+    // All the slots of all the conveyors: [conveyorIndex * SLOT_COUNT + slot]
     std::vector<ItemType> mSlotType;
 
     uint32_t mMoveIntervalMs = 300;

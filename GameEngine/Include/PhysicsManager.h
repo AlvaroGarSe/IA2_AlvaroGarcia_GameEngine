@@ -9,7 +9,7 @@
 #include "GameObject.h"
 
 
-
+// Not used in the game but i keep it here becuase it was implemented in the previous engine
 
 class PhysicsManager:public Singleton<PhysicsManager>
 {

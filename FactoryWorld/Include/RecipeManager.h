@@ -11,6 +11,7 @@ class RecipeManager : public Singleton<RecipeManager>
 private:
     RecipeManager() {}
 
+    // Store all the current created recipes
     std::vector<Recipe> mRecipes;
 
 public:

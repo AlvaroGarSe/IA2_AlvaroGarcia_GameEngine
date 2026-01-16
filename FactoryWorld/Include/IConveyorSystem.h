@@ -3,6 +3,7 @@
 #include "GameObject.h"
 #include "Item.h"
 
+// This class is used for inheritance for AoS and SoA for the conveyors
 class IConveyorSystem
 {
 public:
@@ -14,8 +15,6 @@ public:
     virtual void StartAll() = 0;
     virtual void UpdateAll(uint32_t nowTicks) = 0;
     virtual void RenderAll() = 0;
-    virtual void RenderAllItemsBehind() = 0;
-    //virtual void ClearAll() = 0;
 
     virtual void RotateConveyor(ConveyorId id, int dir) = 0;
 

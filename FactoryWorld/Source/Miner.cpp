@@ -84,7 +84,6 @@ void Miner::Mine()
     Uint32 currentTime = TimeManager::GetInstance().getTicks();
     if (currentCapacity >= maxCapacity)
     {
-        // Don’t spam Mine() every frame when full
         minningCurrentTime = currentTime + 200;
         return;
     }

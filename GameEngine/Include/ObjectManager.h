@@ -6,10 +6,10 @@
 #include "Singleton.h"
 #include "GameObject.h"
 
-// *********************************************IMPORTANT********************************************* //
+// *********************************************************************** IMPORTANT ********************************************************************************************* //
 // The conveyors are not stored here because there will be stored in the AoS/SoAConveyorSystem cause of the AoS and SoA variation
 // Any other object that will also be implemented with AoS and SoA will not be stored and managed here
-
+// ******************************************************************************************************************************************************************************* //
 
 class ObjectManager:public Singleton<ObjectManager>
 {
@@ -21,7 +21,7 @@ private:
 
 	ObjectManager() {};
 
-	//Contains the objects
+	//Contains the objects, uses unique_ptr to make sure that this class truly contains all the objects and are correctly free when needed in this script
 	std::vector<std::unique_ptr<GameObject>> objects;
 	
 public:
@@ -39,15 +39,11 @@ public:
 	GameObject* GetObject(int index) const { return objects[index].get(); }
 
 	void StartAll();
-
 	void UpdateAll(uint32_t now);
-
 	void LoadAllMedia();
-
 	void RenderAll();
 
 	void Destroy(GameObject* objPtr);
-
 	void Clear();
 
 	size_t Count() const { return objects.size(); }
