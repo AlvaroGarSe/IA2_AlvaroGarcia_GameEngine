@@ -1,0 +1,48 @@
+{
+  "width": 2000,
+  "height": 1000,
+  "cellSize": 64,
+
+  "defaultTile": "Ground",
+
+  "cells": [
+    {
+      "x": 10,
+      "y": 10,
+      "tile": "IronVein"
+    },
+    {
+      "x": 11,
+      "y": 10,
+      "tile": "IronVein"
+    },
+    {
+      "x": 26,
+      "y": 26,
+      "tile": "IronVein"
+    },
+    {
+      "x": 26,
+      "y": 24,
+      "tile": "CopperVein"
+    }
+  ],
+
+  "areas": [
+    {
+      "from": [ 31, 20 ],
+      "to": [ 201, 24 ],
+      "tile": "IronVein"
+    },
+    {
+      "from": [ 0, 940 ],
+      "to": [ 1999, 999 ],
+      "tile": "IronVein"
+    },
+    {
+      "from": [ 31, 60 ],
+      "to": [ 201, 64 ],
+      "tile": "CopperVein"
+    }
+  ]
+}

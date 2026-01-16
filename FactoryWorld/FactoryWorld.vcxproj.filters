@@ -101,5 +101,8 @@
     <ClInclude Include="Include\PlayerControlls.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
+    <ClInclude Include="..\GameEngine\Include\PathFixer.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

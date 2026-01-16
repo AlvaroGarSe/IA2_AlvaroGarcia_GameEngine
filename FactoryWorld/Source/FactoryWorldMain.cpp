@@ -23,6 +23,8 @@
 #include "iostream"
 using namespace std;
 
+// Note: I copied the Media folder into the x64/Debug folder to allow also to run it with the .exe. This should be done taking into account in the strings the base
+
 int main(int argc, char* args[])
 {
 	// Create all the managers and singletons

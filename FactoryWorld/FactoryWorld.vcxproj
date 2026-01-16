@@ -33,6 +33,7 @@
     <ClCompile Include="Source\SoAConveyorSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\GameEngine\Include\PathFixer.h" />
     <ClInclude Include="Include\AoSConveyorSystem.h" />
     <ClInclude Include="Include\Conveyor.h" />
     <ClInclude Include="Include\ConveyorManager.h" />
