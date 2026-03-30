@@ -59,7 +59,7 @@ int main(int argc, char* args[])
 	// Create the default recipes
 	RecipeManager::GetInstance().InitDefaults();
 
-	// Here can be selected what system to use to manager the conveyors: AoS = OOP || SoA = DOP
+	// *********************** Here can be selected what system to use to manager the conveyors: AoS = OOP || SoA = DOP *************************************
 	ConveyorManager::GetInstance().Init(ConveyorMode::AoS);
 
 	string conveyorMode;
@@ -186,7 +186,7 @@ int main(int argc, char* args[])
 				quit = true;
 			}
 
-			// Zoom of the camera
+			// Zoom of the camera using the mouse wheel
 			if (e.type == SDL_MOUSEWHEEL)
 			{
 				if (e.wheel.y > 0)
@@ -218,7 +218,7 @@ int main(int argc, char* args[])
 			SCREEN_HEIGHT = GraphicManager::GetInstance().getScreenHeight();
 		}
 
-		// Input to move the camera
+		// Input to move the camera: WASD
 		if (InputManager::GetInstance().GetKey(SDL_SCANCODE_A))
 			GraphicManager::GetInstance().camera.Move(-move, 0);
 		if (InputManager::GetInstance().GetKey(SDL_SCANCODE_D))
