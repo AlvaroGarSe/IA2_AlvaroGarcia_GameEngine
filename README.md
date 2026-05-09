@@ -1,4 +1,4 @@
-This is a custom Game Engine built from scratch using SDL2 to explore the challenge of building an designing a game engine while also comparing the real performance differencies between Object-Oriented Programming (OOP) and Data-Oriented Programming (DOP).
+This is a custom Game Engine built from scratch using SDL2 to explore the challenge of building and designing a game engine while also comparing the real performance differencies between Object-Oriented Programming (OOP) and Data-Oriented Programming (DOP).
 The engine is designed for a grid-based game aimed to handle and manage a high number of simulations at the same time by optimizing memory ussage and layout.
 
 Controls in the game:
